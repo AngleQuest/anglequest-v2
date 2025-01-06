@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hubs', function (Blueprint $table) {
+        Schema::create('user_subscriptions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('visibility')->nullable();
-            $table->string('name');
-            $table->string('category');
-            $table->string('specialization');
-            $table->longText('hub_description');
-            $table->longText('hub_goals');
+            $table->bigInteger('subscription_plan_id');
+            $table->integer('payment_id');
+            $table->dateTime('plan_start');
+            $table->dateTime('plan_end');
+            $table->json('authorization_data');
+            $table->enum('status', ['active', 'expired']);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hubs');
+        Schema::dropIfExists('user_subscriptions');
     }
 };

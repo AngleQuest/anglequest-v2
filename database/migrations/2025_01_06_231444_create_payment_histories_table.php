@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('payment_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('administrator_name');
-            $table->string('email');
-            $table->text('nda_file')->nullable()->comment('company NDA');
+            $table->unsignedBigInteger('user_id');
+            $table->enum('type', ['subscription', 'renewal'])->default('subscription');
+            $table->double('amount', 19,2)->default(0);
+            $table->string('method')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('payment_histories');
     }
 };

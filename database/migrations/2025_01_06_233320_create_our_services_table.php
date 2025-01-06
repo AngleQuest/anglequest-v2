@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('our_services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('administrator_name');
-            $table->string('email');
-            $table->text('nda_file')->nullable()->comment('company NDA');
+            $table->enum('status',['active','in-active'])->default('active');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('our_services');
     }
 };

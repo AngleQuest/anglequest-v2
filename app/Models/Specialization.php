@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Specialization extends Model
 {
-    //
+    protected $fillable = [
+        'specialization_category_id',
+        'name'
+    ];
 }
