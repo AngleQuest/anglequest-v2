@@ -5,9 +5,7 @@ Accelerate growth with our dedicated on-the-job support, career transition guida
 
 ## About Anglequest
 
-Your Vision to excel in your career is our Mission!
-
-## Learning Laravel
+Your Vision to excel in your career is our Mission
 
 We partner with you to achieve your personal best, offering the tools, expertise, guidance, and strategies needed to make it a reality
 
