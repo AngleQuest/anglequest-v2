@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Expert extends Model
+class IndividualProfile extends Model
 {
     protected $fillable = [
         'user_id',
@@ -16,18 +16,9 @@ class Expert extends Model
         'dob',
         'gender',
         'specialization',
-        'available_days',
-        'available_time',
         'yrs_of_experience',
         'about',
         'location',
         'profile_photo',
     ];
-    protected $casts = [
-        'specialization' => 'array',
-    ];
-    // public function supportRequests()
-    // {
-    //     return $this->hasMany(SupportRequest::class);
-    // }
 }

@@ -13,6 +13,7 @@ use App\Models\ProductRating;
 use App\Models\ProductReview;
 use App\Mail\EmailVerification;
 use App\Models\Expert;
+use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -34,6 +35,9 @@ class AccountService
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
+                ]);
+                IndividualProfile::create([
+                    'user_id' => $user->id
                 ]);
             }
             if ($data->role == "expert") {
@@ -65,16 +69,11 @@ class AccountService
 
             if ($user) {
                 DB::commit();
-                if (strtolower($config->email_verify) == "enabled") {
-                    $user->update([
-                        'email_code' => $code,
-                        'email_code_expire_time' => Carbon::now()->addMinutes(30),
-                    ]);
-                    Mail::to($user->email)->queue(new EmailVerification($user));
-                } else {
-                    $user->update(['email_verified_at' => Carbon::now()->toDateTimeString()]);
-                    Mail::to($user->email)->queue(new NewUserMail($user));
-                }
+                $user->update([
+                    'email_code' => $code,
+                    'email_code_expire_time' => Carbon::now()->addMinutes(30),
+                ]);
+                Mail::to($user->email)->queue(new EmailVerification($user));
                 $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
                 return $user;
             }

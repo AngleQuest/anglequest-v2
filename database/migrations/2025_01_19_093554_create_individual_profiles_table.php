@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('experts', function (Blueprint $table) {
+        Schema::create('individual_profiles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->comment('expert user id');
+            $table->unsignedBigInteger('user_id')->comment('individual user id');
             $table->string('category')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('dob')->nullable();
             $table->string('gender')->nullable();
             $table->json('specialization')->nullable();
-            $table->json('available_days')->nullable();
-            $table->string('available_time')->nullable();
             $table->double('yrs_of_experience')->default(0);
             $table->text('about')->nullable();
             $table->string('location')->nullable();
@@ -37,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('experts');
+        Schema::dropIfExists('individual_profiles');
     }
 };

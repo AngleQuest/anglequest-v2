@@ -16,7 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('administrator_name');
             $table->string('email');
+            $table->string('business_email')->nullable();
+            $table->string('address')->nullable();
             $table->text('nda_file')->nullable()->comment('company NDA');
+            $table->string('company_logo')->nullable()->comment('company logo');
             $table->timestamps();
         });
     }

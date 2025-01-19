@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->comment('Expert incharge');
             $table->string('visibility');
             $table->string('name');
-            $table->string('specialization');
+            $table->json('specialization');
             $table->longText('description');
             $table->string('meeting_day')->nullable();
             $table->string('meeting_time')->nullable();
@@ -25,9 +25,6 @@ return new class extends Migration
             $table->longText('hub_goals');
             $table->double('hub_limit')->default(20)->comment('decrements in process or member registration');
             $table->string('category');
-            $table->string('specialization');
-            $table->longText('hub_description');
-            $table->longText('hub_goals');
             $table->timestamps();
         });
     }
