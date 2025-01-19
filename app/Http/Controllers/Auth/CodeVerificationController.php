@@ -9,7 +9,7 @@ use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EmailVerification;
-use App\Services\AccountService;
+use App\Services\Auth\AccountService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;

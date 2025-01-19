@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -28,7 +28,6 @@ class AccountService
         $user = '';
         DB::beginTransaction();
         if ($data) {
-            $config = Configuration::first();
             $code = mt_rand(100000, 999999);
             if ($data->role == "individual") {
                 $user = User::create([

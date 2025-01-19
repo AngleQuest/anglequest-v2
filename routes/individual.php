@@ -11,5 +11,4 @@ Route::group(['middleware' => ['auth:sanctum','email.verified','individual'], 'p
         Route::get('/dashboard', 'index');
     });
 
-    Route::post('/logout', [AuthController::class, 'logout']);
 });

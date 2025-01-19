@@ -20,9 +20,8 @@ class ExpertPlanFeedback extends Model
         'coach',
         'completed',
         'rating_figure'
-      ];
-      expert_analysis
-      protected $casts = [
+    ];
+    protected $casts = [
         'descriptions' => 'array',
     ];
 }

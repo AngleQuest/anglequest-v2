@@ -8,7 +8,7 @@ use App\Mail\NewUserMail;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use App\Services\CacheService;
-use App\Services\AccountService;
+use App\Services\Auth\AccountService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
@@ -23,6 +23,8 @@ class AccountController extends Controller
         private AccountService $accountService
     ) {}
 
+
+
     public function register(RegisterRequest $request)
     {
         return $this->accountService->signUp($request);
@@ -31,5 +33,12 @@ class AccountController extends Controller
     function login(LoginRequest $request)
     {
         return $this->accountService->login($request);
+    }
+
+    public function logout()
+    {
+        // Revoke the token that was used to authenticate the current request...
+        Auth::user()->tokens()->delete();
+        return $this->successResponse('user logged out');
     }
 }

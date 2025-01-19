@@ -23,9 +23,15 @@ Route::prefix('auth')->group(function () {
     });
 
     // Route::group(['middleware' => ['auth:sanctum']], function () {
-        Route::controller(CodeVerificationController::class)->prefix('email-verification')->group(function () {
-            Route::post('/verify-code', 'verifyCode');
-            Route::post('/resend-code', 'resendCode');
-        });
+    Route::controller(CodeVerificationController::class)->prefix('email-verification')->group(function () {
+        Route::post('/verify-code', 'verifyCode');
+        Route::post('/resend-code', 'resendCode');
+    });
     // });
+
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::controller(AccountController::class)->group(function () {
+            Route::get('/logout', 'logout');
+        });
+    });
 });
