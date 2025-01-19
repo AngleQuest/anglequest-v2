@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('hubs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->comment('Expert incharge');
             $table->string('visibility');
             $table->string('name');
-            $table->string('hub_description');
-            $table->string('meeting_day');
-            $table->string('from');
-            $table->string('to');
-            $table->string('coaching_hub_fee');
-            $table->string('coaching_hub_goals');
-            $table->string('coaching_hub_limit');
+            $table->string('specialization');
+            $table->longText('description');
+            $table->string('meeting_day')->nullable();
+            $table->string('meeting_time')->nullable();
+            $table->string('from')->nullable();
+            $table->string('to')->nullable();
+            $table->longText('hub_goals');
+            $table->double('hub_limit')->default(20)->comment('decrements in process or member registration');
             $table->string('category');
             $table->timestamps();
         });

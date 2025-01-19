@@ -12,6 +12,7 @@ use App\Models\Configuration;
 use App\Models\ProductRating;
 use App\Models\ProductReview;
 use App\Mail\EmailVerification;
+use App\Models\Expert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,8 @@ use Illuminate\Support\Facades\Mail;
 class AccountService
 {
     use ApiResponder;
-    public static function signUp($data)
+
+    public  function signUp($data)
     {
         $user = '';
         DB::beginTransaction();
@@ -29,7 +31,6 @@ class AccountService
             $code = mt_rand(100000, 999999);
             if ($data->role == "individual") {
                 $user = User::create([
-                    'username' => $data->username,
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
@@ -37,12 +38,14 @@ class AccountService
             }
             if ($data->role == "expert") {
                 $user = User::create([
-                    'username' => $data->username,
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
                 UserWallet::create([
+                    'user_id' => $user->id
+                ]);
+                Expert::create([
                     'user_id' => $user->id
                 ]);
             }
@@ -53,16 +56,15 @@ class AccountService
                     'email' => $data->email,
                 ]);
                 $user = User::create([
-                    'username' => $data->email,
                     'company_id' => $company->id,
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
             }
-            
-            DB::commit();
+
             if ($user) {
+                DB::commit();
                 if (strtolower($config->email_verify) == "enabled") {
                     $user->update([
                         'email_code' => $code,
@@ -79,6 +81,112 @@ class AccountService
         }
 
         DB::rollBack();
-        return 'Opps! Something went wrong, your request could not be processed';
+        return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
+    }
+
+    public function login($data)
+    {
+
+        $user = User::where('email', strtolower($data->email))->first();
+        if (!$user) {
+            return $this->errorResponse('Oops! No record found with your entry.', 422);
+        }
+
+        $credentials = ['email' => $data->email, 'password' => $data->password];
+
+        if (!Auth::attempt($credentials)) {
+            return $this->errorResponse('Credentials inputted do not match, please try it again.', 422);
+        }
+
+        if (strtolower($user->status) == 'blocked' || strtolower($user->status) == 'suspended') {
+            return $this->errorResponse('This account has been Blocked / Suspended. Please Contact support for activation.', 422);
+        }
+
+        //event(new Login($user));
+        $user->token = $user->createToken($user->email . ' Login Token')->plainTextToken;
+
+        return $this->successResponse($user);
+    }
+    public function emailVerification($data)
+    {
+
+        if (!$data->email_code) {
+            return $this->errorResponse('The Email Code field is required', 422);
+        }
+        $user = User::where('email_code', $data->email_code)->first();
+        if (!$user) {
+            return $this->errorResponse('Invalid code inputted, please try it again.', 422);
+        }
+        if ($user->email_code_expire_time < now()->toDateTimeString()) {
+            return $this->errorResponse('Verification Code has Expired!', 422);
+        }
+        $user->update([
+            'email_verified_at' => Carbon::now(),
+            'email_code' => null,
+            'email_code_expire_time' => null,
+        ]);
+        Mail::to($user->email)->send(new NewUserMail($user));
+        return $this->successResponse($user);
+    }
+
+    public function resendCode($data)
+    {
+
+        $user = User::where('email', Auth::user() ? Auth::user()->email : $data->email)->first();
+        if (!$user) {
+            return $this->errorResponse('Oops! No record found with your entry.', 422);
+        }
+
+        $user->update([
+            'email_code' => rand(100000, 999999),
+            'email_code_expire_time' => Carbon::now()->addMinutes(30)
+        ]);
+
+        $user = User::find($user->id);
+
+        Mail::to($user)->send(new EmailVerification($user));
+
+        return $this->successResponse('A new code has been sent to you');
+    }
+
+    public function verifyUserIdentity($data)
+    {
+
+        if (!$data->email) {
+            return $this->errorResponse('Please enter Username', 422);
+        }
+        $user = User::where('email', $data->email)->first();
+        if (!$user) {
+            return $this->errorResponse('Oops! No record found with your entry.', 422);
+        }
+        $code = mt_rand(100000, 999999);
+        $user->update([
+            'email_code' => $code,
+            'email_code_expire_time' => Carbon::now()->addMinutes(30),
+        ]);
+
+        Mail::to($user)->queue(new EmailVerification($user));
+        return $this->successResponse('A verification code has been sent to your email');
+    }
+
+    public function verifyCode($data)
+    {
+
+        if (!$data->email_code) {
+            return $this->errorResponse('The Email Code field is required', 422);
+        }
+        $user = User::where('email_code', $data->email_code)->first();
+        if (!$user) {
+            return $this->errorResponse('Invalide code entered, please try it again.', 422);
+        }
+
+        if ($user->email_code_expire_time < now()) {
+            return $this->errorResponse('error', ' Verification Code has Expired!', 422);
+        }
+        $user->update([
+            'email_code' => null,
+            'email_code_expire_time' => null,
+        ]);
+        return $this->successResponse($user);
     }
 }

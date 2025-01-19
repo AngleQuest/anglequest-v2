@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('email_code')->nullable();
             $table->dateTime('email_code_expire_time')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('phone')->nullable();
             $table->string('password');
             $table->enum('status',['active','suspended','blocked'])->default('active');
             $table->enum('role',['individual','expert','business'])->default('individual');

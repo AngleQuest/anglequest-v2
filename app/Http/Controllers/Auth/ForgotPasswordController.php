@@ -8,6 +8,7 @@ use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Mail\EmailVerification;
+use App\Services\AccountService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -15,47 +16,18 @@ use Illuminate\Support\Facades\Mail;
 class ForgotPasswordController extends Controller
 {
     use ApiResponder;
-
+    use ApiResponder;
+    public function __construct(
+        private AccountService $accountService
+    ) {}
     public function verifyUser(Request $request)
     {
-        if (!$request->email) {
-            return $this->errorResponse('Please enter Username', 422);
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return $this->errorResponse('Oops! No record found with your entry.', 422);
-        }
-
-        $code = mt_rand(100000, 999999);
-        $user->update([
-            'email_code' => $code,
-            'email_code_expire_time' => Carbon::now()->addMinutes(30),
-        ]);
-
-        Mail::to($user)->queue(new EmailVerification($user));
-        return $this->successResponse('A verification code has been sent to your email');
+       return $this->accountService->verifyUserIdentity($request);
     }
 
     public function verifyCode(Request $request)
     {
-        if (!$request->email_code) {
-            return $this->errorResponse('The Email Code field is required', 422);
-        }
-        $user = User::where('email_code', $request->email_code)->first();
-        if (!$user) {
-            return $this->errorResponse('Invalide code entered, please try it again.', 422);
-        }
-
-        if ($user->email_code_expire_time < now()) {
-            return $this->errorResponse('error', ' Verification Code has Expired!', 422);
-        }
-        $user->update([
-            'email_code' => null,
-            'email_code_expire_time' => null,
-        ]);
-        return $this->successResponse($user);
+       return $this->accountService->verifyCode($request);
     }
 
     public function changePassword(Request $request)
@@ -88,7 +60,7 @@ class ForgotPasswordController extends Controller
 
         return $this->successResponse($user);
     }
-    
+
     function resendCode(Request $request)
     {
         $user = User::where('email', $request->email)->first();
