@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Plan extends Model
+class UserHub extends Model
 {
     protected $fillable = [
-        'name',
-        'duration',
+        'user_id',
+        'hub_id',
+        'expert_id',
+        'hub_count'
     ];
 }

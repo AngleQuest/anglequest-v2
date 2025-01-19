@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('expert_growth_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('administrator_name');
-            $table->string('email');
-            $table->text('nda_file')->nullable()->comment('company NDA');
+            $table->string('user_id');
+            $table->string('target_level')->nullable();
+            $table->longText('available_days');
+            $table->longText('available_times');
+            $table->longText('guides')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('expert_growth_plans');
     }
 };

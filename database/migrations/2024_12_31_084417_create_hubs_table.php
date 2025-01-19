@@ -25,6 +25,9 @@ return new class extends Migration
             $table->longText('hub_goals');
             $table->double('hub_limit')->default(20)->comment('decrements in process or member registration');
             $table->string('category');
+            $table->string('specialization');
+            $table->longText('hub_description');
+            $table->longText('hub_goals');
             $table->timestamps();
         });
     }

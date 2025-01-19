@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('user_payment_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('administrator_name');
-            $table->string('email');
-            $table->text('nda_file')->nullable()->comment('company NDA');
+            $table->unsignedBigInteger('user_id');
+            $table->string('account_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('bank')->nullable();
+            $table->string('country')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('user_payment_infos');
     }
 };

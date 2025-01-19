@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Specialization extends Model
+class PaymentHistory extends Model
 {
     protected $fillable = [
-        'specialization_category_id',
-        'name'
+        'user_id',
+        'type',
+        'amount',
+        'method'
     ];
 }

@@ -10,13 +10,9 @@ class Hub extends Model
         'user_id',
         'visibility',
         'name',
-        'hub_description',
-        'meeting_day',
-        'from',
-        'to',
-        'coaching_hub_fee',
-        'coaching_hub_goals',
-        'coaching_hub_limit',
         'category',
+        'specialization',
+        'hub_description',
+        'hub_goals'
     ];
 }

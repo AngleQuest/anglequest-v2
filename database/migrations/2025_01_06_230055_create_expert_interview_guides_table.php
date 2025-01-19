@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plans', function (Blueprint $table) {
+        Schema::create('expert_interview_guides', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('duration');
+            $table->string('user_id');
+            $table->string('target_level')->nullable();
+            $table->longText('available_days');
+            $table->longText('available_times');
+            $table->longText('guides')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plans');
+        Schema::dropIfExists('expert_interview_guides');
     }
 };
