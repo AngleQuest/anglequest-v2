@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Mail;
 class ForgotPasswordController extends Controller
 {
     use ApiResponder;
-    use ApiResponder;
     public function __construct(
         private AccountService $accountService
     ) {}

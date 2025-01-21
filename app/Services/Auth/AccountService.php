@@ -4,6 +4,8 @@ namespace App\Services\Auth;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Enum\UserRole;
+use App\Models\Expert;
 use App\Models\Company;
 use App\Mail\NewUserMail;
 use App\Models\UserWallet;
@@ -12,7 +14,6 @@ use App\Models\Configuration;
 use App\Models\ProductRating;
 use App\Models\ProductReview;
 use App\Mail\EmailVerification;
-use App\Models\Expert;
 use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class AccountService
         DB::beginTransaction();
         if ($data) {
             $code = mt_rand(100000, 999999);
-            if ($data->role == "individual") {
+            if ($data->role == UserRole::INDIVIDUAL) {
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
@@ -39,7 +40,7 @@ class AccountService
                     'user_id' => $user->id
                 ]);
             }
-            if ($data->role == "expert") {
+            if ($data->role == UserRole::EXPERT) {
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
@@ -52,7 +53,7 @@ class AccountService
                     'user_id' => $user->id
                 ]);
             }
-            if ($data->role == "business") {
+            if ($data->role == UserRole::BUSINESS) {
                 $company = Company::create([
                     'name' => $data->company_name,
                     'administrator_name' => $data->administrator_name,

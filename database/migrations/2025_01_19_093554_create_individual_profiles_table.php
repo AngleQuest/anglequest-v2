@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('dob')->nullable();
+            $table->string('current_role')->nullable();
+            $table->string('target_role')->nullable();
             $table->string('gender')->nullable();
             $table->json('specialization')->nullable();
             $table->double('yrs_of_experience')->default(0);

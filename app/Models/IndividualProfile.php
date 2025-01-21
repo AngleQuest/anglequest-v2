@@ -14,11 +14,16 @@ class IndividualProfile extends Model
         'email',
         'phone',
         'dob',
+        'current_role',
+        'target_role',
         'gender',
         'specialization',
         'yrs_of_experience',
         'about',
         'location',
         'profile_photo',
+    ];
+    protected $casts = [
+        'specialization' => 'array',
     ];
 }

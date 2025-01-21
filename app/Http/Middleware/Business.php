@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class Business
@@ -17,7 +18,7 @@ class Business
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->role !== 'business') {
+        if (Auth::user()->role !== 'business') {
             return $this->errorResponse('Oops! sorry you do not have access to this route.', 422);
         }
         return $next($request);
