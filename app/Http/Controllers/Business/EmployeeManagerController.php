@@ -30,7 +30,7 @@ class EmployeeManagerController extends Controller
 
     public function deleteEmployee($id)
     {
-        return $this->employeeService->bulkDelete($id);
+        return $this->employeeService->delete($id);
     }
     public function uploadCSV(Request $request)
     {

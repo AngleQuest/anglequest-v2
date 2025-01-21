@@ -23,7 +23,7 @@ class EmployeeService
     public static function getAllEmployees()
     {
         $user = Auth::user();
-        return User::where('company_id', $user->company->id)->latest('id')->get();
+        return User::where('company_id', $user->company->id)->where('id', '!=', $user->id)->latest('id')->get();
     }
 
     public function store($data)
@@ -175,11 +175,13 @@ class EmployeeService
             return $this->errorResponse('File Upload failed', 422);
         }
     }
+
     public function delete($id)
     {
         $user = Auth::user();
         $employee = User::where('company_id', $user->company->id)->find($id);
 
+        if ($id == $user->id) return $this->errorResponse('This user can not be deleted', 422);
         if (!$employee) return $this->errorResponse('No record found', 422);
 
         $employee->delete();
@@ -194,6 +196,7 @@ class EmployeeService
             return $this->errorResponse('No record found', 422);
         }
         foreach ($employees as $employee) {
+            if ($employee->id == $user->id) return $this->errorResponse('This user can not be deleted', 422);
             $employee->save();
             $employee->delete();
         }
