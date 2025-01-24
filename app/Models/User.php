@@ -7,6 +7,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -59,5 +60,9 @@ class User extends Authenticatable
     public function company(): BelongsTo
     {
         return $this->BelongsTo(Company::class, 'company_id');
+    }
+    public function paymentHistories(): HasMany
+    {
+        return $this->HasMany(PaymentHistory::class);
     }
 }

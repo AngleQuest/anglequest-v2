@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('payment_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('plan_id');
             $table->enum('type', ['subscription', 'renewal'])->default('subscription');
-            $table->double('amount', 19,2)->default(0);
             $table->string('method')->nullable();
+            $table->text('payment_id')->nullable();
+            $table->dateTime('plan_start')->nullable();
+            $table->dateTime('plan_end')->nullable();
+            $table->double('amount')->default(0);
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

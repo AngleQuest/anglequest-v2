@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->bigInteger('subscription_plan_id');
-            $table->integer('payment_id');
+            $table->string('payment_id');
             $table->dateTime('plan_start');
             $table->dateTime('plan_end');
             $table->json('authorization_data');

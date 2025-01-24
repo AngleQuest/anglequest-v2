@@ -10,7 +10,7 @@ use App\Services\Business\EmployeeService;
 
 class EmployeeManagerController extends Controller
 {
-    use ApiResponder;
+    
     public function __construct(
         private EmployeeService $employeeService
     ) {}
