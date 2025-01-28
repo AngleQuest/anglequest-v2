@@ -18,7 +18,7 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
         Route::post('/update-profile', 'updateProfile');
         Route::get('/plans', 'getPlans');
         Route::get('/payment-history', 'paymentHistory');
-        Route::post('/Sla', 'subscribeToSla');
+        Route::post('/sla', 'subscribeToSla');
         Route::post('/create-subscription', 'createSubscription');
         Route::post('/submit-otp', 'submitOtp');
     });
@@ -26,5 +26,6 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     Route::controller(HubController::class)->group(function () {
         Route::get('/all-hubs', 'allHubs');
         Route::post('/join-hub', 'joinHub');
+        Route::post('/leave-hub', 'leaveHub');
     });
 });

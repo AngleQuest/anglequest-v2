@@ -22,7 +22,6 @@ class SubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required', // Amount in kobo (1000 NGN = 100000)
             'card_number' => 'required',
             'cvv' => 'required',
             'expiry_month' => 'required',
@@ -31,3 +30,4 @@ class SubscriptionRequest extends FormRequest
         ];
     }
 }
+

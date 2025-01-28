@@ -49,18 +49,18 @@ class AccountService
             $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
         }
         $profile = $user->individualProfile->update([
-            'first_name' => $data->first_name,
-            'last_name' => $data->last_name,
-            'email' => $data->email,
-            'phone' => $data->phone,
-            'dob' => $data->dob,
-            'current_role' => $data->current_role,
-            'target_role' => $data->target_role,
-            'gender' => $data->gender,
-            'specialization' => $data->specialization,
-            'yrs_of_experience' => $data->yrs_of_experience,
-            'about' => $data->about,
-            'location' => $data->location,
+            'first_name' => $data->first_name ?? $user->individualProfile->first_name,
+            'last_name' => $data->last_name ?? $user->individualProfile->last_name,
+            'email' => $data->email ?? $user->individualProfile->email,
+            'phone' => $data->phone ?? $user->individualProfile->phone,
+            'dob' => $data->dob ?? $user->individualProfile->dob,
+            'current_role' => $data->current_role ?? $user->individualProfile->current_role,
+            'target_role' => $data->target_role ?? $user->individualProfile->target_role,
+            'gender' => $data->gender ?? $user->individualProfile->gender,
+            'specialization' => $data->specialization ?? $user->individualProfile->specialization,
+            'yrs_of_experience' => $data->yrs_of_experience ?? $user->individualProfile->yrs_of_experience,
+            'about' => $data->about ?? $user->individualProfile->about,
+            'location' => $data->location ?? $user->individualProfile->location,
             'profile_photo' => $data->namprofile_photo ? $img_url : $user->individualProfile->profile_photo,
         ]);
         return $this->successResponse($profile);
@@ -101,7 +101,7 @@ class AccountService
 
         $response = Http::withToken($secretKey)->post($url, [
             'email' => $user->email,
-            'amount' => $data->amount * 100,
+            'amount' => $plan->price * 100,
             'card' => [
                 'number' => $data->card_number,
                 'cvv' => $data->cvv,

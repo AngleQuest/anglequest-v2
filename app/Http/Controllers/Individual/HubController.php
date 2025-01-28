@@ -21,4 +21,8 @@ class HubController extends Controller
     {
         return $this->individualHubService->attachHub($id);
     }
+    function leaveHub($id)
+    {
+        return $this->individualHubService->leaveHub($id);
+    }
 }
