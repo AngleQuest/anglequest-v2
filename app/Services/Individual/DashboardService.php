@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Business;
+namespace App\Services\Individual;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -23,11 +23,6 @@ class DashboardService
     public function dashboardDetails()
     {
         $user = Auth::user();
-        $employees = User::where('company_id', $user->company->id)->count();
-        $data = [
-            'company_name' => $user->company->name,
-            'total_employees' => $employees,
-        ];
-        return $this->successResponse($data);
+        return $this->successResponse($user);
     }
 }

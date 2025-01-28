@@ -57,6 +57,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function individualProfile(): BelongsTo
+    {
+        return $this->BelongsTo(IndividualProfile::class, 'user_id', 'id');
+    }
     public function company(): BelongsTo
     {
         return $this->BelongsTo(Company::class, 'company_id');
@@ -64,5 +68,9 @@ class User extends Authenticatable
     public function paymentHistories(): HasMany
     {
         return $this->HasMany(PaymentHistory::class);
+    }
+    public function sla(): BelongsTo
+    {
+        return $this->BelongsTo(Sla::class);
     }
 }

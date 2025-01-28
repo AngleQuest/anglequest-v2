@@ -6,14 +6,16 @@ use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Individual\DashboardService;
 
 class DashboardController extends Controller
 {
-    use ApiResponder;
+    public function __construct(
+        private DashboardService $dashboardService
+    ) {}
 
     function index()
     {
-        $user = Auth::user();
-        return $this->successResponse($user);
+        return $this->dashboardService->dashboardDetails();
     }
 }
