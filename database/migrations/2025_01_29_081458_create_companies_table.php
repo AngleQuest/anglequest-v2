@@ -20,6 +20,15 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->text('nda_file')->nullable()->comment('company NDA');
             $table->string('company_logo')->nullable()->comment('company logo');
+            $table->string('business_reg_number')->nullable();
+            $table->string('business_phone')->nullable();
+            $table->string('company_size')->nullable();
+            $table->string('website')->nullable();
+            $table->text('about')->nullable();
+            $table->string('service_type')->nullable();
+            $table->string('country')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
             $table->timestamps();
         });
     }

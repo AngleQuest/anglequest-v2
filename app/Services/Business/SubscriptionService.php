@@ -3,10 +3,12 @@
 namespace App\Services\Business;
 
 use Carbon\Carbon;
+use App\Models\Sla;
 use App\Models\Plan;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Company;
+use App\Models\UserSla;
 use App\Enum\PaymentType;
 use App\Mail\NewUserMail;
 use App\Models\AdminBank;
@@ -31,17 +33,19 @@ class SubscriptionService
     use ApiResponder;
     public  function getPlans()
     {
-        $plans = Plan::latest('id')->where('type','business')->get();
+        $plans = Plan::latest('id')->where('type', 'business')->get();
         $account_details = AdminBank::first();
+        $sla = Sla::latest('id')->get();
         $data = [
             'plans' => $plans,
+            'sla' => $sla,
             'account_details' => $account_details
         ];
         return $this->successResponse($data);
     }
     public function getPaymentHistory()
     {
-         $user = Auth::user();
+        $user = Auth::user();
         $histories = PaymentHistory::whereBelongsTo($user)->get();
         return $this->successResponse($histories);
     }
@@ -49,11 +53,15 @@ class SubscriptionService
     public function store($data)
     {
         $plan = Plan::find($data->plan_id);
+        $sla = Sla::find($data->sla_id);
+        if (!$sla) {
+            return $this->errorResponse('No record found for SLA', 422);
+        }
         if (!$plan) {
-            return $this->errorResponse('No record found',422);
+            return $this->errorResponse('No record found for Plan', 422);
         }
         if ($plan->type == "individual") {
-            return $this->errorResponse('The Plan selected is not valid for this account',422);
+            return $this->errorResponse('The Plan selected is not valid for this account', 422);
         }
         $user = Auth::user();
         $payment_id = 'AngleQuest_' . Str::random(10) . $user->id;
@@ -68,6 +76,10 @@ class SubscriptionService
                 'plan_end' => now()->addYear(1),
                 'authorization_data' => $account_details,
                 'status' => AccountStatus::ACTIVE,
+            ]);
+            $sla = Sla::create([
+                'user_id' => $user->id,
+                'sla_id' => $sla->id
             ]);
             $history = PaymentHistory::create([
                 'user_id' => $user->id,
@@ -98,5 +110,28 @@ class SubscriptionService
 
         DB::rollBack();
         return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
+    }
+    public function subscribeToSla($data)
+    {
+        $sla = Sla::find($data->sla_id);
+        if (!$sla) {
+            return $this->errorResponse('No record found', 422);
+        }
+        $user = Auth::user();
+        DB::beginTransaction();
+        try {
+            $subscription = UserSla::create([
+                'user_id' => $user->id,
+                'sla_id' => $sla->id,
+            ]);
+            if ($subscription) {
+                DB::commit();
+
+                return $this->successResponse($subscription);
+            }
+        } catch (\Exception $e) {
+            return $e;
+            DB::rollBack();
+        }
     }
 }

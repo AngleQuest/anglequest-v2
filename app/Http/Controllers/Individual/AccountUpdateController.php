@@ -6,6 +6,8 @@ use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\EmailUpdateRequest;
 use App\Http\Requests\SubscriptionRequest;
 use App\Services\Individual\AccountService;
 use App\Services\Individual\DashboardService;
@@ -21,9 +23,22 @@ class AccountUpdateController extends Controller
         return $this->accountService->getProfile();
     }
 
-    function updateProfile(Request $request)
+    public function changePassword(PasswordRequest $request)
     {
-        return $this->accountService->updateProfile($request);
+        return $this->accountService->updatePassword($request);
+    }
+    public function changeEmail(EmailUpdateRequest $request)
+    {
+        return $this->accountService->updateLoginDetails($request);
+    }
+
+    public function deleteMyAccount()
+    {
+        return $this->accountService->deleteAccount();
+    }
+    public function forgetMyAccount()
+    {
+        return $this->accountService->blockAccount();
     }
 
     function getPlans()

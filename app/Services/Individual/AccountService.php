@@ -4,12 +4,14 @@ namespace App\Services\Individual;
 
 use Carbon\Carbon;
 use App\Models\Hub;
+use App\Models\Sla;
 use App\Models\Plan;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Expert;
 use App\Models\Company;
 use App\Models\UserHub;
+use App\Models\UserSla;
 use App\Enum\PaymentType;
 use App\Mail\NewUserMail;
 use App\Enum\AccountStatus;
@@ -23,10 +25,9 @@ use App\Services\UploadService;
 use App\Models\UserSubscription;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\Individual;
-use App\Models\Sla;
-use App\Models\UserSla;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class AccountService
@@ -64,6 +65,45 @@ class AccountService
             'profile_photo' => $data->namprofile_photo ? $img_url : $user->individualProfile->profile_photo,
         ]);
         return $this->successResponse($profile);
+    }
+
+
+    public function updateLoginDetails($data)
+    {
+        $user = User::find(Auth::id());
+        $user->update([
+            'email' => $data->email ?? $user->email,
+        ]);
+        return $this->successResponse($user);
+    }
+
+    public function deleteAccount()
+    {
+        $user = User::find(Auth::id());
+        $user->delete();
+        $user->tokens()->delete();
+        return $this->successResponse('Account Deleted');
+    }
+
+    public function blockAccount()
+    {
+        $user = User::find(Auth::id());
+        $user->update([
+            'status' => AccountStatus::BLOCKED,
+        ]);
+        return $this->successResponse('Account Blocked');
+    }
+
+    public function updatePassword($data)
+    {
+        $user = User::find(Auth::id());
+        if (Hash::check($data->old_password, $user->password)) {
+            $user->update([
+                'password' => Hash::make($data->password),
+            ]);
+            return $this->successResponse('Password Successfully Updated');
+        }
+        return $this->errorResponse(null, 'Old Password did not match', 422);
     }
 
     public  function getPlans()

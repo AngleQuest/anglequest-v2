@@ -32,4 +32,5 @@ class SportRequest extends FormRequest
             'deadline' => 'nullable|string|max:255',
         ];
     }
+   
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Business;
 
 use Carbon\Carbon;
+use App\Models\Sla;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Company;
@@ -29,6 +30,7 @@ class EmployeeService
     public function store($data)
     {
         $user = Auth::user();
+        $sla = Sla::where('user_id', $user->id)->first();
         $employee = '';
         DB::beginTransaction();
         if ($data) {
@@ -49,6 +51,10 @@ class EmployeeService
                 'current_role' => $data->current_role,
                 'target_role' => $data->target_role,
                 'specialization' => $data->specialization,
+            ]);
+            Sla::create([
+                'user_id' => $employee->id,
+                'sla_id' => $sla->sla_id,
             ]);
 
             if ($employee) {

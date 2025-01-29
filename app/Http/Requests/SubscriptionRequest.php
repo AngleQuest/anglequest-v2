@@ -27,6 +27,7 @@ class SubscriptionRequest extends FormRequest
             'expiry_month' => 'required',
             'expiry_year' => 'required',
             'plan_id' => 'required',
+            'sla_id' => 'required',
         ];
     }
 }
