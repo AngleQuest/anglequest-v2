@@ -2,24 +2,27 @@ on:
     push:
       branches:
         - main
-  
+
 name: Publish Live Website
-  
+
 jobs:
     web-deploy:
       name: 🚀 Deploy Live Website on Push to main
       runs-on: ubuntu-latest
-  
+
       steps:
       - name: 🚚 Get Latest Code
         uses: actions/checkout@v3
-  
+
       - name: 🔑 Add SSH Key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-  
+           port: 22
+          script: |
+            cd /www/wwwroot/staging-v2.anglequest.com
+            php artisan migrate
       - name: 📂 Sync Files
         run: |
-          rsync -e "ssh -o StrictHostKeyChecking=no" --archive --verbose --compress --human-readable --progress --exclude='.git*' --exclude='.git/' --exclude='README.md' --exclude='readme.md' --exclude='.env' --exclude='.gitignore' ./ root@staging-v2.anglequest.com:/www/wwwroot/staging-v2.anglequest.com
-  
+          rsync -e "ssh -o StrictHostKeyChecking=no" --archive --verbose --compress --human-readable --progress --exclude='.git*' --exclude='.git/' --exclude='README.md' --exclude='readme.md' --exclude='.gitignore' ./ root@staging-v2.anglequest.com:/www/wwwroot/staging-v2.anglequest.com
+
