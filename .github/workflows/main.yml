@@ -18,7 +18,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-           port: 22
           script: |
             cd /www/wwwroot/staging-v2.anglequest.com
             php artisan migrate
