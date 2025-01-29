@@ -20,7 +20,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}
           script: |
             cd /www/wwwroot/staging-v2.anglequest.com
-            composer install --ignore-platform-reqs
+            composer install
             php artisan migrate
       - name: 📂 Sync Files
         run: |
