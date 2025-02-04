@@ -18,21 +18,8 @@ trait ApiResponder
 	public function successResponse($data, $code = Response::HTTP_OK)
 	{
 		return response()->json(['data' => $data], $code);
-		//return response()->json($data, $code);
 	}
 
-	// public function authResponse($code = Response::HTTP_OK)
-	// {
-	// 	$user = User::where('id', Auth::user()->id)->with('subscription')->first();
-
-	// 	if ($user) {
-	// 		$user->token = request()->bearerToken();
-
-	// 		return response()->json(['data' => $user], $code);
-	// 	}
-
-	// 	return $this->errorResponse('Auth user not found', 422);
-	// }
 
 
 	public function errorResponse($message, $code)

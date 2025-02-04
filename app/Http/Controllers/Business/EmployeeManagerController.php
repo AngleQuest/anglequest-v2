@@ -10,7 +10,7 @@ use App\Services\Business\EmployeeService;
 
 class EmployeeManagerController extends Controller
 {
-    
+
     public function __construct(
         private EmployeeService $employeeService
     ) {}
@@ -31,6 +31,10 @@ class EmployeeManagerController extends Controller
     public function deleteEmployee($id)
     {
         return $this->employeeService->delete($id);
+    }
+    public function deactivateEmployee($id)
+    {
+        return $this->employeeService->deactivateEmployeeAccount($id);
     }
     public function uploadCSV(Request $request)
     {

@@ -21,6 +21,7 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
         Route::post('/add', 'addEmployee');
         Route::post('/email-invitation', 'inviteEmployeeViaEmail');
         Route::delete('/delete/{id}', 'deleteEmployee');
+        Route::post('/de-activate/{id}', 'deactivateEmployee');
         Route::post('/bulk-delete', 'deleteEmployees');
         Route::post('/upload-csv', 'uploadCSV');
     });

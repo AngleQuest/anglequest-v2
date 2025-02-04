@@ -21,6 +21,10 @@ class AccountManagerController extends Controller
     {
         return $this->accountService->getProfile();
     }
+    public function updateProfile()
+    {
+        return $this->accountService->getProfile();
+    }
 
     public function changePassword(PasswordRequest $request)
     {
@@ -36,5 +40,5 @@ class AccountManagerController extends Controller
         return $this->accountService->deleteAccount();
     }
 
-   
+
 }

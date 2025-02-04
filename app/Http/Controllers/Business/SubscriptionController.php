@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Business;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Business\SubscriptionService;
-use Illuminate\Http\Request;
+use App\Http\Requests\BussinessOnboardingRequest;
 
 class SubscriptionController extends Controller
 {
@@ -17,7 +18,7 @@ class SubscriptionController extends Controller
     function paymentHistory()  {
         return $this->subscriptionService->getPaymentHistory();
     }
-    function storePlan(Request $request)  {
+    function storePlan(BussinessOnboardingRequest $request)  {
         return $this->subscriptionService->store($request);
     }
 }

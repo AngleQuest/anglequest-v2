@@ -54,6 +54,12 @@ class AccountService
                 ]);
             }
             if ($data->role == UserRole::BUSINESS) {
+                if (!$data->company_name) {
+                    return $this->errorResponse('Please enter company name.', 422);
+                }
+                if (!$data->administrator_name) {
+                    return $this->errorResponse('Please enter administrator name.', 422);
+                }
                 $company = Company::create([
                     'name' => $data->company_name,
                     'administrator_name' => $data->administrator_name,
@@ -75,7 +81,7 @@ class AccountService
                 ]);
                 Mail::to($user->email)->queue(new EmailVerification($user));
                 $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
-                return $user;
+                return $this->successResponse($user);
             }
         }
 

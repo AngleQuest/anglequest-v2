@@ -5,18 +5,16 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
+use Illuminate\Queue\SerializesModels;
 
-class EmailInvitation extends Mailable implements ShouldQueue
+class FailedRenewalEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-
     public $detail;
-    public $title = 'Welcome to AngleQuest 🎉';
-
+    public $title = 'Failed Subscription Renewal Notification';
     /**
      * Create a new message instance.
      */
@@ -42,7 +40,7 @@ class EmailInvitation extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.invitation',
+            view: 'emails.failed-renewal',
         );
     }
 

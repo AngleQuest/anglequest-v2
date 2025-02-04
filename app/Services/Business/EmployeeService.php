@@ -7,6 +7,7 @@ use App\Models\Sla;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Company;
+use App\Enum\UserStatus;
 use App\Mail\NewUserMail;
 use App\Traits\ApiResponder;
 use App\Mail\EmailInvitation;
@@ -192,6 +193,19 @@ class EmployeeService
 
         $employee->delete();
         return $this->successResponse('Employee deleted', 200);
+    }
+    public function deactivateEmployeeAccount($id)
+    {
+        $user = Auth::user();
+        $employee = User::where('company_id', $user->company->id)->findOrFail($id);
+
+        if ($id == $user->id) return $this->errorResponse('This user can not be deleted', 422);
+        if (!$employee) return $this->errorResponse('No record found', 422);
+
+        $employee->update([
+            'status' => UserStatus::SUSPENDED
+        ]);
+        return $this->successResponse('Employee account de-activated', 200);
     }
 
     public function bulkDelete($data)

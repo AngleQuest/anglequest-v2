@@ -16,6 +16,7 @@ class PaymentHistory extends Model
         'plan_end',
         'amount',
         'method',
+        'payment_type',
         'status'
     ];
     function user(): BelongsTo

@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('user_subscriptions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->bigInteger('subscription_plan_id');
+            $table->unsignedBigInteger('subscription_plan_id');
             $table->string('payment_id');
             $table->dateTime('plan_start');
+            $table->string('plan_name')->nullable();
             $table->dateTime('plan_end');
+            $table->double('amount')->default(0);
             $table->json('authorization_data');
-            $table->enum('status', ['active', 'expired']);
+            $table->string('authorization_code')->nullable();
+            $table->string('authorization_email')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }

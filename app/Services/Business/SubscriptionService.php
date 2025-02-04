@@ -12,6 +12,7 @@ use App\Models\UserSla;
 use App\Enum\PaymentType;
 use App\Mail\NewUserMail;
 use App\Models\AdminBank;
+use App\Mail\RenewalEmail;
 use App\Enum\AccountStatus;
 use App\Enum\PaymentMethod;
 use App\Enum\PaymentStatus;
@@ -25,8 +26,11 @@ use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Http\Resources\PaymentHistoryResource;
+use App\Http\Resources\BusinessSubscriptionHistoryResource;
 
 class SubscriptionService
 {
@@ -46,8 +50,9 @@ class SubscriptionService
     public function getPaymentHistory()
     {
         $user = Auth::user();
-        $histories = PaymentHistory::whereBelongsTo($user)->get();
-        return $this->successResponse($histories);
+        $histories = PaymentHistory::where('user_id',$user->id)->get();
+        $data = PaymentHistoryResource::collection($histories);
+        return $this->successResponse($data);
     }
 
     public function store($data)
@@ -64,74 +69,141 @@ class SubscriptionService
             return $this->errorResponse('The Plan selected is not valid for this account', 422);
         }
         $user = Auth::user();
-        $payment_id = 'AngleQuest_' . Str::random(10) . $user->id;
+        $payment_id = 'AQ_' . Str::random(25) . time();
         DB::beginTransaction();
         if ($data) {
-            $account_details = AdminBank::first();
-            $subscription = UserSubscription::create([
-                'user_id' => $user->id,
-                'subscription_plan_id' => $plan->id,
-                'payment_id' => $payment_id,
-                'plan_start' => now()->toDateString(),
-                'plan_end' => now()->addYear(1),
-                'authorization_data' => $account_details,
-                'status' => AccountStatus::ACTIVE,
-            ]);
-            $sla = Sla::create([
+            if ($data->payment_method == "transfer") {
+                $account_details = AdminBank::first();
+                if(!$account_details){
+                    return $this->errorResponse('Admin account is currently empty', 422);
+                }
+                 UserSubscription::create([
+                    'user_id' => $user->id,
+                    'subscription_plan_id' => $plan->id,
+                    'payment_id' => $payment_id,
+                    'plan_start' => now()->toDateString(),
+                    'plan_end' => now()->addYear(1),
+                    'authorization_data' => $account_details,
+                    'amount' => $plan->price,
+                    'plan_name' => $plan->title,
+                    'status' => AccountStatus::ACTIVE,
+                ]);
+                PaymentHistory::create([
+                    'user_id' => $user->id,
+                    'type' => PaymentType::SUBSCRIPTION,
+                    'payment_id' => $payment_id,
+                    'plan_id' => $plan->id,
+                    'plan_start' => now()->toDateString(),
+                    'plan_end' => now()->addYear(1),
+                    'amount' => $plan->price,
+                    'payment_type' => 'Yearly',
+                    'method' => PaymentMethod::TRANSFER,
+                    'status' => PaymentStatus::PAID,
+                ]);
+            }
+
+            if ($data->payment_method == "paystack") {
+                $amount = 70000;
+                $this->chargeCard($data, $amount, $plan);
+            }
+
+            $sla = UserSla::create([
                 'user_id' => $user->id,
                 'sla_id' => $sla->id
             ]);
-            $history = PaymentHistory::create([
-                'user_id' => $user->id,
-                'type' => PaymentType::SUBSCRIPTION,
-                'payment_id' => $payment_id,
-                'plan_id' => $plan->id,
-                'plan_start' => now()->toDateString(),
-                'plan_end' => now()->addYear(1),
-                'amount' => $plan->price,
-                'method' => PaymentMethod::TRANSFER,
-                'status' => PaymentStatus::PAID,
-            ]);
-            if ($subscription && $history) {
+
+
+
                 DB::commit();
-                // $detail = [
-                //     'name' => $user->company->name,
-                //     'email' => $employee->email,
-                //     'password' => 'password12345'
-                // ];
-                // Mail::to($employee->email)->send(new EmailInvitation($detail));
-                $data = [
-                    'subscription_details' => $subscription,
-                    'history' => $history,
+                $detail = [
+                    'name' => Auth::user()->company->name,
+                    'service' => str_replace('_', ' ', $plan->title),
                 ];
-                return $this->successResponse($data);
-            }
+                Mail::to(Auth::user()->email)->send(new RenewalEmail($detail));
+                return $this->successResponse('Subscription done Successfully!');
+
         }
 
         DB::rollBack();
         return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
     }
-    public function subscribeToSla($data)
-    {
-        $sla = Sla::find($data->sla_id);
-        if (!$sla) {
-            return $this->errorResponse('No record found', 422);
-        }
-        $user = Auth::user();
-        DB::beginTransaction();
-        try {
-            $subscription = UserSla::create([
-                'user_id' => $user->id,
-                'sla_id' => $sla->id,
-            ]);
-            if ($subscription) {
-                DB::commit();
 
-                return $this->successResponse($subscription);
+
+    private function chargeCard($data, $amount, $plan)
+    {
+
+        $url = 'https://api.paystack.co/charge';
+        $secretKey = 'sk_test_3500fbfb097c5237d9e30fec3c6d56e8dbc3a106'; //env('PAYSTACK_SECRET_KEY');
+
+        $response = Http::withToken($secretKey)->post($url, [
+            'email' => $data->email,
+            'first_name' => $data->email,
+            'last_name' => $data->email,
+            'amount' => $amount,
+            'card' => [
+                'number' => $data->card_number,
+                'cvv' => $data->cvv,
+                'expiry_month' => $data->expiry_month,
+                'expiry_year' => $data->expiry_year,
+            ],
+        ]);
+
+        $responseBody = $response->json();
+
+        if ($response->successful() && $responseBody['status']) {
+            // Check if further authentication is required
+            if ($responseBody['data']['status'] === 'send_otp') {
+                return response()->json([
+                    'message' => 'OTP required',
+                    'data' => $responseBody['data'],
+                ]);
             }
-        } catch (\Exception $e) {
-            return $e;
-            DB::rollBack();
+
+            DB::beginTransaction();
+            try {
+                $payment_id = 'AQ_' . Str::random(25) . time();
+                UserSubscription::create([
+                    'user_id' => Auth::id(),
+                    'subscription_plan_id' => $plan->id,
+                    'payment_id' => $payment_id,
+                    'amount' => $amount,
+                    'plan_name' => 'Monthly',
+                    'plan_start' => now(),
+                    'plan_end' => now()->addMonths(1),
+                    'authorization_data' => $responseBody['data']['authorization'],
+                    'authorization_code' => $responseBody['data']['authorization']['authorization_code'],
+                    'authorization_email' => $data->email,
+                    'status' => AccountStatus::ACTIVE,
+                ]);
+
+                PaymentHistory::create([
+                    'user_id' => Auth::id(),
+                    'type' => 'subscription',
+                    'amount' => $amount,
+                    'payment_type' => 'Monthly',
+                    'payment_id' => $payment_id,
+                    'plan_id' => $plan->id,
+                    'plan_start' => now(),
+                    'plan_end' => now()->addMonths(1),
+                    'method' => PaymentMethod::PAYSTACK,
+                    'status' => PaymentStatus::PAID,
+                ]);
+
+                DB::commit();
+                return true;
+            } catch (\Exception $e) {
+                return $e;
+                DB::rollBack();
+            }
+            return response()->json([
+                'message' => 'Charge successful',
+                'data' => $responseBody['data'],
+            ]);
         }
+
+        return response()->json([
+            'message' => 'Charge failed',
+            'error' => $responseBody['message'],
+        ], 400);
     }
 }
