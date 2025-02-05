@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Expert extends Model
 {
@@ -25,9 +26,16 @@ class Expert extends Model
     ];
     protected $casts = [
         'specialization' => 'array',
+        'available_days' => 'array',
+        'available_time' => 'array',
     ];
     // public function supportRequests()
     // {
     //     return $this->hasMany(SupportRequest::class);
     // }
+
+    public function user(): BelongsTo
+    {
+        return $this->BelongsTo(User::class, 'user_id');
+    }
 }

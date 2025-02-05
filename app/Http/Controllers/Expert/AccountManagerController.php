@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Business;
+namespace App\Http\Controllers\Expert;
 
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\EmailUpdateRequest;
-use App\Services\Business\AccountService;
+use App\Services\Expert\AccountService;
 use App\Services\Business\EmployeeService;
 
 class AccountManagerController extends Controller

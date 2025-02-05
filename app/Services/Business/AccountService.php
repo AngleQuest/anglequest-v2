@@ -57,7 +57,8 @@ class AccountService
             $fileName = str_replace(' ', '', $user->company->name) . '_' . time() . '.' . $data->nda_file->getClientOriginalExtension();
             $nda_url = UploadService::upload($data->nda_file, 'company/NDA', $fileName);
         }
-        $profile = $user->company->update([
+
+        $user->company->update([
             'name' => $data->name ?? $user->company->name,
             'administrator_name' => $data->administrator_name ?? $user->company->administrator_name,
             'business_email' => $data->business_email ?? $user->company->business_email,
@@ -74,7 +75,7 @@ class AccountService
             'city' => $data->city ?? $user->company->city,
             'state' => $data->state ?? $user->company->state,
         ]);
-        return $this->successResponse($profile);
+        return $this->successResponse(Auth::user()->company);
     }
 
     public function updateLoginDetails($data)
@@ -115,13 +116,14 @@ class AccountService
     public function updatePassword($data)
     {
         $user = User::find(Auth::id());
-        if (Hash::check($data->old_password, $user->password)) {
-            $user->update([
-                'password' => Hash::make($data->password),
-            ]);
-            return $this->successResponse('Password Successfully Updated');
+        if (!Hash::check($data->old_password, $user->password)) {
+            return $this->errorResponse('Old Password does not match', 422);
         }
-        return $this->errorResponse(null, 'Old Password did not match', 422);
+
+        $user->update([
+            'password' => Hash::make($data->password),
+        ]);
+        return $this->successResponse('Password Successfully Updated');
     }
 
     public function subscribeToSla($data)

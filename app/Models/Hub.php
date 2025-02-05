@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hub extends Model
 {
@@ -12,7 +13,14 @@ class Hub extends Model
         'name',
         'category',
         'specialization',
-        'hub_description',
+        'description',
         'hub_goals'
     ];
+    protected $casts = [
+        'specialization' => 'array',
+    ];
+    function members(): HasMany
+    {
+        return $this->HasMany(HubMember::class, 'hub_id');
+    }
 }
