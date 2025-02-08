@@ -35,7 +35,7 @@ class AccountService
         $expert = Expert::where('user_id', $user->id)->first();
         if (!$expert) return $this->errorResponse('No record matched', 422);
         $expert->update([
-            'profile_photo' => $data->profile_photo ? $profile_photo : $user->expert->profile_photo,
+            'profile_photo' => $data->profile_photo ? $profile_photo : $expert->profile_photo,
             'category' => $data->category ?? $user->expert->category,
             'first_name' => $data->first_name ?? $user->expert->first_name,
             'last_name' => $data->last_name ?? $user->expert->last_name,
@@ -51,7 +51,7 @@ class AccountService
             'location' => $data->location ?? $user->expert->location,
         ]);
 
-        return $this->successResponse(Auth::user()->company);
+        return $this->successResponse('Details Updated');
     }
 
     public function updateLoginDetails($data)

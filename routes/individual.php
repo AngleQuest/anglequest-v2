@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Individual\DashboardController;
 use App\Http\Controllers\Individual\AccountUpdateController;
+use App\Http\Controllers\Individual\AppointmentController;
 use App\Http\Controllers\Individual\HubController;
 
 Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 'prefix' => 'individual'], function () {
@@ -26,10 +27,20 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
         Route::post('/create-subscription', 'createSubscription');
         Route::post('/submit-otp', 'submitOtp');
     });
+
     //Hub Section
     Route::controller(HubController::class)->group(function () {
         Route::get('/all-hubs', 'allHubs');
         Route::post('/join-hub', 'joinHub');
         Route::post('/leave-hub', 'leaveHub');
+    });
+
+    //Appointment Section
+    Route::controller(AppointmentController::class)->prefix('appointments')->group(function () {
+        Route::post('/', 'index');
+        Route::post('/create', 'bookAppointment');
+        Route::post('/book', 'storeAppointment');
+        Route::post('/make-payment', 'bookAppointment');
+        Route::get('/feedback/{id}', 'feedback');
     });
 });

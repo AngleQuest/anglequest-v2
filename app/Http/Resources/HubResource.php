@@ -24,7 +24,7 @@ class HubResource extends JsonResource
             'specialization' => (string)$this->specialization,
             'description' => (string)$this->description,
             'hub_goals' => (string)$this->hub_goals,
-            'members' => (string)$this->members?,
+            'members' => (string)$this->members?->name,
             'created_at' => $this->created_at->toDateString(),
         ];
     }

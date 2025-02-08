@@ -33,10 +33,10 @@ class AccountController extends Controller
         return $this->accountService->login($request);
     }
 
-    // public function logout()
-    // {
-    //     // Revoke the token that was used to authenticate the current request...
-    //     Auth::user()->tokens()->delete();
-    //     return $this->successResponse('user logged out');
-    // }
+    public function logout()
+    {
+        // Revoke the token that was used to authenticate the current request...
+        Auth::user()->tokens()->delete();
+        return $this->successResponse('user logged out');
+    }
 }

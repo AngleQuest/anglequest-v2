@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Http\Resources\PaymentHistoryResource;
 use App\Http\Resources\BusinessSubscriptionHistoryResource;
+use App\Mail\ActivationEmail;
 
 class SubscriptionService
 {
@@ -50,7 +51,7 @@ class SubscriptionService
     public function getPaymentHistory()
     {
         $user = Auth::user();
-        $histories = PaymentHistory::where('user_id',$user->id)->get();
+        $histories = PaymentHistory::where('user_id', $user->id)->get();
         $data = PaymentHistoryResource::collection($histories);
         return $this->successResponse($data);
     }
@@ -74,10 +75,10 @@ class SubscriptionService
         if ($data) {
             if ($data->payment_method == "transfer") {
                 $account_details = AdminBank::first();
-                if(!$account_details){
+                if (!$account_details) {
                     return $this->errorResponse('Admin account is currently empty', 422);
                 }
-                 UserSubscription::create([
+                UserSubscription::create([
                     'user_id' => $user->id,
                     'subscription_plan_id' => $plan->id,
                     'payment_id' => $payment_id,
@@ -112,16 +113,90 @@ class SubscriptionService
                 'sla_id' => $sla->id
             ]);
 
+            User::where('id', $user->id)->update([
+                'plan_id' => $plan->id
+            ]);
+            DB::commit();
+            $detail = [
+                'name' => Auth::user()->company->name,
+                'service' => str_replace('_', ' ', $plan->title),
+            ];
+            Mail::to(Auth::user()->email)->send(new ActivationEmail($detail));
+            return $this->successResponse('Subscription done Successfully!');
+        }
 
+        DB::rollBack();
+        return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
+    }
 
-                DB::commit();
-                $detail = [
-                    'name' => Auth::user()->company->name,
-                    'service' => str_replace('_', ' ', $plan->title),
-                ];
-                Mail::to(Auth::user()->email)->send(new RenewalEmail($detail));
-                return $this->successResponse('Subscription done Successfully!');
+    public function upgrade($data)
+    {
+        $plan = Plan::find($data->plan_id);
+        $sla = Sla::find($data->sla_id);
+        if (!$sla) {
+            return $this->errorResponse('No record found for SLA', 422);
+        }
+        if (!$plan) {
+            return $this->errorResponse('No record found for Plan', 422);
+        }
+        if ($plan->type == "individual") {
+            return $this->errorResponse('The Plan selected is not valid for this account', 422);
+        }
+        $user = Auth::user();
+        $payment_id = 'AQ_' . Str::random(25) . time();
+        DB::beginTransaction();
+        if ($data) {
+            if ($data->payment_method == "transfer") {
+                $account_details = AdminBank::first();
+                if (!$account_details) {
+                    return $this->errorResponse('Admin account is currently empty', 422);
+                }
+                UserSubscription::create([
+                    'user_id' => $user->id,
+                    'subscription_plan_id' => $plan->id,
+                    'payment_id' => $payment_id,
+                    'plan_start' => now()->toDateString(),
+                    'plan_end' => now()->addYear(1),
+                    'authorization_data' => $account_details,
+                    'amount' => $plan->price,
+                    'plan_name' => $plan->title,
+                    'status' => AccountStatus::ACTIVE,
+                ]);
+                PaymentHistory::create([
+                    'user_id' => $user->id,
+                    'type' => PaymentType::UPGRADE,
+                    'payment_id' => $payment_id,
+                    'plan_id' => $plan->id,
+                    'plan_start' => now()->toDateString(),
+                    'plan_end' => now()->addYear(1),
+                    'amount' => $plan->price,
+                    'payment_type' => 'Yearly',
+                    'method' => PaymentMethod::TRANSFER,
+                    'status' => PaymentStatus::PAID,
+                ]);
+            }
 
+            if ($data->payment_method == "paystack") {
+                $amount = $plan->amount;
+                $this->chargeCard($data, $amount, $plan);
+            }
+
+            $sla = UserSla::create([
+                'user_id' => $user->id,
+                'sla_id' => $sla->id
+            ]);
+
+            User::where('id', $user->id)->update([
+                'plan_id' => $plan->id
+            ]);
+
+            DB::commit();
+            $detail = [
+                'name' => Auth::user()->company->name,
+                'service' => str_replace('_', ' ', $plan->title),
+            ];
+            Mail::to(Auth::user()->email)->send(new RenewalEmail($detail));
+            return $this->successResponse('Subscription done Successfully!');
         }
 
         DB::rollBack();

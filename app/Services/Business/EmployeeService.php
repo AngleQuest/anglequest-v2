@@ -4,6 +4,7 @@ namespace App\Services\Business;
 
 use Carbon\Carbon;
 use App\Models\Sla;
+use App\Models\Plan;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Company;
@@ -13,6 +14,7 @@ use App\Traits\ApiResponder;
 use App\Mail\EmailInvitation;
 use App\Mail\EmailVerification;
 use App\Models\IndividualProfile;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -32,6 +34,11 @@ class EmployeeService
     {
         $user = Auth::user();
         $sla = Sla::where('user_id', $user->id)->first();
+        $plan = Plan::where('id', $user->plan_id)->first();
+        $employees = User::where('company_id', $user->company_id)->count();
+        if ($employees >= ($plan->number_of_users)) {
+            return $this->errorResponse('Opps! You have reached the maximum numbers of user for your paln', 422);
+        }
         $employee = '';
         DB::beginTransaction();
         if ($data) {
@@ -73,15 +80,25 @@ class EmployeeService
         DB::rollBack();
         return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
     }
+
     public function emailInvitaion($data)
     {
         $user = Auth::user();
+        $employees = User::where('company_id', $user->company_id)->count();
+        $plan = Plan::where('id', $user->plan_id)->first();
+
+        if (count($data->email) >= $plan->number_of_users) {
+            return $this->errorResponse('Opps! You are only allowed to have ' . $plan->number_of_users . ' users based on your plan', 422);
+        }
         DB::beginTransaction();
         try {
             for ($i = 0; $i < count($data->email); $i++) {
                 $email = User::where('email', $data->email[$i])->first();
                 if ($email) {
                     return $this->errorResponse('Email already taken', 422);
+                }
+                if ($employees >= ($plan->number_of_users)) {
+                    return $this->errorResponse('Opps! You have reached the maximum numbers of user for your paln', 422);
                 }
                 $employee = User::create([
                     'email' => $data->email[$i],
@@ -120,7 +137,12 @@ class EmployeeService
         $user = Auth::user();
         // Load the file
         $file = $data->file('file');
+        $plan = Plan::where('id', $user->plan_id)->first();
+        $employees = User::where('company_id', $user->company_id)->count();
 
+        if (count($data) >= $plan->number_of_users) {
+            return $this->errorResponse('Opps! You are only allowed to have ' . $plan->number_of_users . ' users based on your plan', 422);
+        }
         if ($data->file) {
             DB::beginTransaction();
             try {
@@ -140,6 +162,9 @@ class EmployeeService
                         $rowData[] = $cell->getValue();
                     }
                     $email = User::where('email', $rowData[2])->first();
+                    if ($employees >= ($plan->number_of_users)) {
+                        return $this->errorResponse('Opps! You have reached the maximum numbers of user for your paln', 422);
+                    }
                     if ($email) {
                         return $this->errorResponse('Email already exist', 422);
                     }

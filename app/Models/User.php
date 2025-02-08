@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -22,6 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_id',
+        'plan_id',
         'email',
         'email_code',
         'email_code_expire_time',
@@ -60,6 +62,11 @@ class User extends Authenticatable
     public function profile(): BelongsTo
     {
         return $this->BelongsTo(IndividualProfile::class, 'user_id', 'id');
+    }
+
+    public function subscription(): HasOne
+    {
+        return $this->HasOne(UserSubscription::class, 'user_id');
     }
 
     public function expert(): BelongsTo

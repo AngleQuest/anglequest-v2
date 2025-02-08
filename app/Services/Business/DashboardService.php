@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Http\Resources\UserSubScriptionResource;
 
 class DashboardService
 {
@@ -24,9 +25,11 @@ class DashboardService
     {
         $user = Auth::user();
         $employees = User::where('company_id', $user->company->id)->count();
+        $subscription = new UserSubScriptionResource($user->subscription);
         $data = [
             'company_name' => $user->company->name,
             'total_employees' => $employees,
+            'subscription' => $subscription,
         ];
         return $this->successResponse($data);
     }

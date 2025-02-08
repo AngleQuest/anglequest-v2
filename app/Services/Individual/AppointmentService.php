@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Services\Individual;
+
+use Carbon\Carbon;
+use App\Models\User;
+use App\Enum\UserRole;
+use App\Models\Expert;
+use App\Models\Company;
+use App\Mail\NewUserMail;
+use App\Traits\ApiResponder;
+use App\Mail\EmailInvitation;
+use App\Models\SupportRequest;
+use App\Mail\EmailVerification;
+use App\Models\Appointment;
+use App\Models\AppointmentFeedback;
+use App\Models\AppointmentGuide;
+use App\Models\IndividualProfile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+class AppointmentService
+{
+    public function bookAppointment($data)
+    {
+
+        $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
+        // return $expert->user_id;
+        if ($expert) {
+            $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
+            if ($supportRequest >= 2) {
+                if ($supportRequest >= 2) {
+                    return response()->json([
+                        'status' => 'success',
+                        'expert' => 'expert with less load',
+                        $expert,
+                    ], 200);
+                }
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'expert' => 'expert with no load',
+                    $expert,
+                ], 200);
+            }
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'data' => 'No expert found for this field',
+            ], 404);
+        }
+    }
+
+    public function allAppointments()
+    {
+
+        $user = Auth::user();
+        $appointments = SupportRequest::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $appointments,
+        ], 200);
+    }
+
+    public function storeAppointment($data)
+    {
+
+        $expert = User::find($data->expert_id);
+        $supportRequest = Appointment::create([
+            'user_id' => 2,
+            'specialization' => $data->specialization,
+            'title' => $data->title,
+            'description' => $data->description,
+            'expert_name' => $expert->first_name . ' ' . $expert->last_name,
+            'individual_name' => 'sss',
+           // 'appointment_date' => $data->appointment_date,
+            'expert_id' => $data->expert_id,
+            'status' => 'pending',
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $supportRequest,
+        ], 200);
+    }
+    public function appointmentFeedback($id)
+    {
+
+        $user = Auth::user();
+        $feedback = AppointmentFeedback::where('user_id', $user->id)
+            ->find($id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $feedback,
+        ], 200);
+    }
+}
