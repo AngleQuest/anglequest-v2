@@ -21,7 +21,7 @@ jobs:
           script: |
             cd /www/wwwroot/staging-v2.anglequest.com
             composer install
-            php artisan migrate:fresh
+            php artisan migrate
       - name: 📂 Sync Files
         run: |
           rsync -e "ssh -o StrictHostKeyChecking=no" --archive --verbose --compress --human-readable --progress --exclude='.git*' --exclude='.git/' --exclude='README.md' --exclude='readme.md' --exclude='.gitignore' ./ root@staging-v2.anglequest.com:/www/wwwroot/staging-v2.anglequest.com

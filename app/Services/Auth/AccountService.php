@@ -79,7 +79,7 @@ class AccountService
                     'email_code' => $code,
                     'email_code_expire_time' => Carbon::now()->addMinutes(30),
                 ]);
-                Mail::to($user->email)->queue(new EmailVerification($user));
+                Mail::to($user->email)->send(new EmailVerification($user));
                 $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
                 return $this->successResponse($user);
             }
