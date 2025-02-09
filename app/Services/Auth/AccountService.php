@@ -131,7 +131,7 @@ class AccountService
             'email_code_expire_time' => null,
         ]);
         Mail::to($user->email)->send(new NewUserMail($user));
-        return $this->successResponse($user);
+        return $this->successResponse('Email Verified Succesfully');
     }
 
     public function resendCode($data)
