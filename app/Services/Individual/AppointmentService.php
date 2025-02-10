@@ -72,22 +72,24 @@ class AppointmentService
     {
 
         $expert = User::find($data->expert_id);
-        $supportRequest = Appointment::create([
-            'user_id' => 2,
+        $user = Auth::user();
+        $appointment = Appointment::create([
+            'user_id' => $user->id,
             'specialization' => $data->specialization,
             'title' => $data->title,
             'description' => $data->description,
             'expert_name' => $expert->first_name . ' ' . $expert->last_name,
-            'individual_name' => 'sss',
-           // 'appointment_date' => $data->appointment_date,
+            'individual_name' => $user->first_name,
+            // 'appointment_date' => $data->appointment_date,
             'expert_id' => $data->expert_id,
             'status' => 'pending',
         ]);
         return response()->json([
             'status' => 'success',
-            'data' => $supportRequest,
+            'data' => $appointment,
         ], 200);
     }
+    
     public function appointmentFeedback($id)
     {
 
