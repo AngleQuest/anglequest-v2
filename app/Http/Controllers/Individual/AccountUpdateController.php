@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\EmailUpdateRequest;
 use App\Http\Requests\SubscriptionRequest;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\Individual\AccountService;
 use App\Services\Individual\DashboardService;
 
@@ -21,6 +22,11 @@ class AccountUpdateController extends Controller
     function profile()
     {
         return $this->accountService->getProfile();
+    }
+
+    function updateProfile(ProfileUpdateRequest $request)
+    {
+        return $this->accountService->updateProfile($request);
     }
 
     public function changePassword(PasswordRequest $request)

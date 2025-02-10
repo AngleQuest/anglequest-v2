@@ -64,7 +64,7 @@ class AccountService
             'location' => $data->location ?? $user->individualProfile->location,
             'profile_photo' => $data->namprofile_photo ? $img_url : $user->individualProfile->profile_photo,
         ]);
-        return $this->successResponse($profile);
+        return $this->successResponse('Profile Updated successfully');
     }
 
 
