@@ -25,6 +25,7 @@ use App\Services\UploadService;
 use App\Models\UserSubscription;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\Individual;
+use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -49,21 +50,26 @@ class AccountService
             $fileName = str_replace(' ', '', $user->first_name) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
             $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
         }
-        $user->profile->update([
-            'first_name' => $data->first_name ?? $user->profile->first_name,
-            'last_name' => $data->last_name ?? $user->profile->last_name,
-            'email' => $data->email ?? $user->profile->email,
-            'phone' => $data->phone ?? $user->profile->phone,
-            'dob' => $data->dob ?? $user->profile->dob,
-            'current_role' => $data->current_role ?? $user->profile->current_role,
-            'target_role' => $data->target_role ?? $user->profile->target_role,
-            'gender' => $data->gender ?? $user->profile->gender,
-            'specialization' => $data->specialization ?? $user->profile->specialization,
-            'yrs_of_experience' => $data->yrs_of_experience ?? $user->profile->yrs_of_experience,
-            'about' => $data->about ?? $user->profile->about,
-            'location' => $data->location ?? $user->profile->location,
-            'profile_photo' => $data->namprofile_photo ? $img_url : $user->profile->profile_photo,
-        ]);
+        IndividualProfile::updateOrCreate(
+            [
+                'user_id' => $user->id,
+            ],
+            [
+                'first_name' => $data->first_name ?? $user->profile->first_name,
+                'last_name' => $data->last_name ?? $user->profile->last_name,
+                'email' => $data->email ?? $user->profile->email,
+                'phone' => $data->phone ?? $user->profile->phone,
+                'dob' => $data->dob ?? $user->profile->dob,
+                'current_role' => $data->current_role ?? $user->profile->current_role,
+                'target_role' => $data->target_role ?? $user->profile->target_role,
+                'gender' => $data->gender ?? $user->profile->gender,
+                'specialization' => $data->specialization ?? $user->profile->specialization,
+                'yrs_of_experience' => $data->yrs_of_experience ?? $user->profile->yrs_of_experience,
+                'about' => $data->about ?? $user->profile->about,
+                'location' => $data->location ?? $user->profile->location,
+                'profile_photo' => $data->namprofile_photo ? $img_url : $user->profile->profile_photo,
+            ]
+        );
         return $this->successResponse('Profile Updated successfully');
     }
 

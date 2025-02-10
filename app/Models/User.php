@@ -61,7 +61,7 @@ class User extends Authenticatable
 
     public function profile(): BelongsTo
     {
-        return $this->BelongsTo(IndividualProfile::class, 'user_id', 'id');
+        return $this->BelongsTo(IndividualProfile::class, 'user_id');
     }
 
     public function subscription(): HasOne
