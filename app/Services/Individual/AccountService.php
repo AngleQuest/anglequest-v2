@@ -37,7 +37,6 @@ class AccountService
 
     public function getProfile()
     {
-        return 'profile';
         return $this->successResponse(Auth::user()->profile);
     }
 

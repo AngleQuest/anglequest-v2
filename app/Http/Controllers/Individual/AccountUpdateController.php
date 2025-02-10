@@ -31,6 +31,7 @@ class AccountUpdateController extends Controller
 
     public function changePassword(PasswordRequest $request)
     {
+        return 'updatePassword';
         return $this->accountService->updatePassword($request);
     }
     public function changeEmail(EmailUpdateRequest $request)
