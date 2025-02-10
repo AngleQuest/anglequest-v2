@@ -4,6 +4,7 @@ namespace App\Services\Expert;
 
 use App\Models\User;
 use App\Models\Expert;
+use App\Models\UserPaymentInfo;
 use App\Traits\ApiResponder;
 use App\Services\UploadService;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,34 @@ class AccountService
         ]);
 
         return $this->successResponse('Details Updated');
+    }
+    public function createPaymentInfo($data)
+    {
+        $user = Auth::user();
+        UserPaymentInfo::updateOrCreate(
+            [
+                'user_id' => $user->id,
+            ],
+            [
+                'account_name' => $data->account_name,
+                'account_number' => $data->account_number,
+                'bank' => $data->bank,
+                'country' => $data->country,
+            ]
+        );
+        return $this->successResponse('Profile Updated successfully');
+
+        return $this->successResponse('Details Updated');
+    }
+
+    public function getPaymentInfo()
+    {
+        $user = Auth::user();
+        $payment_info = UserPaymentInfo::where('user_id', $user->id)->first();
+        if (!$payment_info) {
+            return $this->errorResponse('No payment details added', 422);
+        }
+        return $this->successResponse($payment_info);
     }
 
     public function updateLoginDetails($data)

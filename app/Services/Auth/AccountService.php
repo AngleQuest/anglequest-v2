@@ -33,6 +33,7 @@ class AccountService
             if ($data->role == UserRole::INDIVIDUAL) {
                 $user = User::create([
                     'email' => strtolower($data->email),
+                    'username' => str_replace(' ','',$data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -43,6 +44,7 @@ class AccountService
             if ($data->role == UserRole::EXPERT) {
                 $user = User::create([
                     'email' => strtolower($data->email),
+                    'username' => str_replace(' ','',$data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -67,6 +69,7 @@ class AccountService
                 ]);
                 $user = User::create([
                     'company_id' => $company->id,
+                    'username' => str_replace(' ','',$data->username),
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role

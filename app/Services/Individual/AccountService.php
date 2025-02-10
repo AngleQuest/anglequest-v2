@@ -102,15 +102,14 @@ class AccountService
 
     public function updatePassword($data)
     {
-        return 'ok';
-        // $user = User::find(Auth::id());
-        // if (Hash::check($data->old_password, $user->password)) {
-        //     $user->update([
-        //         'password' => Hash::make($data->password),
-        //     ]);
-        //     return $this->successResponse('Password Successfully Updated');
-        // }
-        // return $this->errorResponse(null, 'Old Password did not match', 422);
+        $user = User::find(Auth::id());
+        if (Hash::check($data->old_password, $user->password)) {
+            $user->update([
+                'password' => Hash::make($data->password),
+            ]);
+            return $this->successResponse('Password Successfully Updated');
+        }
+        return $this->errorResponse(null, 'Old Password did not match', 422);
     }
 
     public  function getPlans()

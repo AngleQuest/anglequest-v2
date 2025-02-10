@@ -25,6 +25,7 @@ class User extends Authenticatable
         'company_id',
         'plan_id',
         'email',
+        'username',
         'email_code',
         'email_code_expire_time',
         'email_verified_at',

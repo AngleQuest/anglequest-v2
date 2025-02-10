@@ -8,6 +8,7 @@ use App\Http\Controllers\Expert\DashboardController;
 use App\Http\Controllers\Expert\HubManagerController;
 use App\Http\Controllers\Expert\AccountManagerController;
 use App\Http\Controllers\Expert\InterviewManagerController;
+use App\Http\Controllers\Expert\WalletController;
 
 Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'prefix' => 'expert'], function () {
     Route::controller(DashboardController::class)->group(function () {
@@ -26,11 +27,24 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
     //Hub Manager
     Route::resource('hub', HubManagerController::class);
 
-      //Appointment/Interview Section
-      Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
+    //Appointment/Interview Section
+    Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
         Route::get('/', 'index');
         Route::post('/accept-request/{id}', 'acceptAppointment');
         Route::post('/create-guide', 'storeAppointment');
         Route::get('/feedback/{id}', 'feedback');
+    });
+    //Appointment/Interview Section
+    Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/accept-request/{id}', 'acceptAppointment');
+        Route::post('/create-guide', 'storeAppointment');
+        Route::get('/feedback/{id}', 'feedback');
+    });
+
+    //Appointment/Interview Section
+    Route::controller(WalletController::class)->prefix('wallet')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/request-withdrawal', 'withdrawFund');
     });
 });

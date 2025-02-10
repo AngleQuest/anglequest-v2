@@ -21,6 +21,14 @@ class AccountManagerController extends Controller
     {
         return $this->accountService->getProfile();
     }
+    public function getPaymentInfo()
+    {
+        return $this->accountService->getPaymentInfo();
+    }
+    public function createPaymentInfo(Request $request)
+    {
+        return $this->accountService->createPaymentInfo($request);
+    }
     public function updateProfile(Request $request)
     {
         return $this->accountService->updateProfile($request);
@@ -39,6 +47,4 @@ class AccountManagerController extends Controller
     {
         return $this->accountService->deleteAccount();
     }
-
-
 }
