@@ -23,7 +23,6 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
         Route::post('/block-account', 'forgetMyAccount');
         Route::get('/plans', 'getPlans');
         Route::get('/payment-history', 'paymentHistory');
-        Route::post('/sla', 'subscribeToSla');
         Route::post('/create-subscription', 'createSubscription');
         Route::post('/submit-otp', 'submitOtp');
     });
