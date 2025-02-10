@@ -36,7 +36,7 @@ class AccountService
 
     public function getProfile()
     {
-        return $this->successResponse(Auth::user()->individualProfile);
+        return $this->successResponse(Auth::user()->profile);
     }
 
     public function updateProfile($data)
