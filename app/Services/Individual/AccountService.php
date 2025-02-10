@@ -67,7 +67,7 @@ class AccountService
                 'yrs_of_experience' => $data->yrs_of_experience ?? $user->profile->yrs_of_experience,
                 'about' => $data->about ?? $user->profile->about,
                 'location' => $data->location ?? $user->profile->location,
-                'profile_photo' => $data->profile_photo ? $img_url : $user->profile->profile_photo,
+                'profile_photo' => $data->profile_photo ? $img_url : null,
             ]
         );
         return $this->successResponse('Profile Updated successfully');
