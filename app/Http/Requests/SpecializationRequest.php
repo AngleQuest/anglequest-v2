@@ -22,7 +22,7 @@ class SpecializationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:table,specializations,name',
+            'name' => 'required|unique:specializations,name',
             'specialization_category_id' => 'required|numeric|exists:specialization_categories,id',
         ];
     }

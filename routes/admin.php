@@ -32,9 +32,6 @@ Route::group(['prefix' => 'administrator'], function () {
     Route::resource('sla', SlaManagerController::class);
     Route::resource('subscription-plans', PlanManagerController::class);
 
-    //Category Manager(Specilization Category)
-    Route::resource('specialization-category', SpecializationCategoryManagerController::class);
-
     Route::controller(SpecializationCategoryManagerController::class)->prefix('specialization')->group(function () {
         Route::get('/', 'allSpecializations');
         Route::post('/add', 'storeSpecialization');
