@@ -22,6 +22,7 @@ class CategoryResource extends JsonResource
             'specializations' => $this->specializations ? $this->specializations->map(function ($specialization): array {
                 return [
                     'id' => $specialization?->id,
+                    'specialization_category_id' => $specialization?->specialization_category_id,
                     'name' => $specialization?->name,
                 ];
             })->toArray() : [],
