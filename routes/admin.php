@@ -35,6 +35,21 @@ Route::group(['prefix' => 'administrator'], function () {
     //Category Manager(Specilization Category)
     Route::resource('specialization-category', SpecializationCategoryManagerController::class);
 
+    Route::controller(SpecializationCategoryManagerController::class)->prefix('specialization')->group(function () {
+        Route::get('/', 'allSpecializations');
+        Route::post('/add', 'storeSpecialization');
+        Route::get('/details/{id}', 'showSpecialization');
+        Route::post('/update/{id}', 'updateSpecialization');
+        Route::delete('/delete/{id}', 'destroySpecialization');
+
+        Route::prefix('category')->group(function () {
+            Route::get('/', 'allCategories');
+            Route::get('/add', 'storeCategory');
+            Route::get('/details/{id}', 'showCategory');
+            Route::post('/update/{id}', 'updateCategory');
+            Route::delete('/delete/{id}', 'destroyCategory');
+        });
+    });
     Route::post('/logout', [AdminAuthController::class, 'adminLogout']);
     // });
 });
