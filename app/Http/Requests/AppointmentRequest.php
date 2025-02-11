@@ -22,14 +22,16 @@ class AppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category' => 'required',
             'specialization' => 'required|max:255',
-            'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:255',
-           // 'attachment' => 'nullable|file|mimes:pdf,doc,docx,jpeg,jpg,png|max:2048',
-            'prefmode' => 'nullable|string|max:255',
-            'priority' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
-            'deadline' => 'nullable|string|max:255',
+            'title' => 'required',
+            'description' => 'required',
+            // 'attachment' => 'required,doc,docx,jpeg,jpg,png|max:2048',
+            'prefmode' => 'required',
+            'priority' => 'required',
+            'name' => 'required',
+            'role' => 'required',
+            'appointment_date' => 'required',
         ];
     }
 }

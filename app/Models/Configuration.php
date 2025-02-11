@@ -16,6 +16,7 @@ class Configuration extends Model
         'paystack_max',
         'withdrawal_min',
         'withdrawal_max',
-        'expert_fee'
+        'expert_fee',
+        'charges'
     ];
 }
