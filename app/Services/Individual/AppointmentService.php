@@ -24,6 +24,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class AppointmentService
 {
+    use ApiResponder;
+
     public function bookAppointment($data)
     {
 
@@ -54,18 +56,23 @@ class AppointmentService
         }
     }
 
-    public function allAppointments()
+    public function declinedAppointments()
     {
 
         $user = Auth::user();
-        $appointments = SupportRequest::where('user_id', $user->id)
+        $appointments = Appointment::where('user_id', $user->id)
+            ->where('status', 'declined')
+            ->get();
+        return $this->successResponse($appointments);
+    }
+    
+    public function completedAppointments()
+    {
+        $user = Auth::user();
+        $appointments = Appointment::where('user_id', $user->id)
             ->where('status', 'completed')
             ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $appointments,
-        ], 200);
+        return $this->successResponse($appointments);
     }
 
     public function storeAppointment($data)
@@ -89,17 +96,15 @@ class AppointmentService
             'data' => $appointment,
         ], 200);
     }
-    
+
     public function appointmentFeedback($id)
     {
-
         $user = Auth::user();
         $feedback = AppointmentFeedback::where('user_id', $user->id)
             ->find($id);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $feedback,
-        ], 200);
+        if (!$feedback) {
+            return $this->errorResponse("No feedback available", 422);
+        }
+        return $this->successResponse($feedback);
     }
 }

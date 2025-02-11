@@ -68,9 +68,7 @@ class AccountService
                 'country' => $data->country,
             ]
         );
-        return $this->successResponse('Profile Updated successfully');
-
-        return $this->successResponse('Details Updated');
+        return $this->successResponse('Payment details Updated successfully');
     }
 
     public function getPaymentInfo()

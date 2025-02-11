@@ -2,11 +2,24 @@
 
 namespace App\Http\Controllers\Expert;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PayoutRequest;
+use App\Services\Expert\WalletService;
 
 class WalletController extends Controller
 {
-    function index() {}
-    function withdrawFund() {}
+    public function __construct(
+        private WalletService $walletService
+    ) {}
+
+    function index()
+    {
+        return $this->walletService->history();
+    }
+
+    function withdrawFund(PayoutRequest $request)
+    {
+        return $this->walletService->requestWithdrawal($request);
+    }
 }

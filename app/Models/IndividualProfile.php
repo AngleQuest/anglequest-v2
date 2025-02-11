@@ -26,4 +26,9 @@ class IndividualProfile extends Model
     protected $casts = [
         'specialization' => 'array',
     ];
+
+    public function fullName()
+    {
+        return $this->first_name . " " . $this->last_name;
+    }
 }

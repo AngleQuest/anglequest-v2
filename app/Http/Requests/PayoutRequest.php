@@ -22,21 +22,8 @@ class PayoutRequest extends FormRequest
      */
     public function rules(): array
     {
-        $config = Configuration::first();
-        $currSymbol = $config->currency_symbol;
-        $min = $config->withdrawal_min;
-        $max = $config->withdrawal_max;
         return [
-            'amount' => [
-                'required',
-                'numeric',
-                'min:' . $min,
-                'max:' . $max
-            ],
-            [
-                'amount.min' => 'Minimum withdrawable amount is ' . $currSymbol . number_format($min),
-                'amount.max' => 'Maximum withdrawable amount is ' . $currSymbol . number_format($max),
-            ]
+            'amount' => 'required'
         ];
     }
 }

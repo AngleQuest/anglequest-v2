@@ -30,72 +30,123 @@ use Agence104\LiveKit\AccessTokenOptions;
 
 class InterviewService
 {
+    use ApiResponder;
+
     public function createGuide($data)
     {
-        $supportRequest = Appointment::create([
-            'user_id' => 2,
-            'specialization' => $data->specialization,
-            'title' => $data->title,
-            'description' => $data->description,
-            'expert_name' => $expert->first_name . ' ' . $expert->last_name,
-            'individual_name' => 'sss',
-            // 'appointment_date' => $data->appointment_date,
-            'expert_id' => $data->expert_id,
-            'status' => 'pending',
-        ]);
-        return response()->json([
-            'status' => 'success',
-            'data' => $supportRequest,
-        ], 200);
+
+        $user = Auth::user();
+        $guide = AppointmentGuide::updateOrCreate(
+            [
+                'user_id' => $user->id,
+            ],
+            [
+                'specialization' => $data->specialization,
+                'topic' => $data->topic,
+                'available_days' => $data->available_days,
+                'available_time' => $data->available_time,
+                'description' => $data->description,
+                'guides' => $data->guides,
+                'location' => $data->location,
+                'time_zone' => $data->time_zone,
+                'expert_name' => $user->profile ? $user->profile->fullName() :  $user->username,
+            ]
+        );
+
+        return $this->successResponse($guide);
+    }
+    public function viewGuide()
+    {
+        $user = Auth::user();
+        $guide = AppointmentGuide::where('user_id', $user->id)->first();
+        if (!$guide) {
+            return $this->errorResponse("No Guide has been created", 422);
+        }
+        return $this->successResponse($guide);
     }
 
-    public function allAppointments()
+    public function pendingAppointments()
+    {
+
+        $user = Auth::user();
+        $appointments = Appointment::where('expert_id', $user->id)
+            ->where('status', 'pending')
+            ->get();
+        return $this->successResponse($appointments);
+    }
+
+    public function acceptedAppointments()
     {
 
         $user = Auth::user();
         $appointments = Appointment::where('expert_id', $user->id)
             ->where('status', 'active')
             ->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $appointments,
-        ], 200);
+        return $this->successResponse($appointments);
     }
 
+    public function completedAppointments()
+    {
+
+        $user = Auth::user();
+        $appointments = Appointment::where('expert_id', $user->id)
+            ->where('status', 'completed')
+            ->get();
+        return $this->successResponse($appointments);
+    }
+
+    public function declinedAppointments()
+    {
+
+        $user = Auth::user();
+        $appointments = Appointment::where('expert_id', $user->id)
+            ->where('status', 'declined')
+            ->get();
+        return $this->successResponse($appointments);
+    }
 
     public function acceptAppointment($id)
     {
         $appointment = Appointment::find($id);
         if (!$appointment) {
-            return response()->json([
-                'status' => 'failed',
-                'data' => 'No record match',
-            ], 422);
+            return $this->errorResponse("No record match", 422);
         }
 
         $expert = User::find(Auth::id());
         $user = User::where('id', $appointment->user_id)->first();
 
-         $this->meetingLink($appointment, $user, $expert);
+        $this->meetingLink($appointment, $user, $expert);
 
         $appointment->update([
             'status' => 'active'
         ]);
-
         return response()->json([
             'status' => 'success',
             'file' => $appointment,
             'data' => 'Request accepted successfully',
         ], 200);
     }
+
+    public function rejectAppointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return $this->errorResponse("No record match", 422);
+        }
+        $appointment->update([
+            'status' => 'declined'
+        ]);
+
+        return $this->successResponse("Request Declined successfully");
+    }
+
     private function meetingLink($request_details, $user, $expert)
     {
 
         // Logic to schedule a meeting with an expert and return the meeting details
         $roomName = "Support_Meeting _Scheduled_with_.$expert->last_name" . "_$user->first_name" . "_" . time();
         $candidateName = $user->email;
-       $expertName = $expert->email;
+        $expertName = $expert->email;
 
         $candidateTokenOptions = (new AccessTokenOptions())->setIdentity($candidateName)->setTTL(86400);
         $expertTokenOptions = (new AccessTokenOptions())->setIdentity($expertName)->setTTL(86400);
@@ -121,19 +172,35 @@ class InterviewService
             'link' => $request_details->meeting_link,
         ];
 
-       // Mail::to([$user->email, Auth::user()->email])->send(new MeetingNotice($detail));
+        // Mail::to([$user->email, Auth::user()->email])->send(new MeetingNotice($detail));
         return true;
     }
-    public function appointmentFeedback($id)
+
+    public function appointmentFeedback($id, $data)
     {
-
         $user = Auth::user();
-        $feedback = AppointmentFeedback::where('user_id', $user->id)
-            ->find($id);
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return $this->errorResponse("No appointment found", 422);
+        }
+        AppointmentFeedback::create([
+            'user_id' => $appointment->user_id,
+            'expert_id' => $user->id,
+            'appointment_id' => $appointment->id,
+            'note' => $data->note
+        ]);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $feedback,
-        ], 200);
+        return $this->successResponse("Feedback sent successfully");
+    }
+
+    public function viewAppointment($id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('expert_id', $user->id)
+            ->find($id);
+        if (!$appointment) {
+            return $this->errorResponse("No appointment found with this id", 422);
+        }
+        return $this->successResponse($appointment);
     }
 }

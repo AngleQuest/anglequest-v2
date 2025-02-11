@@ -26,9 +26,14 @@ class AppointmentController extends Controller
         return $this->appointmentService->bookAppointment($request);
     }
 
-    function index()
+    function declinedAppointments()
     {
-        return $this->appointmentService->allAppointments();
+        return $this->appointmentService->declinedAppointments();
+    }
+
+    function completedAppointments()
+    {
+        return $this->appointmentService->completedAppointments();
     }
 
     function feedback($id)

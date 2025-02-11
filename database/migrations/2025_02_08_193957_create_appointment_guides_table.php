@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('appointment_guides', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('Expert incharge');
-            $table->string('current_role')->nullable();
-            $table->string('level');
+            $table->longText('specialization')->nullable();
             $table->json('available_days');
             $table->string('available_time');
             $table->string('topic');

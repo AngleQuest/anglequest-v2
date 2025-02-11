@@ -6,5 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppointmentGuide extends Model
 {
-    //
+    protected $fillable = [
+        "user_id",
+        "specialization",
+        "topic",
+        "available_days",
+        "available_time",
+        "description",
+        "expert_name",
+        "guides",
+        "location",
+        "time_zone",
+    ];
+    protected $casts = [
+        'specialization' => 'array',
+    ];
 }

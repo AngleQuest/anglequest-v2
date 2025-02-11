@@ -19,6 +19,8 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
     Route::controller(AccountManagerController::class)->prefix('setting')->group(function () {
         Route::get('/profile', 'profile');
         Route::post('/update-profile', 'updateProfile');
+        Route::post('/create-payment-info', 'createPaymentInfo');
+        Route::get('/payment-info', 'getPaymentInfo');
         Route::post('/update-email', 'changeEmail');
         Route::post('/update-password', 'changePassword');
         Route::delete('/delete-account', 'deleteMyAccount');
@@ -29,17 +31,16 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
 
     //Appointment/Interview Section
     Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
-        Route::get('/', 'index');
+        Route::get('/pending', 'pendingAppointments');
+        Route::get('/accepted', 'acceptedAppointments');
+        Route::get('/completed', 'completedAppointments');
+        Route::get('/declined', 'declinedAppointments');
         Route::post('/accept-request/{id}', 'acceptAppointment');
-        Route::post('/create-guide', 'storeAppointment');
-        Route::get('/feedback/{id}', 'feedback');
-    });
-    //Appointment/Interview Section
-    Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
-        Route::get('/', 'index');
-        Route::post('/accept-request/{id}', 'acceptAppointment');
-        Route::post('/create-guide', 'storeAppointment');
-        Route::get('/feedback/{id}', 'feedback');
+        Route::post('/decline-request/{id}', 'rejectAppointment');
+        Route::post('/create-guide', 'createGuide');
+        Route::get('/view-guide', 'viewGuide');
+        Route::get('/view-appointment/{id}', 'viewAppointment');
+        Route::post('/feedback/{id}', 'createFeedback');
     });
 
     //Appointment/Interview Section

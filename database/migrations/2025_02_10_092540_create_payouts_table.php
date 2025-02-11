@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->double('amount', 19,2)->default(0);
+            $table->string('account_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('bank')->nullable();
+            $table->enum('status', ['paid', 'pending'])->default('pending');
+            $table->timestamp('date_paid')->nullable();
             $table->timestamps();
         });
     }

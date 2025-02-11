@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class InterviewGuideRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,14 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users,email',
-            'username' => 'required|email|unique:users,username"min:6',
-            'role' => 'required|in:individual,expert,business',
-            'password' => 'required|min:6|confirmed',
-            'agreement' => 'required',
+            'specialization' => 'required',
+            'topic' => 'required',
+            'available_days' => 'required',
+            'available_time' => 'required',
+            'description' => 'required',
+            'guides' => 'required',
+            'location' => 'required',
+            'time_zone' => 'required',
         ];
     }
 }
