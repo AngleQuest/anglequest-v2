@@ -65,7 +65,7 @@ class AppointmentService
             ->get();
         return $this->successResponse($appointments);
     }
-    
+
     public function completedAppointments()
     {
         $user = Auth::user();
@@ -75,7 +75,7 @@ class AppointmentService
         return $this->successResponse($appointments);
     }
 
-    public function storeAppointment($data)
+    public function mergeAppointment($data)
     {
 
         $expert = User::find($data->expert_id);
@@ -87,7 +87,7 @@ class AppointmentService
             'description' => $data->description,
             'expert_name' => $expert->first_name . ' ' . $expert->last_name,
             'individual_name' => $user->first_name,
-            // 'appointment_date' => $data->appointment_date,
+            'appointment_date' => $data->appointment_date,
             'expert_id' => $data->expert_id,
             'status' => 'pending',
         ]);

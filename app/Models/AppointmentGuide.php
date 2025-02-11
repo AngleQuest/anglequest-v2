@@ -11,7 +11,6 @@ class AppointmentGuide extends Model
         "specialization",
         "topic",
         "available_days",
-        "available_time",
         "description",
         "expert_name",
         "guides",

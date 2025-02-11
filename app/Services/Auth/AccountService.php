@@ -9,10 +9,12 @@ use App\Models\Expert;
 use App\Models\Company;
 use App\Mail\NewUserMail;
 use App\Models\UserWallet;
+use Illuminate\Support\Str;
 use App\Traits\ApiResponder;
 use App\Models\Configuration;
 use App\Models\ProductRating;
 use App\Models\ProductReview;
+use App\Mail\OpenAccountEmail;
 use App\Mail\EmailVerification;
 use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +26,38 @@ class AccountService
 {
     use ApiResponder;
 
+    public  function openAccount($data)
+    {
+        DB::beginTransaction();
+        if ($data) {
+            $password = Str::random(15);
+            $user = User::create([
+                'email' => strtolower($data->email),
+                'username' => str_replace(' ', '', $data->username),
+                'email_verified_at' => Carbon::now(),
+                'password' => Hash::make($password),
+                'role' => UserRole::INDIVIDUAL
+            ]);
+            IndividualProfile::create([
+                'user_id' => $user->id
+            ]);
+
+            if ($user) {
+                DB::commit();
+                $detail = [
+                    'email' => $data->email,
+                    'name' => $data->username,
+                    'password' => $password,
+                ];
+                Mail::to($user->email)->queue(new OpenAccountEmail($detail));
+                return $this->successResponse($user);
+            }
+        }
+
+        DB::rollBack();
+        return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
+    }
+
     public  function signUp($data)
     {
         $user = '';
@@ -33,7 +67,7 @@ class AccountService
             if ($data->role == UserRole::INDIVIDUAL) {
                 $user = User::create([
                     'email' => strtolower($data->email),
-                    'username' => str_replace(' ','',$data->username),
+                    'username' => str_replace(' ', '', $data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -44,7 +78,7 @@ class AccountService
             if ($data->role == UserRole::EXPERT) {
                 $user = User::create([
                     'email' => strtolower($data->email),
-                    'username' => str_replace(' ','',$data->username),
+                    'username' => str_replace(' ', '', $data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -69,7 +103,7 @@ class AccountService
                 ]);
                 $user = User::create([
                     'company_id' => $company->id,
-                    'username' => str_replace(' ','',$data->username),
+                    'username' => str_replace(' ', '', $data->username),
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
@@ -115,6 +149,7 @@ class AccountService
 
         return $this->successResponse($user);
     }
+
     public function emailVerification($data)
     {
 

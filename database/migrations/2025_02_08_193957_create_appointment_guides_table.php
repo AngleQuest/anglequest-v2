@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->comment('Expert incharge');
             $table->longText('specialization')->nullable();
             $table->json('available_days');
-            $table->string('available_time');
             $table->string('topic');
             $table->json('guides');
             $table->string('location');

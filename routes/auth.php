@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 Route::prefix('auth')->group(function () {
     Route::controller(AccountController::class)->group(function () {
         Route::post('/register', 'register');
+        Route::post('/create-account', 'openAccount');
         Route::post('/login', 'login');
     });
 

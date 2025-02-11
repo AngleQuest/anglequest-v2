@@ -44,7 +44,6 @@ class InterviewService
                 'specialization' => $data->specialization,
                 'topic' => $data->topic,
                 'available_days' => $data->available_days,
-                'available_time' => $data->available_time,
                 'description' => $data->description,
                 'guides' => $data->guides,
                 'location' => $data->location,

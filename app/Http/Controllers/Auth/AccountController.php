@@ -8,13 +8,14 @@ use App\Mail\NewUserMail;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use App\Services\CacheService;
-use App\Services\Auth\AccountService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Services\Auth\AccountService;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\OpenAccountRequest;
 
 class AccountController extends Controller
 {
@@ -26,6 +27,11 @@ class AccountController extends Controller
     public function register(RegisterRequest $request)
     {
         return $this->accountService->signUp($request);
+    }
+
+    public function openAccount(OpenAccountRequest $request)
+    {
+        return $this->accountService->openAccount($request);
     }
 
     function login(LoginRequest $request)

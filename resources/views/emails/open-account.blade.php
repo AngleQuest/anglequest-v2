@@ -5,12 +5,12 @@
         <td bgcolor="#ffffff" align="left"
             style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif;">
             <h2 style="margin: 0;">
-                Welcome to AngleQuest 👋
+                Welcome to AngleQuest👋 {{ $detail['name'] }}
             </h2>
             <p style="margin: 10px 0;">
-                Thank you for joining our platform! Please Sign in to complete your registration.
+                Thank you for joining our platform! Please Sign in to complete your appointment booking process.
                 <br>
-                Below are your login details as provided by {{ $detail['name'] }} to access your page to complete your profile
+                Below are your login details to access our portal
             </p>
             <p style="margin: 10px 0;">
                 Email: {{ $detail['email'] }}
