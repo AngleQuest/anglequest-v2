@@ -44,7 +44,7 @@ Route::group(['prefix' => 'administrator'], function () {
 
         Route::prefix('category')->group(function () {
             Route::get('/', 'allCategories');
-            Route::get('/add', 'storeCategory');
+            Route::post('/add', 'storeCategory');
             Route::get('/details/{id}', 'showCategory');
             Route::post('/update/{id}', 'updateCategory');
             Route::delete('/delete/{id}', 'destroyCategory');

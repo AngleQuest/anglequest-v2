@@ -7,60 +7,78 @@ use App\Models\Category;
 use App\Traits\ApiResponder;
 use App\Models\Specialization;
 use App\Models\SpecializationCategory;
+use App\Http\Resources\CategoryResource;
 
 class SpecializationCategoryService
 {
     use ApiResponder;
     public function allCategories()
     {
-        $categories = SpecializationCategory::with('specializations')->latest('id')->get();
-        return $this->successResponse($categories);
+        $categories = SpecializationCategory::latest('id')->get();
+        $data = CategoryResource::collection($categories);
+        return $this->successResponse($data);
     }
 
     public function storeCategory($data)
     {
-        return SpecializationCategory::create([
+        $specialization = SpecializationCategory::create([
             'name' => $data->name,
         ]);
+        return $this->successResponse($specialization);
     }
     public function editCategory($id)
     {
-        $category = SpecializationCategory::find($id);
-        return $category;
+        $category = SpecializationCategory::findOrFail($id);
+        return $this->successResponse($category);
     }
     public function updateCategory($id, $data)
     {
-        $category = SpecializationCategory::find($id);
+        $category = SpecializationCategory::findOrFail($id);
+        $check = SpecializationCategory::where('name', $data->name)->first();
+
+        if ($check && $check->name != $category->name) {
+            return $this->errorResponse("Name already exist", 422);
+        }
         $category->update([
             'name' => $data->name,
         ]);
+        return $this->successResponse("Details Updated");
     }
     public function deleteCategory($id)
     {
-        $category = SpecializationCategory::find($id);
+        $category = SpecializationCategory::findOrFail($id);
         $category->delete();
+        return $this->successResponse("Details Deleted");
     }
 
     public function allSpecializations()
     {
-        return Specialization::with('category')->latest('id')->get();
+        $specializations =  Specialization::with('category')->latest('id')->get();
+        return $this->successResponse($specializations);
     }
 
     public function storeSpecialization($data)
     {
-        return Specialization::create([
+        $specialization =  Specialization::create([
             'specialization_category_id' => $data->specialization_category_id,
             'name' => $data->name,
         ]);
+        return $this->successResponse($specialization);
     }
     public function editSpecialization($id)
     {
-        $specialization = Specialization::find($id);
-        return $specialization;
+        $specialization = Specialization::findOrFail($id);
+        return $this->successResponse($specialization);
     }
     public  function updateSpecialization($id, $data)
     {
-        $specialization = Specialization::find($id);
+        $specialization = Specialization::findOrFail($id);
+        $check = Specialization::where('name', $data->name)->first();
+
+        if ($check && $check->name != $specialization->name) {
+            return $this->errorResponse("Name already exist", 422);
+        }
+
         $specialization->update([
             'specialization_category_id' => $data->specialization_category_id,
             'name' => $data->name,
@@ -69,7 +87,8 @@ class SpecializationCategoryService
     }
     public function deleteSpecialization($id)
     {
-        $specialization = Specialization::find($id);
+        $specialization = Specialization::findOrFail($id);
         $specialization->delete();
+        return $this->successResponse("Details deleted");
     }
 }

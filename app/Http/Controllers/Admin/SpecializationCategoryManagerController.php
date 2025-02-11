@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\SpecializationRequest;
 use App\Services\Admin\SpecializationCategoryService;
 
 class SpecializationCategoryManagerController extends Controller
@@ -19,7 +21,7 @@ class SpecializationCategoryManagerController extends Controller
         return $this->categoryService->allCategories();
     }
 
-    public function storeCategory(Request $request)
+    public function storeCategory(CategoryRequest $request)
     {
         return $this->categoryService->storeCategory($request);
     }
@@ -42,7 +44,7 @@ class SpecializationCategoryManagerController extends Controller
         return $this->categoryService->allSpecializations();
     }
 
-    public function storeSpecialization(Request $request)
+    public function storeSpecialization(SpecializationRequest $request)
     {
         return $this->categoryService->storeSpecialization($request);
     }
