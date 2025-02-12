@@ -141,7 +141,8 @@ class InterviewService
 
     private function meetingLink($request_details, $user, $expert)
     {
-
+        $key ="APIe6zT8wsZcTio";
+        $seceret ="HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
         $roomName = "Support_Meeting _Scheduled_with_.$expert->last_name" . "_$user->first_name" . "_" . time();
         $candidateName = $user->email;
@@ -154,8 +155,8 @@ class InterviewService
         $candidateVideoGrant = (new VideoGrant())->setRoomJoin()->setRoomName($roomName)->setRoomJoin();
         $expertVideoGrant = (new VideoGrant())->setRoomJoin()->setRoomName($roomName)->setRoomAdmin(TRUE);
 
-        $candidateToken = (new AccessToken(getenv('LIVEKIT_API_KEY'), getenv('LIVEKIT_API_SECRET')))->init($candidateTokenOptions)->setGrant($candidateVideoGrant)->toJwt();
-        $expertToken = (new AccessToken(getenv('LIVEKIT_API_KEY'), getenv('LIVEKIT_API_SECRET')))->init($expertTokenOptions)->setGrant($expertVideoGrant)->toJwt();
+        $candidateToken = (new AccessToken($key, $seceret))->init($candidateTokenOptions)->setGrant($candidateVideoGrant)->toJwt();
+        $expertToken = (new AccessToken($key, $seceret))->init($expertTokenOptions)->setGrant($expertVideoGrant)->toJwt();
 
 
         $request_details->update([
