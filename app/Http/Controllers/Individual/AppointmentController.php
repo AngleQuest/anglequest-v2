@@ -15,7 +15,6 @@ class AppointmentController extends Controller
 
     function bookAppointment(AppointmentRequest $request)
     {
-        return 'ok';
         return $this->appointmentService->bookAppointment($request);
     }
     function mergeAppointment(AppointmentRequest $request)
