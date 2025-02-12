@@ -133,6 +133,9 @@ class AccountService
         if (!$user) {
             return $this->errorResponse('Oops! No record found with your entry.', 422);
         }
+        if (!$user->email_verified_at) {
+            return $this->errorResponse('Please verify your email.', 422);
+        }
 
         $credentials = ['email' => $data->email, 'password' => $data->password];
 
