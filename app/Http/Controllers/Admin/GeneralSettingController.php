@@ -20,4 +20,12 @@ class GeneralSettingController extends Controller
     {
         return $this->adminService->updateDetails($request);
     }
+    function updateConfigDetails(Request $request)
+    {
+        return $this->adminService->updateConfigDetails($request);
+    }
+    function getConfigDetails()
+    {
+        return $this->adminService->getConfigDetails();
+    }
 }

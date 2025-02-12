@@ -2,12 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\Admin\AdminService;
 
 class DashboardController extends Controller
 {
-    function index()  {
-       return 'dashboard';
+    public function __construct(
+        private AdminService $adminService
+    ) {}
+
+    function index()
+    {
+        return $this->adminService->getDashboardData();
+    }
+
+    function users()
+    {
+        return $this->adminService->getUsers();
+    }
+
+    function experts()
+    {
+        return $this->adminService->getExperts();
+    }
+    function companies()
+    {
+        return $this->adminService->getCompanies();
     }
 }

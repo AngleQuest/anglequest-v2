@@ -2,13 +2,42 @@
 
 namespace App\Services\Admin;
 
-use App\Models\AdminBank;
 use App\Models\Plan;
+use App\Models\User;
+use App\Enum\UserRole;
+use App\Models\Expert;
+use App\Models\Company;
+use App\Enum\UserStatus;
+use App\Models\AdminBank;
+use App\Models\ActivityLog;
+use App\Models\Appointment;
 use App\Traits\ApiResponder;
+use App\Models\Configuration;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\CompanyResource;
 
 class AdminService
 {
     use ApiResponder;
+    public function getDashboardData()
+    {
+        $active_interviews = Appointment::where('status', UserStatus::ACTIVE)->count();
+        $total_individuals = User::where('role', UserRole::INDIVIDUAL)->count();
+        $total_experts = User::where('role', UserRole::EXPERT)->count();
+        $total_companies = User::where('role', UserRole::BUSINESS)->count();
+        $recent_users = User::select(['username', 'email', 'role', 'created_at'])->latest('id')->take(10)->get();
+        $activity_log = ActivityLog::latest('id')->take(10)->get();
+
+        $data = [
+            'active_interviews' => $active_interviews,
+            'total_individuals' => $total_individuals,
+            'total_experts' => $total_experts,
+            'total_companies' => $total_companies,
+            'recent_users' => $recent_users,
+            'activity_log' => $activity_log,
+        ];
+        return $this->successResponse($data);
+    }
     public function getAccountDetails()
     {
         $admin_bank =  AdminBank::first();
@@ -16,6 +45,47 @@ class AdminService
             return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($admin_bank);
+    }
+
+    public function getConfigDetails()
+    {
+        $configuration = Configuration::first();
+        if (!$configuration) {
+            return $this->errorResponse('No record found', 422);
+        }
+        return $this->successResponse($configuration);
+    }
+
+    public  function updateConfigDetails($data)
+    {
+        $configuration =  Configuration::first();
+        if ($configuration) {
+            $configuration->update([
+                'usd_rate' => $data->usd_rate,
+                'email_verify' => $data->email_verify,
+                'currency_code' => $data->currency_code,
+                'currency_symbol' => $data->currency_symbol,
+                'withdrawal_min' => $data->withdrawal_min,
+                'withdrawal_max' => $data->withdrawal_max,
+                'expert_fee' => $data->expert_fee,
+                'africa_fee' => $data->africa_fee,
+                'asia_fee' => $data->asia_fee,
+                'europe_fee' => $data->europe_fee,
+            ]);
+        }
+        $configuration = Configuration::create([
+            'usd_rate' => $data->usd_rate,
+            'email_verify' => $data->email_verify,
+            'currency_code' => $data->currency_code,
+            'currency_symbol' => $data->currency_symbol,
+            'withdrawal_min' => $data->withdrawal_min,
+            'withdrawal_max' => $data->withdrawal_max,
+            'expert_fee' => $data->expert_fee,
+            'africa_fee' => $data->africa_fee,
+            'asia_fee' => $data->asia_fee,
+            'europe_fee' => $data->europe_fee,
+        ]);
+        return $this->successResponse($configuration, 200);
     }
 
     public  function updateDetails($data)
@@ -36,5 +106,34 @@ class AdminService
             'country' => $data->country,
         ]);
         return $this->successResponse($admin_bank, 200);
+    }
+
+    public function getCompanies()
+    {
+        $companies =  Company::latest('id')->get();
+        if (!$companies) {
+            return $this->errorResponse('No record found', 422);
+        }
+        $data = CompanyResource::collection($companies);
+        return $this->successResponse($data);
+    }
+
+    public function getUsers()
+    {
+        $users =  User::where('role', '!=', UserRole::BUSINESS)->latest('id')->get();
+        if (!$users) {
+            return $this->errorResponse('No record found', 422);
+        }
+        $data = UserResource::collection($users);
+        return $this->successResponse($data);
+    }
+
+    public function getExperts()
+    {
+        $experts =  Expert::latest('id')->get();
+        if (!$experts) {
+            return $this->errorResponse('No record found', 422);
+        }
+        return $this->successResponse($experts);
     }
 }

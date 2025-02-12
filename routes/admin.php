@@ -20,14 +20,21 @@ Route::group(['prefix' => 'administrator'], function () {
     // Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
+        Route::get('/experts', 'experts');
+        Route::get('/companies', 'companies');
+        Route::get('/users', 'users');
     });
+
     //General Setting
-    Route::controller(GeneralSettingController::class)->group(function () {
+    Route::controller(GeneralSettingController::class)->prefix('settings')->group(function () {
         Route::prefix('admin-bank')->group(function () {
             Route::get('/', 'adminAccountDetails');
             Route::post('/update', 'updateAccountDetails');
         });
+        Route::get('/config-details', 'getConfigDetails');
+        Route::post('/update-config', 'updateConfigDetails');
     });
+    
     //SLA Manager
     Route::resource('sla', SlaManagerController::class);
     Route::resource('subscription-plans', PlanManagerController::class);

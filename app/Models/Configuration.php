@@ -11,12 +11,11 @@ class Configuration extends Model
         'email_verify',
         'currency_code',
         'currency_symbol',
-        'paystack_perc',
-        'paystack_fixed',
-        'paystack_max',
+        'africa_fee',
+        'asia_fee',
+        'europe_fee',
         'withdrawal_min',
         'withdrawal_max',
         'expert_fee',
-        'charges'
     ];
 }
