@@ -21,6 +21,11 @@ class ContentService
         $data = CategoryResource::collection($categories);
         return $this->successResponse($data);
     }
+    public function categorySpecializations($id)
+    {
+        $specializations =  Specialization::where('specialization_category_id',$id)->get();
+        return $this->successResponse($specializations);
+    }
 
 
     public function allSpecializations()

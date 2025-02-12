@@ -21,6 +21,10 @@ class HomeController extends Controller
     {
         return $this->contentService->allSpecializations();
     }
+    public function categorySpecializations($id)
+    {
+        return $this->contentService->categorySpecializations($id);
+    }
     public function configDetails()
     {
         return $this->contentService->configDetails();
