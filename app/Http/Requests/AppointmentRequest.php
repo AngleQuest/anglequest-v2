@@ -23,11 +23,11 @@ class AppointmentRequest extends FormRequest
     {
         return [
             'category' => 'required',
-            'specialization' => 'required|max:255',
+            'specialization' => 'required',
             'title' => 'required',
             'description' => 'required',
             // 'attachment' => 'required,doc,docx,jpeg,jpg,png|max:2048',
-            'prefmode' => 'required',
+            //'prefmode' => 'required',
             'priority' => 'required',
             'name' => 'required',
             'role' => 'required',
