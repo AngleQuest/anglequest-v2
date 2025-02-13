@@ -83,7 +83,7 @@ class AppointmentService
 
     public function mergeAppointment($data)
     {
-        $expert = User::find($data->expert_id);
+        $expert = User::where('role', UserRole::EXPERT)->find($data->expert_id);
         if (!$expert) {
             return $this->errorResponse('Expert not found', 422);
         }
