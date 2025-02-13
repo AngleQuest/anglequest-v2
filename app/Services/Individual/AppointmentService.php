@@ -28,7 +28,7 @@ class AppointmentService
 
     public function bookAppointment($data)
     {
-
+        return $data;
         $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
         // return $expert->user_id;
         if ($expert) {
