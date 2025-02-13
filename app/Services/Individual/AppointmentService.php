@@ -79,6 +79,7 @@ class AppointmentService
     {
         $expert_details = User::find($data->expert_id);
         $user = Auth::user();
+       return $user->username;
         $profile = $user->profile;
 
         $appointment = Appointment::create([
