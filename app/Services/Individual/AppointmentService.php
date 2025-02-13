@@ -29,7 +29,7 @@ class AppointmentService
     public function bookAppointment($data)
     {
 
-         $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
+        $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
         // return $expert->user_id;
         if ($expert) {
             $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
@@ -78,15 +78,20 @@ class AppointmentService
     public function mergeAppointment($data)
     {
 
-        $expert = User::find($data->expert_id);
+        $expert_details = User::find($data->expert_id);
         $user = Auth::user();
         $appointment = Appointment::create([
             'user_id' => $user->id,
             'specialization' => $data->specialization,
             'title' => $data->title,
             'description' => $data->description,
-            'expert_name' => $expert->first_name . ' ' . $expert->last_name,
-            'individual_name' => $user->first_name,
+            'job_description' => $data->job_description,
+            'cv' => $data->cv,
+            'role' => $data->role,
+            'title' => $data->title,
+            'category' => $data->category,
+            'expert_name' => $expert_details->expert ? $expert_details->expert->fullName() : $expert_details->username,
+            'individual_name' => $user->profile ? $user->profile->fullName() : $user->username,
             'appointment_date' => $data->appointment_date,
             'expert_id' => $data->expert_id,
             'status' => 'pending',

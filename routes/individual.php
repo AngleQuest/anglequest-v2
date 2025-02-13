@@ -38,21 +38,9 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     Route::controller(AppointmentController::class)->prefix('appointments')->group(function () {
         Route::get('/declined', 'declinedAppointments');
         Route::get('/completed', 'completedAppointments');
-        Route::post('/book-appointment', 'mergeAppointment');
-        Route::post('/book', 'bookAppointment');
+        Route::post('/book-appointment', 'bookAppointment');
+        Route::post('/merge-appointment', 'mergeAppointment');
         Route::get('/feedback/{id}', 'feedback');
     });
 });
-// {
-//     "expert_id": "5",
-//     "category": "SAP",
-//     "specialization": "SAP F1",
-//     "title": "dd",
-//     "description": "dd",
-//     "attachment": "dd",
-//     "prefmode": "test",
-//     "priority": "normal",
-//     "role": "Junior",
-//     "appointment_date": "Mon,Tue 04:00 PM - 07:00 PM",
-//     "name": "normal"
-// }
+

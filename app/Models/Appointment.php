@@ -10,9 +10,12 @@ class Appointment extends Model
     protected $fillable = [
         'user_id',
         'specialization',
+        'category',
         'title',
+        'role',
         'description',
-        'prefmode',
+        'job_description',
+        'cv',
         'expert_id',
         'individual_name',
         'rating',

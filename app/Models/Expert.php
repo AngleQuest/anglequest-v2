@@ -38,4 +38,8 @@ class Expert extends Model
     {
         return $this->BelongsTo(User::class, 'user_id');
     }
+    public function fullName()
+    {
+        return $this->first_name . " " . $this->last_name;
+    }
 }
