@@ -77,9 +77,9 @@ class AppointmentService
 
     public function mergeAppointment($data)
     {
-
         $expert_details = User::find($data->expert_id);
         $user = Auth::user();
+        return $user->profile;
         $appointment = Appointment::create([
             'user_id' => $user->id,
             'specialization' => $data->specialization,
