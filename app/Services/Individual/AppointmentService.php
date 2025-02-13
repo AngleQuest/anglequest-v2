@@ -8,17 +8,23 @@ use App\Enum\UserRole;
 use App\Models\Expert;
 use App\Models\Company;
 use App\Mail\NewUserMail;
+use App\Enum\PaymentMethod;
+use App\Enum\PaymentStatus;
+use App\Models\Appointment;
+use Illuminate\Support\Str;
 use App\Traits\ApiResponder;
 use App\Mail\EmailInvitation;
+use App\Models\PaymentHistory;
 use App\Models\SupportRequest;
 use App\Mail\EmailVerification;
-use App\Models\Appointment;
-use App\Models\AppointmentFeedback;
+use App\Mail\InterviewPaymentMail;
 use App\Models\AppointmentGuide;
 use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
+use App\Models\AppointmentFeedback;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -84,27 +90,40 @@ class AppointmentService
         $expert_details = Expert::where('user_id', $data->expert_id)->first();
         $user = User::find(Auth::id());
         $profile = $user->profile;
-
-        $appointment = Appointment::create([
-            'user_id' => $user->id,
-            'specialization' => $data->specialization,
-            'title' => $data->title,
-            'description' => $data->description,
-            'job_description' => $data->job_description,
-            'cv' => $data->cv,
-            'role' => $data->role,
-            'title' => $data->title,
-            'category' => $data->category,
-            'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
-            'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
-            'appointment_date' => $data->appointment_date,
-            'expert_id' => $data->expert_id,
-            'status' => 'pending',
-        ]);
-        return response()->json([
-            'status' => 'success',
-            'data' => $appointment,
-        ], 200);
+        DB::beginTransaction();
+        try {
+            $this->chargeCard($data, $user);
+            $appointment = Appointment::create([
+                'user_id' => $user->id,
+                'specialization' => $data->specialization,
+                'title' => $data->title,
+                'description' => $data->description,
+                'job_description' => $data->job_description,
+                'cv' => $data->cv,
+                'role' => $data->role,
+                'title' => $data->title,
+                'category' => $data->category,
+                'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
+                'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
+                'appointment_date' => $data->appointment_date,
+                'expert_id' => $data->expert_id,
+                'status' => 'pending',
+            ]);
+            DB::commit();
+            $detail = [
+                'name' => $profile->first_name ? $profile->fullName() : $user->username,
+                'amount' => $data->amount,
+                'expert' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
+            ];
+            Mail::to($user->email)->queue(new InterviewPaymentMail($detail));
+            return response()->json([
+                'status' => 'success',
+                'data' => $appointment,
+            ], 200);
+        } catch (\Exception $e) {
+            return $e;
+            DB::rollBack();
+        }
     }
 
     public function appointmentFeedback($id)
@@ -116,5 +135,53 @@ class AppointmentService
             return $this->errorResponse("No feedback available", 422);
         }
         return $this->successResponse($feedback);
+    }
+
+    private function chargeCard($data, $user)
+    {
+
+        $url = 'https://api.paystack.co/charge';
+        $secretKey = 'sk_test_3500fbfb097c5237d9e30fec3c6d56e8dbc3a106';
+        $response = Http::withToken($secretKey)->post($url, [
+            'email' => $user->email,
+            'amount' => $data->amount,
+            'card' => [
+                'number' => $data->card_number,
+                'cvv' => $data->cvv,
+                'expiry_month' => $data->expiry_month,
+                'expiry_year' => $data->expiry_year,
+            ],
+            'metadata' => [
+                'customer_name' => $user->profile->first_name ? $user->profile->fullName() : $user->username,
+                'customer_email' => $user->email,
+            ]
+        ]);
+
+        $responseBody = $response->json();
+
+        if ($response->successful() && $responseBody['status']) {
+            // Check if further authentication is required
+            // if ($responseBody['data']['status'] === 'send_otp') {
+            //     return response()->json([
+            //         'message' => 'OTP required',
+            //         'data' => $responseBody['data'],
+            //     ]);
+            // }
+            $payment_id = 'AQ_' . Str::random(25) . time();
+            PaymentHistory::create([
+                'user_id' => Auth::id(),
+                'type' => 'subscription',
+                'amount' => $amount,
+                'payment_type' => 'interview sesstion',
+                'payment_id' => $payment_id,
+                'method' => PaymentMethod::PAYSTACK,
+                'status' => PaymentStatus::PAID,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Payment failed',
+            'error' => $responseBody['message'],
+        ], 400);
     }
 }
