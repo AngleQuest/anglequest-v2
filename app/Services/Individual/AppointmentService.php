@@ -92,23 +92,23 @@ class AppointmentService
         $profile = $user->profile;
         DB::beginTransaction();
         try {
-            $this->chargeCard($data, $user);
-            $appointment = Appointment::create([
-                'user_id' => $user->id,
-                'specialization' => $data->specialization,
-                'title' => $data->title,
-                'description' => $data->description,
-                'job_description' => $data->job_description,
-                'cv' => $data->cv,
-                'role' => $data->role,
-                'title' => $data->title,
-                'category' => $data->category,
-                'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
-                'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
-                'appointment_date' => $data->appointment_date,
-                'expert_id' => $data->expert_id,
-                'status' => 'pending',
-            ]);
+            // $this->chargeCard($data, $user);
+            // $appointment = Appointment::create([
+            //     'user_id' => $user->id,
+            //     'specialization' => $data->specialization,
+            //     'title' => $data->title,
+            //     'description' => $data->description,
+            //     'job_description' => $data->job_description,
+            //     'cv' => $data->cv,
+            //     'role' => $data->role,
+            //     'title' => $data->title,
+            //     'category' => $data->category,
+            //     'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
+            //     'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
+            //     'appointment_date' => $data->appointment_date,
+            //     'expert_id' => $data->expert_id,
+            //     'status' => 'pending',
+            // ]);
             DB::commit();
             $detail = [
                 'name' => $profile->first_name ? $profile->fullName() : $user->username,
@@ -118,7 +118,7 @@ class AppointmentService
             Mail::to($user->email)->queue(new InterviewPaymentMail($detail));
             return response()->json([
                 'status' => 'success',
-                'data' => $appointment,
+                //'data' => $appointment,
             ], 200);
         } catch (\Exception $e) {
             return $e;
