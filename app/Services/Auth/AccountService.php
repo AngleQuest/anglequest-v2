@@ -140,7 +140,7 @@ class AccountService
         $credentials = ['email' => $data->email, 'password' => $data->password];
 
         if (!Auth::attempt($credentials)) {
-            return $this->errorResponse('Credentials inputted do not match, please try it again.', 422);
+            return $this->errorResponse('Invalid Credentials inputted, please try it again.', 422);
         }
 
         if (strtolower($user->status) == 'blocked' || strtolower($user->status) == 'suspended') {
