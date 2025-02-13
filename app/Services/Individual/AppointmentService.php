@@ -29,7 +29,7 @@ class AppointmentService
     public function bookAppointment($data)
     {
 
-        return $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
+         $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
         // return $expert->user_id;
         if ($expert) {
             $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
