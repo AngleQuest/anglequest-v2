@@ -177,6 +177,7 @@ class AppointmentService
                 'method' => PaymentMethod::PAYSTACK,
                 'status' => PaymentStatus::PAID,
             ]);
+            return true;
         }
 
         return response()->json([
