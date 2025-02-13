@@ -8,7 +8,7 @@
                 Dear {{ ucfirst($detail['name']) }}
             </h2>
             <p style="margin: 10px 0;">
-                This email confirms that we have received your payment of ${{ $detail['amount'] }} for your Interiew
+                This email confirms that we have received your payment of <b>${{ number_format($detail['amount']) }}</b> for your Interiew
                 Appointment with {{ ucfirst($detail['expert']) }}.
             </p>
 

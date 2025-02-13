@@ -117,9 +117,9 @@
                         <tr>
                             <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
                                 <h1 style="font-size: 48px; font-weight: 400; margin: 2;"></h1>
-                                <a href="https://anglequest.com">
+                                <a href="https://dev.anglequest.com">
                                     <!-- <img src="{{ asset('logo.png') }}" style="display: block; border: 0px;width: 10rem; height: auto;" /> -->
-                                    <img src="{{ asset('logo.png') }}" style="display: block; border: 0px;width: 5rem; height: auto;" />
+                                    <img src="https://dev.anglequest.com/images/homelogo.svg" style="display: block; border: 0px;width: 5rem; height: auto;" />
                                 </a>
                             </td>
                         </tr>
