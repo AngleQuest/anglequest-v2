@@ -79,7 +79,8 @@ class AppointmentService
     {
         $expert_details = User::find($data->expert_id);
         $user = Auth::user();
-        return $user->profile;
+        $profile = $user->profile;
+
         $appointment = Appointment::create([
             'user_id' => $user->id,
             'specialization' => $data->specialization,
@@ -91,7 +92,7 @@ class AppointmentService
             'title' => $data->title,
             'category' => $data->category,
             'expert_name' => $expert_details->expert ? $expert_details->expert->fullName() : $expert_details->username,
-            'individual_name' => $user->profile ? $user->profile->fullName() : $user->username,
+            'individual_name' => $profile ? $profile->fullName() : $user->username,
             'appointment_date' => $data->appointment_date,
             'expert_id' => $data->expert_id,
             'status' => 'pending',
