@@ -171,7 +171,7 @@ class AppointmentService
             PaymentHistory::create([
                 'user_id' => Auth::id(),
                 'type' => 'subscription',
-                'amount' => $amount,
+                'amount' => $data->amount,
                 'payment_type' => 'interview sesstion',
                 'payment_id' => $payment_id,
                 'method' => PaymentMethod::PAYSTACK,
