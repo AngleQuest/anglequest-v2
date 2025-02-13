@@ -115,7 +115,7 @@ class AppointmentService
                 'amount' => $data->amount,
                 'expert' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
             ];
-            Mail::to($user->email)->queue(new InterviewPaymentMail($detail));
+            Mail::to($user->email)->send(new InterviewPaymentMail($detail));
             return response()->json([
                 'status' => 'success',
                 //'data' => $appointment,
