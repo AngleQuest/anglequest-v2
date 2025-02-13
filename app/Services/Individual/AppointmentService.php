@@ -144,7 +144,7 @@ class AppointmentService
         $secretKey = 'sk_test_3500fbfb097c5237d9e30fec3c6d56e8dbc3a106';
         $response = Http::withToken($secretKey)->post($url, [
             'email' => $user->email,
-            'amount' => $data->amount,
+            'amount' => $data->amount * 100,
             'card' => [
                 'number' => $data->card_number,
                 'cvv' => $data->cvv,
