@@ -84,7 +84,11 @@ class AppointmentService
         $expert_details = Expert::where('user_id', $data->expert_id)->first();
         $user = User::find(Auth::id());
         $profile = $user->profile;
-
+        $data = [
+            'user' => $user,
+            'profile' => $profile,
+        ];
+        return $data;
         $appointment = Appointment::create([
             'user_id' => $user->id,
             'specialization' => $data->specialization,
