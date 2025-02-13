@@ -96,7 +96,7 @@ class AppointmentService
             'title' => $data->title,
             'category' => $data->category,
             'expert_name' => $expert_details->fullName() ?? $expert->username,
-            'individual_name' => $profile->fullName() ?? $user->username,
+            'individual_name' => $expert_details->fullName() ?? $expert->username,
             'appointment_date' => $data->appointment_date,
             'expert_id' => $data->expert_id,
             'status' => 'pending',
