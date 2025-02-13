@@ -34,7 +34,7 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::get('/config-details', 'getConfigDetails');
         Route::post('/update-config', 'updateConfigDetails');
     });
-    
+
     //SLA Manager
     Route::resource('sla', SlaManagerController::class);
     Route::resource('subscription-plans', PlanManagerController::class);
