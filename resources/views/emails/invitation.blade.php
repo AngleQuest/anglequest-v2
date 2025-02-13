@@ -30,9 +30,4 @@
         If you did not create an account, no further action is required
     </p>
 
-    <tr>
-        <td bgcolor="#ffffff" align="center" style="padding: 20px; color: #999999;">
-            <p>Thank you, <br> The AngleQuest Team</p>
-        </td>
-    </tr>
 @endsection

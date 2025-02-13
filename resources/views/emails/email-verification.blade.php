@@ -12,9 +12,4 @@
         </td>
     </tr>
 
-    <tr>
-        <td bgcolor="#ffffff" align="center" style="padding: 20px; color: #999999;">
-            <p>Thank you, <br> The AngleQuest Team</p>
-        </td>
-    </tr>
 @endsection

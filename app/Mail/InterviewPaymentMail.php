@@ -10,11 +10,12 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
 
-class InterviewPaymentMail extends Mailable
+class InterviewPaymentMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $detail;
+
     /**
      * Create a new message instance.
      */

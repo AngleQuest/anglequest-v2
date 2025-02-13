@@ -3,7 +3,7 @@
     <head>
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <title>{{$title}}</title>
+        <title></title>
         <style>
             @media screen {
                 @font-face {
@@ -131,44 +131,14 @@
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                         @yield('content')
                         <tr>
-                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                <p style="margin: 0;">If you have any questions, kindly reply to this email — we're always happy to help out.</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; line-height: 25px;">
                                 <p style="margin: 0;">Regards,<br>{{config('app.name')}} Team</p>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
-            <tr>
-                <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                        <tr>
-                            <td bgcolor="#9bab96" align="center" style="background-color:#9bab9633;padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need help?</h2>
-                                <p style="margin: 0;"><a href="mailto:ask@anglequest.com" style="color: #a2be95;">We&rsquo;re here for you</a></p>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                        <tr>
-                            <td bgcolor="#f4f4f4" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;"> <br>
-                                <p style="margin: 0;">
-                                    &copy; <script>document.write(new Date().getFullYear()+" ")</script>{{config('app.name')}} <br>
-                                    <span style="color: #111111; font-weight: 700;">All Rights Reserved</span>.
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+
         </table>
     <script type='text/javascript'></script>
     </body>
