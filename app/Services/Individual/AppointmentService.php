@@ -118,7 +118,7 @@ class AppointmentService
             Mail::to($user->email)->queue(new InterviewPaymentMail($detail));
             return response()->json([
                 'status' => 'success',
-                //'data' => $appointment,
+                'data' => $appointment,
             ], 200);
         } catch (\Exception $e) {
             return $e;
