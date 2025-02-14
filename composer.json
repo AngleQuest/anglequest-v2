@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "agence104/livekit-server-sdk": "^1.2",
+        "cloudinary-labs/cloudinary-laravel": "^2.2",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.17",
