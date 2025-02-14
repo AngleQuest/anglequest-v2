@@ -47,7 +47,7 @@ class AccountService
             if (File::exists(public_path($user->profile_photo))) {
                 File::delete(public_path($user->profile_photo));
             }
-            $fileName = str_replace(' ', '', $user->first_name) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
+            $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
             $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
         }
         IndividualProfile::updateOrCreate(
