@@ -26,8 +26,8 @@ class AppointmentRequest extends FormRequest
             'specialization' => 'required',
             'title' => 'required',
             'description' => 'nullable',
-            'job_description' => 'nullable|mimes:application/pdf',
-            'cv' => 'nullable|mimes:application/pdf',
+            'job_description' => 'nullable|mimes:pdf|max:2048',
+            'cv' => 'nullable|mimes:pdf|max:2048',
             'role' => 'required',
             'appointment_date' => 'required',
         ];
