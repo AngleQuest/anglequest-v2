@@ -30,4 +30,16 @@ class DashboardController extends Controller
     {
         return $this->adminService->getCompanies();
     }
+    function withdrawalRequests()
+    {
+        return $this->adminService->withdrawalRequests();
+    }
+    function approveRequest($id)
+    {
+        return $this->adminService->approveRequest($id);
+    }
+    function declineRequest($id)
+    {
+        return $this->adminService->declineRequest($id);
+    }
 }

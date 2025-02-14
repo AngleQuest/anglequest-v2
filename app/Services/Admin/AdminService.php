@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Enum\PaymentStatus;
 use App\Models\Plan;
 use App\Models\User;
 use App\Enum\UserRole;
@@ -15,6 +16,9 @@ use App\Traits\ApiResponder;
 use App\Models\Configuration;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\CompanyResource;
+use App\Models\Payout;
+use App\Models\UserWallet;
+use Carbon\Carbon;
 
 class AdminService
 {
@@ -135,5 +139,39 @@ class AdminService
             return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($experts);
+    }
+    public function withdrawalRequests()
+    {
+        $payouts =  Payout::with('user')->latest('id')->get();
+        return $this->successResponse($payouts);
+    }
+    public function approveRequest($id)
+    {
+        $payout = Payout::findOrFail($id);
+        $payout->update([
+            'status' => PaymentStatus::PAID,
+            'date_paid' => Carbon::now()->toDateString()
+
+        ]);
+        return $this->successResponse('Request Approved');
+    }
+    public function declineRequest($id)
+    {
+        $payout = Payout::findOrFail($id);
+        $user = User::findOrFail($payout->user_id);
+        // $wallet = UserWallet::where('user_id',$payout->user_id)->first();
+        // if ($wallet) {
+        //   $wallet->master_wallet+=$payout->amount;
+        //   $payout->save();
+        // }
+        $wallet = $user->wallet()->firstOrCreate([
+            'user_id' => $user->id
+        ]);
+
+        $wallet->increment('master_wallet', $payout->amount);
+        $payout->update([
+            'status' => PaymentStatus::UNPAID,
+        ]);
+        return $this->successResponse('Request Declined');
     }
 }

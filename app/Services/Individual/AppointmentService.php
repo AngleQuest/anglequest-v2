@@ -17,9 +17,10 @@ use App\Mail\EmailInvitation;
 use App\Models\PaymentHistory;
 use App\Models\SupportRequest;
 use App\Mail\EmailVerification;
-use App\Mail\InterviewPaymentMail;
+use App\Services\UploadService;
 use App\Models\AppointmentGuide;
 use App\Models\IndividualProfile;
+use App\Mail\InterviewPaymentMail;
 use Illuminate\Support\Facades\DB;
 use App\Models\AppointmentFeedback;
 use Illuminate\Support\Facades\Auth;
@@ -84,12 +85,21 @@ class AppointmentService
     public function mergeAppointment($data)
     {
         $expert = User::where('role', UserRole::EXPERT)->find($data->expert_id);
-        if (!$expert) {
-            return $this->errorResponse('Expert not found', 422);
-        }
         $expert_details = Expert::where('user_id', $data->expert_id)->first();
         $user = User::find(Auth::id());
         $profile = $user->profile;
+
+        if (!$expert) {
+            return $this->errorResponse('Expert not found', 422);
+        }
+        if ($data->cv) {
+            $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->cv->getClientOriginalExtension();
+            $cv = UploadService::upload($data->cv, 'job_cv', $fileName);
+        }
+        if ($data->job_description) {
+            $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->job_description->getClientOriginalExtension();
+            $job_description = UploadService::upload($data->job_description, 'job_description', $fileName);
+        }
         DB::beginTransaction();
         try {
             $this->chargeCard($data, $user);
@@ -98,8 +108,8 @@ class AppointmentService
                 'specialization' => $data->specialization,
                 'title' => $data->title,
                 'description' => $data->description,
-                'job_description' => $data->job_description,
-                'cv' => $data->cv,
+                'job_description' => $data->job_description ? $job_description : null,
+                'cv' => $data->cv ? $cv : null,
                 'role' => $data->role,
                 'title' => $data->title,
                 'category' => $data->category,

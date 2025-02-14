@@ -24,6 +24,11 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::get('/companies', 'companies');
         Route::get('/users', 'users');
     });
+    Route::controller(DashboardController::class)->prefix('withdrawal-request')->group(function () {
+        Route::get('/', 'withdrawalRequests');
+        Route::post('/approve/{id}', 'approveRequest');
+        Route::post('/decline/{id}', 'declineRequest');
+    });
 
     //General Setting
     Route::controller(GeneralSettingController::class)->prefix('settings')->group(function () {
