@@ -27,6 +27,7 @@ use Agence104\LiveKit\AccessToken;
 use App\Models\BusinessCardDetails;
 use Illuminate\Support\Facades\Log;
 use Agence104\LiveKit\AccessTokenOptions;
+use App\Models\Configuration;
 
 class InterviewService
 {
@@ -104,6 +105,28 @@ class InterviewService
         return $this->successResponse($appointments);
     }
 
+    public function completeAppointment($id)
+    {
+        $config = Configuration::first();
+        $appointment = Appointment::find($id);
+        if (!$config) {
+            return $this->errorResponse("Amount not set to credit expert", 422);
+        }
+        if (!$appointment) {
+            return $this->errorResponse("No record found appointment", 422);
+        }
+
+        $expert = User::find(Auth::id());
+        $wallet = $expert->wallet->firstOcreate([
+            'user_id' => $expert->id
+        ]);
+        $wallet->master_wallet += $config->expert_fee;
+        $wallet->save();
+        $appointment->update([
+            'status' => 'completed'
+        ]);
+        return $this->successResponse("Appointment marked completed");
+    }
     public function acceptAppointment($id)
     {
         $appointment = Appointment::find($id);
@@ -141,8 +164,8 @@ class InterviewService
 
     private function meetingLink($request_details, $user, $expert)
     {
-        $key ="APIe6zT8wsZcTio";
-        $seceret ="HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
+        $key = "APIe6zT8wsZcTio";
+        $seceret = "HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
         $roomName = "Support_Meeting _Scheduled_with_.$expert->last_name" . "_$user->first_name" . "_" . time();
         $candidateName = $user->email;

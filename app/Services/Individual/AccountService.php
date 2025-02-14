@@ -23,13 +23,14 @@ use App\Models\PaymentHistory;
 use App\Models\SupportRequest;
 use App\Services\UploadService;
 use App\Models\UserSubscription;
+use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
 use App\Http\Middleware\Individual;
-use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AccountService
 {
@@ -44,11 +45,15 @@ class AccountService
     {
         $user = Auth::user();
         if ($data->profile_photo) {
-            if (File::exists(public_path($user->profile_photo))) {
-                File::delete(public_path($user->profile_photo));
-            }
-            $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
-            $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
+            // if (File::exists(public_path($user->profile_photo))) {
+            //     File::delete(public_path($user->profile_photo));
+            // }
+            // $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
+            // $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
+            $uploadedImage = Cloudinary::upload($data->file('profile_photo')->getRealPath(), [
+                'folder' => 'profiles'
+            ]);
+            $img_url = $uploadedImage->getSecurePath();
         }
         IndividualProfile::updateOrCreate(
             [

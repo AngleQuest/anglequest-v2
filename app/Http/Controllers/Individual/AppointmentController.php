@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Individual;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentRequest;
+use App\Http\Requests\AppointmentMergeRequest;
 use App\Services\Individual\AppointmentService;
-use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
 {
@@ -15,10 +16,10 @@ class AppointmentController extends Controller
 
     function bookAppointment(AppointmentRequest $request)
     {
-       
+
         return $this->appointmentService->bookAppointment($request);
     }
-    function mergeAppointment(AppointmentRequest $request)
+    function mergeAppointment(AppointmentMergeRequest $request)
     {
         return $this->appointmentService->mergeAppointment($request);
     }

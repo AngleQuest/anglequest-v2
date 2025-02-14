@@ -23,6 +23,11 @@ class InterviewManagerController extends Controller
 
         return $this->interviewService->acceptAppointment($id);
     }
+    function markAppointmentCompleted($id)
+    {
+
+        return $this->interviewService->completeAppointment($id);
+    }
 
     function rejectAppointment($id)
     {
@@ -55,7 +60,7 @@ class InterviewManagerController extends Controller
     {
         return $this->interviewService->declinedAppointments();
     }
-    
+
     function createFeedback($id, Request $request)
     {
         return $this->interviewService->appointmentFeedback($id, $request);

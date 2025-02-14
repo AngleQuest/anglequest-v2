@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AppointmentService
 {
@@ -92,14 +93,18 @@ class AppointmentService
         if (!$expert) {
             return $this->errorResponse('Expert not found', 422);
         }
-        // if ($data->cv) {
-        //     $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->cv->getClientOriginalExtension();
-        //     $cv = UploadService::upload($data->cv, 'job_cv', $fileName);
-        // }
-        // if ($data->job_description) {
-        //     $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->job_description->getClientOriginalExtension();
-        //     $job_description = UploadService::upload($data->job_description, 'job_description', $fileName);
-        // }
+        if ($data->cv) {
+            $uploadedImage = Cloudinary::upload($data->file('cv')->getRealPath(), [
+                'folder' => 'job_cv'
+            ]);
+        }
+        $cv = $uploadedImage->getSecurePath();
+        if ($data->job_description) {
+            $uploadedImage = Cloudinary::upload($data->file('job_description')->getRealPath(), [
+                'folder' => 'job_description'
+            ]);
+            $job_description = $uploadedImage->getSecurePath();
+        }
         DB::beginTransaction();
         try {
             $this->chargeCard($data, $user);
@@ -108,8 +113,8 @@ class AppointmentService
                 'specialization' => $data->specialization,
                 'title' => $data->title,
                 'description' => $data->description,
-                'job_description' => $data->job_description,
-                'cv' => $data->cv,
+                'job_description' => $data->job_description ? $job_description : null,
+                'cv' => $data->cv ? $cv : null,
                 'role' => $data->role,
                 'title' => $data->title,
                 'category' => $data->category,

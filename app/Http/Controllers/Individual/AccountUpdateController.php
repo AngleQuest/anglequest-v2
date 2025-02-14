@@ -27,10 +27,7 @@ class AccountUpdateController extends Controller
 
     function updateProfile(ProfileUpdateRequest $request)
     {
-        $uploadedImage = Cloudinary::upload($request->file('profile_photo')->getRealPath(), [
-            'folder' => 'profiles'
-        ]);
-      return $uploadedImage->getSecurePath();
+       
         return $this->accountService->updateProfile($request);
     }
 
