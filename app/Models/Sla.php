@@ -10,4 +10,8 @@ class Sla extends Model
         'name',
         'features',
     ];
+    protected $casts = [
+        'features' => 'array',
+    ];
+
 }

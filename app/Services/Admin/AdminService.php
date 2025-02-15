@@ -2,23 +2,26 @@
 
 namespace App\Services\Admin;
 
-use App\Enum\PaymentStatus;
+use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\User;
 use App\Enum\UserRole;
 use App\Models\Expert;
+use App\Models\Payout;
 use App\Models\Company;
 use App\Enum\UserStatus;
 use App\Models\AdminBank;
+use App\Models\UserWallet;
+use App\Enum\PaymentStatus;
 use App\Models\ActivityLog;
 use App\Models\Appointment;
 use App\Traits\ApiResponder;
 use App\Models\Configuration;
+use App\Models\IndividualProfile;
+use App\Http\Middleware\Individual;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\CompanyResource;
-use App\Models\Payout;
-use App\Models\UserWallet;
-use Carbon\Carbon;
+use App\Http\Resources\IndividualResource;
 
 class AdminService
 {
@@ -46,7 +49,7 @@ class AdminService
     {
         $admin_bank =  AdminBank::first();
         if (!$admin_bank) {
-            return $this->errorResponse('No record found', 422);
+            return $this->errorResponse('No record found', 404);
         }
         return $this->successResponse($admin_bank);
     }
@@ -55,7 +58,7 @@ class AdminService
     {
         $configuration = Configuration::first();
         if (!$configuration) {
-            return $this->errorResponse('No record found', 422);
+            return $this->errorResponse('No record found', 404);
         }
         return $this->successResponse($configuration);
     }
@@ -89,7 +92,7 @@ class AdminService
             'asia_fee' => $data->asia_fee,
             'europe_fee' => $data->europe_fee,
         ]);
-        return $this->successResponse($configuration, 200);
+        return $this->successResponse($configuration);
     }
 
     public  function updateDetails($data)
@@ -116,19 +119,59 @@ class AdminService
     {
         $companies =  Company::latest('id')->get();
         if (!$companies) {
-            return $this->errorResponse('No record found', 422);
+            return $this->errorResponse('No record found', 404);
         }
         $data = CompanyResource::collection($companies);
         return $this->successResponse($data);
     }
-
+    public function getSingleCompany($id)
+    {
+        $company =  Company::find($id);
+        if (!$company) {
+            return $this->errorResponse('No record found', 404);
+        }
+        return $this->successResponse($company);
+    }
     public function getUsers()
     {
         $users =  User::where('role', '!=', UserRole::BUSINESS)->latest('id')->get();
         if (!$users) {
-            return $this->errorResponse('No record found', 422);
+            return $this->errorResponse('No record found', 404);
         }
         $data = UserResource::collection($users);
+        return $this->successResponse($data);
+    }
+    public function deActivateUser($id)
+    {
+        $user =  User::find($id);
+        if (!$user) {
+            return $this->errorResponse('User not found', 404);
+        }
+        $user->update([
+            'status' => UserStatus::BLOCKED
+        ]);
+        return $this->successResponse('Account de-activated');
+    }
+
+    public function getIndividuals()
+    {
+        $individuals =  IndividualProfile::with('user')->latest('id')->get();
+        if (!$individuals) {
+            return $this->errorResponse('No record found', 404);
+        }
+        $data = IndividualResource::collection($individuals);
+        return $this->successResponse($data);
+    }
+
+
+
+    public function getSingleIndividual($id)
+    {
+        $individual =  IndividualProfile::with('user')->find($id);
+        if (!$individual) {
+            return $this->errorResponse('No record found', 404);
+        }
+        $data = new IndividualResource($individual);
         return $this->successResponse($data);
     }
 
@@ -136,9 +179,17 @@ class AdminService
     {
         $experts =  Expert::latest('id')->get();
         if (!$experts) {
-            return $this->errorResponse('No record found', 422);
+            return $this->errorResponse('No record found', 404);
         }
         return $this->successResponse($experts);
+    }
+    public function getSingleExpert($id)
+    {
+        $expert =  Expert::with('user')->find($id);
+        if (!$expert) {
+            return $this->errorResponse('No record found', 404);
+        }
+        return $this->successResponse($expert);
     }
     public function withdrawalRequests()
     {

@@ -17,7 +17,7 @@ class SupportRequestController extends Controller
     {
         return $this->supportRequestService->createSupport($request);
     }
-    
+
     function mergeRequest(SportRequest $request)
     {
         return $this->supportRequestService->mergeRequest($request);
@@ -31,5 +31,9 @@ class SupportRequestController extends Controller
     function completedRequest()
     {
         return $this->supportRequestService->getCompletedRequest();
+    }
+    function declinedRequest()
+    {
+        return $this->supportRequestService->getDeclinedRequest();
     }
 }

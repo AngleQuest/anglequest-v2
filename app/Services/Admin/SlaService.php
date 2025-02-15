@@ -3,36 +3,55 @@
 namespace App\Services\Admin;
 
 use App\Models\Sla;
+use App\Traits\ApiResponder;
 
 class SlaService
 {
-    public static function getAll()
+    use ApiResponder;
+    public function getAll()
     {
-        return Sla::latest('id')->get();
+        $data = Sla::latest('id')->get();
+        return $this->successResponse($data);
     }
-    public static function store($data)
+
+    public function store($data)
     {
-        return Sla::create([
+        $data = Sla::create([
             'name' => $data->name,
-            'features' => json_encode($data->features)
+            'features' => $data->features
         ]);
+        return $this->successResponse($data);
     }
-    public static function edit($id)
+
+    public function edit($id)
     {
         $sla = Sla::find($id);
-        return $sla;
+        if (!$sla) {
+            return $this->errorResponse('No record found', 404);
+        }
+        return $this->successResponse($sla);
     }
-    public static function update($id, $data)
+
+    public function updateSla($id, $data)
     {
         $sla = Sla::find($id);
+        if (!$sla) {
+            return $this->errorResponse('No record found', 404);
+        }
         $sla->update([
             'name' => $data->name,
-            'features' => json_encode($data->features)
+            'features' => $data->features
         ]);
+        return $this->successResponse("Details Updated");
     }
-    public static function delete($id)
+
+    public function delete($id)
     {
         $sla = Sla::find($id);
+        if (!$sla) {
+            return $this->errorResponse('No record found', 404);
+        }
         $sla->delete();
+        return $this->successResponse("Details deleted");
     }
 }

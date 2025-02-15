@@ -20,14 +20,28 @@ Route::group(['prefix' => 'administrator'], function () {
     // Route::group(['middleware' => ['auth:admin']], function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
-        Route::get('/experts', 'experts');
-        Route::get('/companies', 'companies');
-        Route::get('/users', 'users');
-    });
-    Route::controller(DashboardController::class)->prefix('withdrawal-request')->group(function () {
-        Route::get('/', 'withdrawalRequests');
-        Route::post('/approve/{id}', 'approveRequest');
-        Route::post('/decline/{id}', 'declineRequest');
+
+        Route::prefix('withdrawal-requests')->group(function () {
+            Route::get('/', 'withdrawalRequests');
+            Route::post('/approve/{id}', 'approveRequest');
+            Route::post('/decline/{id}', 'declineRequest');
+        });
+        Route::prefix('individuals')->group(function () {
+            Route::get('/', 'individuals');
+            Route::get('/details/{id}', 'getSingleIndividual');
+        });
+        Route::prefix('experts')->group(function () {
+            Route::get('/', 'experts');
+            Route::get('/details/{id}', 'getSingleExpert');
+        });
+        Route::prefix('companies')->group(function () {
+            Route::get('/', 'companies');
+            Route::get('/details/{id}', 'getSingleCompany');
+        });
+        Route::prefix('users')->group(function () {
+            Route::get('/', 'users');
+            Route::post('/de-activate/{id}', 'deActivateUser');
+        });
     });
 
     //General Setting
@@ -41,8 +55,27 @@ Route::group(['prefix' => 'administrator'], function () {
     });
 
     //SLA Manager
-    Route::resource('sla', SlaManagerController::class);
-    Route::resource('subscription-plans', PlanManagerController::class);
+    Route::controller(SlaManagerController::class)->prefix('sla')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/add', 'store');
+        Route::get('/details/{id}', 'show');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/delete/{id}', 'destroy');
+    });
+
+    Route::controller(PlanManagerController::class)->prefix('subscription-plans')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/add', 'store');
+        Route::get('/details/{id}', 'show');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/delete/{id}', 'destroy');
+
+        Route::prefix('individual')->group(function () {
+            Route::get('/', 'allIndividualPlans');
+            Route::post('/add', 'storeIndividualPlan');
+            Route::get('/details/{id}', 'getIndividualPlan');
+        });
+    });
 
     Route::controller(SpecializationCategoryManagerController::class)->prefix('specialization')->group(function () {
         Route::get('/', 'allSpecializations');

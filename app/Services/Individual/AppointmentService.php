@@ -93,15 +93,19 @@ class AppointmentService
         if (!$expert) {
             return $this->errorResponse('Expert not found', 422);
         }
-        if ($data->cv) {
+        if ($data->file('cv')) {
             $uploadedImage = Cloudinary::upload($data->file('cv')->getRealPath(), [
-                'folder' => 'job_cv'
+                'folder' => 'cvs',
+                'resource_type' => 'raw',
+                'format' => 'pdf'
             ]);
+            $cv = $uploadedImage->getSecurePath();
         }
-        $cv = $uploadedImage->getSecurePath();
-        if ($data->job_description) {
+        if ($data->file('job_description')) {
             $uploadedImage = Cloudinary::upload($data->file('job_description')->getRealPath(), [
-                'folder' => 'job_description'
+                'folder' => 'jobdescriptions',
+                'resource_type' => 'raw',
+                'format' => 'pdf'
             ]);
             $job_description = $uploadedImage->getSecurePath();
         }

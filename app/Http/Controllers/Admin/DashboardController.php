@@ -22,13 +22,34 @@ class DashboardController extends Controller
         return $this->adminService->getUsers();
     }
 
+    function deActivateUser($id)
+    {
+        return $this->adminService->deActivateUser($id);
+    }
+
     function experts()
     {
         return $this->adminService->getExperts();
     }
+    function getSingleExpert($id)
+    {
+        return $this->adminService->getSingleExpert($id);
+    }
+    function individuals()
+    {
+        return $this->adminService->getIndividuals();
+    }
+    function getSingleIndividual($id)
+    {
+        return $this->adminService->getSingleIndividual($id);
+    }
     function companies()
     {
         return $this->adminService->getCompanies();
+    }
+    function getSingleCompany($id)
+    {
+        return $this->adminService->getSingleCompany($id);
     }
     function withdrawalRequests()
     {

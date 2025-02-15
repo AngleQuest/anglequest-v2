@@ -21,13 +21,23 @@ class PlanManagerController extends Controller
     {
         return $this->planService->store($request);
     }
-
+    public function storeIndividualPlan(Request $request)
+    {
+        return $this->planService->storeIndividualPlan($request);
+    }
+    public function allIndividualPlans()
+    {
+        return $this->planService->allIndividualPlans();
+    }
+    public function getIndividualPlan($id)
+    {
+        return $this->planService->getIndividualPlan($id);
+    }
 
     public function show(string $id)
     {
         return $this->planService->edit($id);
     }
-
 
     public function update(Request $request, string $id)
     {

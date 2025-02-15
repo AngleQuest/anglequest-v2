@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Individual\DashboardController;
-use App\Http\Controllers\Individual\AccountUpdateController;
-use App\Http\Controllers\Individual\AppointmentController;
 use App\Http\Controllers\Individual\HubController;
+use App\Http\Controllers\Individual\DashboardController;
+use App\Http\Controllers\Individual\AppointmentController;
+use App\Http\Controllers\Individual\AccountUpdateController;
+use App\Http\Controllers\Individual\SupportRequestController;
 
 Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 'prefix' => 'individual'], function () {
     Route::controller(DashboardController::class)->group(function () {
@@ -42,5 +43,13 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
         Route::post('/merge-appointment', 'mergeAppointment');
         Route::get('/feedback/{id}', 'feedback');
     });
-});
 
+    //Support Request Section
+    Route::controller(SupportRequestController::class)->prefix('support-request')->group(function () {
+        Route::get('/declined', 'declinedAppointments');
+        Route::get('/completed', 'completedAppointments');
+        Route::post('/book-appointment', 'bookAppointment');
+        Route::post('/merge-appointment', 'mergeAppointment');
+        Route::get('/feedback/{id}', 'feedback');
+    });
+});
