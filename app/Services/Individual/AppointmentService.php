@@ -41,20 +41,17 @@ class AppointmentService
         if ($expert) {
             $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
             if ($supportRequest <= 2) {
-                if ($supportRequest >= 2) {
-                    return response()->json([
-                        'status' => 'success',
-                        'expert' => 'expert with less load',
-                        $expert,
-                    ], 200);
-                }
-            } else {
                 return response()->json([
                     'status' => 'success',
-                    'expert' => 'expert with no load',
+                    'expert' => 'expert with less load',
                     $expert,
                 ], 200);
             }
+            return response()->json([
+                'status' => 'success',
+                'expert' => 'expert with no load',
+                $expert,
+            ], 200);
         }
     }
 
