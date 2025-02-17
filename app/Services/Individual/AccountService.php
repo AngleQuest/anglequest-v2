@@ -44,12 +44,7 @@ class AccountService
     public function updateProfile($data)
     {
         $user = Auth::user();
-        if ($data->profile_photo) {
-            // if (File::exists(public_path($user->profile_photo))) {
-            //     File::delete(public_path($user->profile_photo));
-            // }
-            // $fileName = str_replace(' ', '', $user->username) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
-            // $img_url = UploadService::upload($data->profile_photo, 'users', $fileName);
+        if ($data->file('profile_photo')) {
             $uploadedImage = Cloudinary::upload($data->file('profile_photo')->getRealPath(), [
                 'folder' => 'profiles'
             ]);
@@ -68,11 +63,12 @@ class AccountService
                 'current_role' => $data->current_role ?? $user->profile->current_role,
                 'target_role' => $data->target_role ?? $user->profile->target_role,
                 'gender' => $data->gender ?? $user->profile->gender,
+                'category' => $data->category ?? $user->profile->category,
                 'specialization' => $data->specialization ?? $user->profile->specialization,
                 'yrs_of_experience' => $data->yrs_of_experience ?? $user->profile->yrs_of_experience,
                 'about' => $data->about ?? $user->profile->about,
                 'location' => $data->location ?? $user->profile->location,
-                'profile_photo' => $data->profile_photo ? $img_url : null,
+                'profile_photo' => $data->profile_photo ? $img_url : $user->profile->profile_photo,
             ]
         );
         return $this->successResponse('Profile Updated successfully');

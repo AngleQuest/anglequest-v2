@@ -21,11 +21,16 @@ class HubResource extends JsonResource
             'visibility' => (string)$this->visibility,
             'name' => (string)$this->name,
             'category' => (string)$this->category,
-            'specialization' => (string)$this->specialization,
+            'specialization' => $this->specialization,
             'description' => (string)$this->description,
             'hub_goals' => (string)$this->hub_goals,
-            'members' => (string)$this->members?->name,
             'created_at' => $this->created_at->toDateString(),
+            'members' => $this->members ? $this->members->map(function ($member): array {
+                return [
+                    'id' => $member?->id,
+                    'name' => $member?->name,
+                ];
+            })->toArray() : [],
         ];
     }
 }

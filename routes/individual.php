@@ -31,8 +31,8 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     //Hub Section
     Route::controller(HubController::class)->group(function () {
         Route::get('/all-hubs', 'allHubs');
-        Route::post('/join-hub', 'joinHub');
-        Route::post('/leave-hub', 'leaveHub');
+        Route::post('/join-hub/{id}', 'joinHub');
+        Route::post('/leave-hub/{id}', 'leaveHub');
     });
 
     //Appointment Section

@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('User applying to join');
             $table->unsignedBigInteger('hub_id');
-            $table->unsignedBigInteger('expert_id');
-            $table->double('hub_count')->default(0)->comment('used in counting members');
             $table->timestamps();
         });
     }

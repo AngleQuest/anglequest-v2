@@ -22,40 +22,41 @@ class IndividualHubService
 
     public function getAreaHub()
     {
-        //$user = Individual::where('user_', $data->specialization)->first();
-        return $profile = Auth::user()->individualProfile;
+        $profile = Auth::user()->profile;
+        $hubs = Hub::where('category', $profile->category)->get();
+        return $this->successResponse($hubs);
     }
     public function attachHub($id)
     {
         $hub = Hub::find($id);
+        $user = User::find(Auth::id());
+        $check = UserHub::where(['user_id' => $user->id, 'hub_id' => $hub->id])->first();
+        $count = UserHub::all()->count();
         if (!$hub) {
-            return $this->errorResponse(null, 'No record found');
+            return $this->errorResponse('No record found', 404);
         }
-        if ($hub->hub_count == 20) {
-            return $this->errorResponse(null, 'Hub Threshold  reached');
+        if ($count == 20) {
+            return $this->errorResponse('Hub Threshold  reached', 422);
         }
-        $hub_detais = UserHub::create([
-            'user_id' => Auth::id(),
-            'hub_id' => $hub->id,
-            'expert_id' => $hub->user_id,
-            'hub_count' => $hub->hub_count += 1,
-        ]);
-        return $this->successResponse($hub_detais);
+        if ($check) {
+            return $this->errorResponse('Already a member', 422);
+        }
+
+        $user->myHub()->attach($hub);
+        return $this->successResponse('User attached to Hub');
     }
     public function leaveHub($id)
     {
         $hub = Hub::find($id);
+        $user = User::find(Auth::id());
+        $check = UserHub::where(['user_id' => $user->id, 'hub_id' => $hub->id])->first();
         if (!$hub) {
-            return $this->errorResponse(null, 'No record found');
+            return $this->errorResponse('No record found', 404);
         }
-        if ($hub->hub_count == 20) {
-            return $this->errorResponse(null, 'Hub Threshold  reached');
+        if (!$check) {
+            return $this->errorResponse('No hub found for user', 404);
         }
-        $hub_detais = UserHub::where([
-            'user_id' => Auth::id(),
-            'hub_id' => $hub->id
-        ]);
-        $hub_detais->delete();
-        return $this->successResponse($hub_detais);
+        $user->myHub()->detach($hub);
+        return $this->successResponse('User detached from Hub');
     }
 }
