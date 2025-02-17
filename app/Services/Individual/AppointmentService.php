@@ -45,7 +45,7 @@ class AppointmentService
             if ($supportRequest <= 2) {
                 return $this->successResponse($expert);
             } else {
-                return $this->errorResponse('No expert available for now', 404);
+                return 'No expert available for now';
             }
             return $this->successResponse($expert);
         }
