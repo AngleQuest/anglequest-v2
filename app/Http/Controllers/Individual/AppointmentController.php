@@ -23,10 +23,7 @@ class AppointmentController extends Controller
     {
         return $this->appointmentService->mergeAppointment($request);
     }
-    function makePayment(Request $request)
-    {
-        return $this->appointmentService->bookAppointment($request);
-    }
+    
 
     function declinedAppointments()
     {
