@@ -40,15 +40,15 @@ class AppointmentService
         if (!$expert) {
             return $this->errorResponse('No expert found for your search', 404);
         }
-        if ($expert) {
-            $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
-            if ($supportRequest <= 2) {
-                return $this->successResponse($expert);
-            } else {
-                return $this->errorResponse('No expert available for now', 404);
-            }
-            return $this->successResponse($expert);
-        }
+        // if ($expert) {
+        //     $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
+        //     if ($supportRequest <= 2) {
+        //         return $this->successResponse($expert);
+        //     } else {
+        //         return $this->errorResponse('No expert available for now', 404);
+        //     }
+        //     return $this->successResponse($expert);
+        // }
     }
 
     public function declinedAppointments()
