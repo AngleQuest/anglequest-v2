@@ -60,6 +60,25 @@ class AppointmentService
             ->get();
         return $this->successResponse($appointments);
     }
+    public function sendCV($data)
+    {
+        $appointment = Appointment::find($data->appointment_id);
+        if (!$appointment) {
+            return $this->errorResponse('No Appointment found with this Id', 404);
+        }
+        if ($data->file('cv')) {
+            $uploadedImage = Cloudinary::upload($data->file('cv')->getRealPath(), [
+                'folder' => 'cvs',
+                'resource_type' => 'raw',
+                'format' => 'pdf'
+            ]);
+            $cv = $uploadedImage->getSecurePath();
+            $appointment->update([
+                'cv' => $cv
+            ]);
+        }
+        return $this->successResponse('Cv uploaded');
+    }
 
     public function completedAppointments()
     {
@@ -158,7 +177,7 @@ class AppointmentService
                 'expiry_year' => $data->expiry_year,
             ],
             'metadata' => [
-                'customer_name' => $user->profile->first_name ? $user->profile->fullName() : $user->username,
+                'customer_name' => $data->name ?? $user->username,
                 'customer_email' => $user->email,
             ]
         ]);

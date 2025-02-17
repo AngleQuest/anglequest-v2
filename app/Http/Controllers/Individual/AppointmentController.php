@@ -19,11 +19,16 @@ class AppointmentController extends Controller
 
         return $this->appointmentService->bookAppointment($request);
     }
+    function sendCV(AppointmentRequest $request)
+    {
+        return $this->appointmentService->sendCV($request);
+    }
+    
     function mergeAppointment(AppointmentMergeRequest $request)
     {
         return $this->appointmentService->mergeAppointment($request);
     }
-    
+
 
     function declinedAppointments()
     {
