@@ -37,21 +37,17 @@ class AppointmentService
     public function bookAppointment($data)
     {
         $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
-
+        if (!$expert) {
+            return $this->errorResponse('No expert found for your search', 404);
+        }
         if ($expert) {
             $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
             if ($supportRequest <= 2) {
-                return response()->json([
-                    'status' => 'success',
-                    'expert' => 'expert with less load',
-                    $expert,
-                ], 200);
+                return $this->successResponse($expert);
+            } else {
+                return $this->errorResponse('No expert available for now', 404);
             }
-            return response()->json([
-                'status' => 'success',
-                'expert' => 'expert with no load',
-                $expert,
-            ], 200);
+            return $this->successResponse($expert);
         }
     }
 
