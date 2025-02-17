@@ -103,7 +103,7 @@ class AccountService
                 ]);
                 $user = User::create([
                     'company_id' => $company->id,
-                    'username' => str_replace(' ', '', $data->username),
+                    'username' => str_replace(' ', '', $data->email),
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
