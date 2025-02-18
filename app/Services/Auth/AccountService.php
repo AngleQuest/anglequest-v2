@@ -38,6 +38,7 @@ class AccountService
                 'password' => Hash::make($password),
                 'role' => UserRole::INDIVIDUAL
             ]);
+            $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
             IndividualProfile::create([
                 'user_id' => $user->id
             ]);
