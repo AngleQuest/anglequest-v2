@@ -13,6 +13,7 @@ Route::prefix('auth')->group(function () {
     Route::controller(AccountController::class)->group(function () {
         Route::post('/register', 'register');
         Route::post('/create-account', 'openAccount');
+        Route::post('/check-expert', 'checkExpert');
         Route::post('/login', 'login');
     });
 

@@ -9,6 +9,7 @@ use App\Models\Expert;
 use App\Models\Company;
 use App\Mail\NewUserMail;
 use App\Models\UserWallet;
+use App\Models\Appointment;
 use Illuminate\Support\Str;
 use App\Traits\ApiResponder;
 use App\Models\Configuration;
@@ -16,6 +17,7 @@ use App\Models\ProductRating;
 use App\Models\ProductReview;
 use App\Mail\OpenAccountEmail;
 use App\Mail\EmailVerification;
+use App\Models\AppointmentGuide;
 use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +59,22 @@ class AccountService
 
         DB::rollBack();
         return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
+    }
+    public  function checkExpert($data)
+    {
+        $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
+        if (!$expert) {
+            return 'No expert found for your search';
+        }
+        if ($expert) {
+            $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
+            if ($supportRequest <= 2) {
+                return $this->successResponse($expert);
+            } else {
+                return 'No expert available for now';
+            }
+            return $this->successResponse($expert);
+        }
     }
 
     public  function signUp($data)

@@ -33,6 +33,10 @@ class AccountController extends Controller
     {
         return $this->accountService->openAccount($request);
     }
+    public function checkExpert(Request $request)
+    {
+        return $this->accountService->checkExpert($request);
+    }
 
     function login(LoginRequest $request)
     {
