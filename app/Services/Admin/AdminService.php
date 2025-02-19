@@ -49,7 +49,7 @@ class AdminService
     {
         $admin_bank =  AdminBank::first();
         if (!$admin_bank) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($admin_bank);
     }
@@ -58,7 +58,7 @@ class AdminService
     {
         $configuration = Configuration::first();
         if (!$configuration) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($configuration);
     }
