@@ -29,4 +29,8 @@ class HomeController extends Controller
     {
         return $this->contentService->configDetails();
     }
+    public function cvAnalysis(Request $request)
+    {
+        return $this->contentService->cvAnalysis($request);
+    }
 }

@@ -51,6 +51,14 @@ class AppointmentService
         }
     }
 
+    public function pendingAppointments()
+    {
+        $user = Auth::user();
+        $appointments = Appointment::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->get();
+        return $this->successResponse($appointments);
+    }
     public function declinedAppointments()
     {
 

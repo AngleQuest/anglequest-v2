@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     Route::controller(AppointmentController::class)->prefix('appointments')->group(function () {
         Route::get('/declined', 'declinedAppointments');
         Route::get('/completed', 'completedAppointments');
+        Route::get('/pending', 'pendingAppointments');
         Route::post('/book-appointment', 'bookAppointment');
         Route::post('/merge-appointment', 'mergeAppointment');
         Route::get('/feedback/{id}', 'feedback');
