@@ -145,7 +145,7 @@ class AdminService
     {
         $user =  User::find($id);
         if (!$user) {
-            return 'User not found';
+            return $this->errorResponse('User not found', 422);
         }
         $user->update([
             'status' => UserStatus::BLOCKED
