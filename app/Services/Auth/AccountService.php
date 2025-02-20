@@ -271,14 +271,14 @@ class AccountService
 
         // Generate Sanctum token
         $token = $admin->createToken('admin-token')->plainTextToken;
-        ActivityLog::createRow($admin->name,ucfirst($admin->name).'Just signed in to the system as an admin');
+        ActivityLog::createRow($admin->name,ucfirst($admin->name).' Just signed in to the system as an admin');
         return response()->json(['token' => $token, 'admin' => $admin]);
     }
 
     public function adminLogout()
     {
         request()->user()->tokens()->delete();
-
+        ActivityLog::createRow(request()->user()->name,ucfirst(request()->user()->name).' Just signed out from the system as an admin');
         return response()->json(['message' => 'Logged out successfully']);
     }
 }

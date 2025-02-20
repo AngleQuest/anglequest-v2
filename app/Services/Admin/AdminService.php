@@ -153,6 +153,7 @@ class AdminService
         IndividualProfile::where('user_id', $user->id)->delete();
         Expert::where('user_id', $user->id)->delete();
         $user->delete();
+        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Deleted '.$user->username.' Account');
         return $this->successResponse('Account deleted');
     }
     public function deActivateUser($id)
@@ -164,6 +165,7 @@ class AdminService
         $user->update([
             'status' => UserStatus::BLOCKED
         ]);
+        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' De-activated '.$user->username.' Account');
         return $this->successResponse('Account de-activated');
     }
     public function activateUser($id)
@@ -175,6 +177,7 @@ class AdminService
         $user->update([
             'status' => UserStatus::ACTIVE
         ]);
+        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Activated '.$user->username.' Account');
         return $this->successResponse('Account activated');
     }
 
@@ -229,6 +232,8 @@ class AdminService
             'date_paid' => Carbon::now()->toDateString()
 
         ]);
+        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Approved an Withdrawal Request');
+
         return $this->successResponse('Request Approved');
     }
     public function declineRequest($id)
@@ -279,5 +284,5 @@ class AdminService
         ]);
         return $this->successResponse('Password Successfully Updated');
     }
-    
+
 }
