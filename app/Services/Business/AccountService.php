@@ -17,6 +17,7 @@ use App\Mail\NewUserMail;
 use App\Enum\AccountStatus;
 use App\Enum\PaymentMethod;
 use App\Enum\PaymentStatus;
+use App\Models\ActivityLog;
 use Illuminate\Support\Str;
 use App\Traits\ApiResponder;
 use App\Models\PaymentHistory;
@@ -75,6 +76,7 @@ class AccountService
             'city' => $data->city ?? $user->company->city,
             'state' => $data->state ?? $user->company->state,
         ]);
+        ActivityLog::createRow($user->username,ucfirst($user->username).'Updated profile '.$user->role.' Account');
         return $this->successResponse(Auth::user()->company);
     }
 

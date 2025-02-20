@@ -18,6 +18,7 @@ use App\Models\ProductRating;
 use App\Models\ProductReview;
 use App\Mail\OpenAccountEmail;
 use App\Mail\EmailVerification;
+use App\Models\ActivityLog;
 use App\Models\AppointmentGuide;
 use App\Models\IndividualProfile;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +55,7 @@ class AccountService
                     'name' => $data->username,
                     'password' => $password,
                 ];
+                ActivityLog::createRow($user->id, $user->username,'New Appointment booked by '.ucfirst($user->username));
                 Mail::to($user->email)->queue(new OpenAccountEmail($detail));
                 return $this->successResponse($user);
             }
@@ -139,6 +141,7 @@ class AccountService
                 ]);
                 Mail::to($user->email)->queue(new EmailVerification($user));
                 $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
+                ActivityLog::createRow($user->username,ucfirst($user->username).' Signed up using '.$data->role.' Account');
                 return $this->successResponse($user);
             }
         }
@@ -170,7 +173,7 @@ class AccountService
 
         //event(new Login($user));
         $user->token = $user->createToken($user->email . ' Login Token')->plainTextToken;
-
+        ActivityLog::createRow($user->username,ucfirst($user->username).' Logged in using '.$data->role.' Account');
         return $this->successResponse($user);
     }
 
@@ -193,6 +196,7 @@ class AccountService
             'email_code_expire_time' => null,
         ]);
         Mail::to($user->email)->send(new NewUserMail($user));
+        ActivityLog::createRow($user->username,ucfirst($user->username).' did email verification using '.$user->role.' Account');
         return $this->successResponse('Email Verified Succesfully');
     }
 
@@ -212,7 +216,7 @@ class AccountService
         $user = User::find($user->id);
 
         Mail::to($user)->send(new EmailVerification($user));
-
+        ActivityLog::createRow($user->username,ucfirst($user->username).' Requested for a new verication code using '.$user->role.' Account');
         return $this->successResponse('A new code has been sent to you');
     }
 
@@ -267,7 +271,7 @@ class AccountService
 
         // Generate Sanctum token
         $token = $admin->createToken('admin-token')->plainTextToken;
-
+        ActivityLog::createRow($admin->name,ucfirst($admin->name).'Just signed in to the system as an admin');
         return response()->json(['token' => $token, 'admin' => $admin]);
     }
 
