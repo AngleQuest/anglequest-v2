@@ -48,7 +48,9 @@ class ContentService
     {
 
         try {
-            $cv_path = $data->file('cv')->store('cvs', 'public');
+            $fileName = str_replace(' ', '', $data->file('cv')).'.'.$data->file('cv')->getClientOriginalExtension();
+            $cv_path = UploadService::upload($data->file('cv'), 'cvs', $fileName);
+           // $cv_path = $data->file('cv')->store('cvs', 'public');
 
             // if($cv_path){
             //  $response = Http::post('https://ai.anglequest.work/api/v1/vector/upsert/0ca3249e-6746-4b8c-a90b-6dc3952ef064');

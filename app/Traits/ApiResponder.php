@@ -15,7 +15,7 @@ trait ApiResponder
 	 * @param int  $code
 	 * @return Illuminate\Http\JsonResponse
 	*/
-	public function successResponse($data, $code = Response::HTTP_OK)
+	public function successResponse($data, $code = 200)
 	{
 		return response()->json(['data' => $data], $code);
 	}
