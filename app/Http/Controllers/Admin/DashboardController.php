@@ -26,6 +26,15 @@ class DashboardController extends Controller
     {
         return $this->adminService->deActivateUser($id);
     }
+    function activateUser($id)
+    {
+        return $this->adminService->activateUser($id);
+    }
+
+    function deleteUser($id)
+    {
+        return $this->adminService->deleteUser($id);
+    }
 
     function experts()
     {

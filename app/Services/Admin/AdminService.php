@@ -141,6 +141,17 @@ class AdminService
         $data = UserResource::collection($users);
         return $this->successResponse($data);
     }
+    public function deleteUser($id)
+    {
+        $user =  User::find($id);
+        if (!$user) {
+            return $this->errorResponse('User not found', 422);
+        }
+        IndividualProfile::where('user_id', $user->id)->delete();
+        Expert::where('user_id', $user->id)->delete();
+        $user->delete();
+        return $this->successResponse('Account deleted');
+    }
     public function deActivateUser($id)
     {
         $user =  User::find($id);
@@ -151,6 +162,17 @@ class AdminService
             'status' => UserStatus::BLOCKED
         ]);
         return $this->successResponse('Account de-activated');
+    }
+    public function activateUser($id)
+    {
+        $user =  User::find($id);
+        if (!$user) {
+            return $this->errorResponse('User not found', 422);
+        }
+        $user->update([
+            'status' => UserStatus::ACTIVE
+        ]);
+        return $this->successResponse('Account activated');
     }
 
     public function getIndividuals()

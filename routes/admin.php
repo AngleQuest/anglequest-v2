@@ -17,7 +17,7 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::post('/login', 'login');
     });
 
-    // Route::group(['middleware' => ['auth:admin']], function () {
+    // Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
 
@@ -41,6 +41,8 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::prefix('users')->group(function () {
             Route::get('/', 'users');
             Route::post('/de-activate/{id}', 'deActivateUser');
+            Route::post('/activate/{id}', 'activateUser');
+            Route::post('/delete/{id}', 'deleteUser');
         });
     });
 

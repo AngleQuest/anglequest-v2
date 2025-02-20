@@ -4,6 +4,7 @@ namespace App\Services\Auth;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Admin;
 use App\Enum\UserRole;
 use App\Models\Expert;
 use App\Models\Company;
@@ -253,5 +254,44 @@ class AccountService
             'email_code_expire_time' => null,
         ]);
         return $this->successResponse($user);
+    }
+
+    //Admin
+    public function adminLogin($data)
+    {
+
+        $admin = Admin::where('email', strtolower($data->email))->first();
+        if (!$admin) {
+            return $this->errorResponse('Oops! No record found with your entry.', 422);
+        }
+
+        $credentials = ['email' => $data->email, 'password' => $data->password];
+
+        if (!Hash::check($data->password, $admin->password)) {
+            return $this->errorResponse('Password do not matched record', 422);
+        }
+        $token = Str::random(25) . $admin->id . Str::random(25);
+        $exp = Carbon::now()->addDays(1);
+
+       
+        $get = Admin::find($admin->id);
+        $get['token'] = $token;
+        $get['exp'] = $exp;
+
+        return $this->successResponse($get);
+    }
+
+
+    public function adminLogout($adminID)
+    {
+        $admin = Admin::find($adminID);
+
+        if ($admin) {
+            $admin->update(['api_token' => null]);
+
+            return $this->successResponse($admin);
+        }
+
+        return $this->errorResponse('Logout request failed', 422);
     }
 }
