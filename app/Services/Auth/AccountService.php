@@ -33,7 +33,7 @@ class AccountService
     {
         DB::beginTransaction();
         if ($data) {
-            $password = Str::random(15);
+            $password = Str::random(5);
             $user = User::create([
                 'email' => strtolower($data->email),
                 'username' => str_replace(' ', '', $data->username),
@@ -273,7 +273,7 @@ class AccountService
         $token = Str::random(25) . $admin->id . Str::random(25);
         $exp = Carbon::now()->addDays(1);
 
-       
+
         $get = Admin::find($admin->id);
         $get['token'] = $token;
         $get['exp'] = $exp;
