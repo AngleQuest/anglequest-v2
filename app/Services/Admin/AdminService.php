@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use Carbon\Carbon;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\Admin;
 use App\Enum\UserRole;
 use App\Models\Expert;
 use App\Models\Payout;
@@ -20,6 +21,8 @@ use App\Models\Configuration;
 use App\Models\IndividualProfile;
 use App\Http\Middleware\Individual;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\IndividualResource;
 
@@ -247,4 +250,34 @@ class AdminService
         ]);
         return $this->successResponse('Request Declined');
     }
+
+    //profile
+    public function getProfile()
+    {
+        return $this->successResponse(request()->user());
+    }
+
+    public function updateLoginDetails($data)
+    {
+        $admin = Admin::find(request()->user()->id);
+        $admin->update([
+            'email' => $data->email ?? $admin->email,
+            'name' => $data->name ?? $admin->name,
+        ]);
+        return $this->successResponse($admin);
+    }
+
+    public function updatePassword($data)
+    {
+        $admin = Admin::find(Auth::id());
+        if (!Hash::check($data->old_password, $admin->password)) {
+            return $this->errorResponse('Old Password does not match', 422);
+        }
+
+        $admin->update([
+            'password' => Hash::make($data->password),
+        ]);
+        return $this->successResponse('Password Successfully Updated');
+    }
+    
 }

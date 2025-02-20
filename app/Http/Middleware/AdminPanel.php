@@ -15,6 +15,11 @@ class AdminPanel
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Check if the authenticated user is an admin
+        if (!$request->user() || !$request->user() instanceof \App\Models\Admin) {
+            return response()->json(['message' => 'Access denied. Admins only.'], 403);
+        }
+
         return $next($request);
     }
 }

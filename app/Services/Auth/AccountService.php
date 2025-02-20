@@ -37,6 +37,7 @@ class AccountService
             $user = User::create([
                 'email' => strtolower($data->email),
                 'username' => str_replace(' ', '', $data->username),
+                'mode' => 'open',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make($password),
                 'role' => UserRole::INDIVIDUAL
@@ -255,43 +256,25 @@ class AccountService
         ]);
         return $this->successResponse($user);
     }
-
-    //Admin
     public function adminLogin($data)
     {
 
-        $admin = Admin::where('email', strtolower($data->email))->first();
-        if (!$admin) {
-            return $this->errorResponse('Oops! No record found with your entry.', 422);
+        $admin = Admin::where('email', $data->email)->first();
+
+        if (!$admin || !Hash::check($data->password, $admin->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $credentials = ['email' => $data->email, 'password' => $data->password];
+        // Generate Sanctum token
+        $token = $admin->createToken('admin-token')->plainTextToken;
 
-        if (!Hash::check($data->password, $admin->password)) {
-            return $this->errorResponse('Password do not matched record', 422);
-        }
-        $token = Str::random(25) . $admin->id . Str::random(25);
-        $exp = Carbon::now()->addDays(1);
-
-
-        $get = Admin::find($admin->id);
-        $get['token'] = $token;
-        $get['exp'] = $exp;
-
-        return $this->successResponse($get);
+        return response()->json(['token' => $token, 'admin' => $admin]);
     }
 
-
-    public function adminLogout($adminID)
+    public function adminLogout()
     {
-        $admin = Admin::find($adminID);
+        request()->user()->tokens()->delete();
 
-        if ($admin) {
-            $admin->update(['api_token' => null]);
-
-            return $this->successResponse($admin);
-        }
-
-        return $this->errorResponse('Logout request failed', 422);
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }

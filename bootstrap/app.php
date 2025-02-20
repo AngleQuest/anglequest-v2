@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\Expert;
 use App\Http\Middleware\Business;
+use App\Http\Middleware\AdminPanel;
 use App\Http\Middleware\Individual;
 use App\Http\Middleware\IsVerifyEmail;
 use Illuminate\Foundation\Application;
@@ -23,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
-            // 'super.admin' => \App\Http\Middleware\SuperAdmin::class,
+            'super.admin' => AdminPanel::class,
             'email.verified' => EnsureEmailIsVerified::class,
             'individual' => Individual::class,
             'expert' => Expert::class,
