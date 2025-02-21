@@ -73,6 +73,14 @@ class AccountService
         );
         return $this->successResponse('Profile Updated successfully');
     }
+    public function updateMode()
+    {
+        $user = User::find(Auth::user()->id);
+        $user->update([
+            'mode' => 'closed',
+        ]);
+        return $this->successResponse('Mode Updated successfully');
+    }
 
 
     public function updateLoginDetails($data)

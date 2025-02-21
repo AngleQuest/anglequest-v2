@@ -27,8 +27,13 @@ class AccountUpdateController extends Controller
 
     function updateProfile(ProfileUpdateRequest $request)
     {
-       
+
         return $this->accountService->updateProfile($request);
+    }
+    function updateMode()
+    {
+
+        return $this->accountService->updateMode();
     }
 
     public function changePassword(PasswordRequest $request)

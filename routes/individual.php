@@ -18,6 +18,7 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     Route::controller(AccountUpdateController::class)->group(function () {
         Route::get('/profile', 'profile');
         Route::post('/update-profile', 'updateProfile');
+        Route::post('/update-mode', 'updateMode');
         Route::post('/update-email', 'changeEmail');
         Route::post('/update-password', 'changePassword');
         Route::post('/delete-account', 'deleteMyAccount');
