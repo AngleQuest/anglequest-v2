@@ -48,11 +48,11 @@ class ContentService
     {
 
         try {
-            $fileName = str_replace(' ', '', $data->file('cv')).'.'.$data->file('cv')->getClientOriginalExtension();
-            $cv_path = UploadService::upload($data->file('cv'), 'cvs', $fileName);
-           // $cv_path = $data->file('cv')->store('cvs', 'public');
+          //  $fileName = str_replace(' ', '', $data->file('cv')).'.'.$data->file('cv')->getClientOriginalExtension();
+           // $cv_path = UploadService::upload($data->file('cv'), 'cvs', $fileName);
+            $cv_path = $data->file('cv')->store('cvs', 'public');
 
-            // if($cv_path){
+            if($cv_path){
             //  $response = Http::post('https://ai.anglequest.work/api/v1/vector/upsert/0ca3249e-6746-4b8c-a90b-6dc3952ef064');
             $response = Http::post('https://ai.anglequest.work/api/v1/vector/upsert/2874fb18-9ef7-4463-8b7f-5da89b55e94e');
 
@@ -130,7 +130,7 @@ class ContentService
 
                 return 'Failed to analyze your cv';
             }
-            // }
+             }
 
         } catch (\Throwable $th) {
 
