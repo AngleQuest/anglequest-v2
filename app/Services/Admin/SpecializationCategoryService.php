@@ -46,7 +46,10 @@ class SpecializationCategoryService
     }
     public function deleteCategory($id)
     {
-        $category = SpecializationCategory::findOrFail($id);
+        $category = SpecializationCategory::find($id);
+        if (!$category) {
+            return $this->errorResponse("No record found", 422);
+        }
         $category->delete();
         return $this->successResponse("Details Deleted");
     }
@@ -87,7 +90,10 @@ class SpecializationCategoryService
     }
     public function deleteSpecialization($id)
     {
-        $specialization = Specialization::findOrFail($id);
+        $specialization = Specialization::find($id);
+        if (!$specialization) {
+            return $this->errorResponse("No record found", 422);
+        }
         $specialization->delete();
         return $this->successResponse("Details deleted");
     }
