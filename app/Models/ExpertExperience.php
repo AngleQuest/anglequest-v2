@@ -10,10 +10,7 @@ class ExpertExperience extends Model
         'user_id',
         'company_name',
         'position',
-        'position',
         'from',
-        'from',
-        'to',
         'to',
     ];
 }

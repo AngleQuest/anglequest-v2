@@ -18,16 +18,12 @@ class Expert extends Model
         'gender',
         'specialization',
         'available_days',
-        'available_time',
-        'yrs_of_experience',
         'about',
         'location',
         'profile_photo',
     ];
     protected $casts = [
         'specialization' => 'array',
-        'available_days' => 'array',
-        'available_time' => 'array',
     ];
     // public function supportRequests()
     // {

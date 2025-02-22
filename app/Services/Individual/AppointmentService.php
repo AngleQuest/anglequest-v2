@@ -36,7 +36,7 @@ class AppointmentService
 
     public function bookAppointment($data)
     {
-        $expert = AppointmentGuide::whereJsonContains('specialization', $data->specialization)->first();
+        $expert = Expert::whereJsonContains('specialization', $data->specialization)->first();
         if (!$expert) {
             return 'No expert found for your search';
         }

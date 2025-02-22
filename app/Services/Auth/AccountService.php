@@ -88,6 +88,9 @@ class AccountService
         if ($data) {
             $code = mt_rand(100000, 999999);
             if ($data->role == UserRole::INDIVIDUAL) {
+                if (!$data->username) {
+                    return $this->errorResponse('Please enter your Username.', 422);
+                }
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'username' => str_replace(' ', '', $data->username),
@@ -99,6 +102,9 @@ class AccountService
                 ]);
             }
             if ($data->role == UserRole::EXPERT) {
+                if (!$data->username) {
+                    return $this->errorResponse('Please enter your Username.', 422);
+                }
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'username' => str_replace(' ', '', $data->username),
@@ -126,7 +132,7 @@ class AccountService
                 ]);
                 $user = User::create([
                     'company_id' => $company->id,
-                    'username' => str_replace(' ', '', $data->email),
+                    'username' => str_replace(' ', '',$data->administrator_name),
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role

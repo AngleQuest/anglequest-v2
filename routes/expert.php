@@ -24,6 +24,13 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
         Route::post('/update-email', 'changeEmail');
         Route::post('/update-password', 'changePassword');
         Route::delete('/delete-account', 'deleteMyAccount');
+        Route::prefix('job-experience')->group(function () {
+            Route::get('/', 'getExperiences');
+            Route::post('/add', 'addExperience');
+            Route::get('/view/{id}', 'getExperience');
+            Route::post('/update/{id}', 'updateExperience');
+            Route::delete('/delete/{id}', 'deleteExperience');
+        });
     });
 
     //Hub Manager

@@ -4,6 +4,7 @@ namespace App\Services\Expert;
 
 use App\Models\User;
 use App\Models\Expert;
+use App\Models\ExpertExperience;
 use App\Models\UserPaymentInfo;
 use App\Traits\ApiResponder;
 use App\Services\UploadService;
@@ -46,8 +47,6 @@ class AccountService
             'gender' => $data->gender ?? $user->expert->gender,
             'specialization' => $data->specialization ?? $user->expert->specialization,
             'available_days' => $data->available_days ?? $user->expert->available_days,
-            'available_time' => $data->available_time ?? $user->expert->available_time,
-            'yrs_of_experience' => $data->yrs_of_experience ?? $user->expert->yrs_of_experience,
             'about' => $data->about ?? $user->expert->about,
             'location' => $data->location ?? $user->expert->location,
         ]);
@@ -109,5 +108,58 @@ class AccountService
             'password' => Hash::make($data->password),
         ]);
         return $this->successResponse('Password Successfully Updated');
+    }
+
+    //Job Experiences
+    public function getExperiences()
+    {
+        $user = Auth::user();
+        $experiences = ExpertExperience::where('user_id', $user->id)->latest('id')->get();
+        return $this->successResponse($experiences);
+    }
+    public function addExperience($data)
+    {
+        $user = Auth::user();
+        ExpertExperience::create(
+            [
+                'user_id' => $user->id,
+                'company_name' => $data->company_name,
+                'position' => $data->position,
+                'from' => $data->start_date,
+                'to' => $data->end_date,
+            ]
+        );
+        return $this->successResponse('details added successfully');
+    }
+    public function editExperience($id)
+    {
+        $experience = ExpertExperience::find($id);
+        if (!$experience) {
+            return $this->errorResponse('No rrecord found', 422);
+        }
+        return $this->successResponse($experience);
+    }
+    public function updateExperience($id, $data)
+    {
+        $experience = ExpertExperience::find($id);
+        if (!$experience) {
+            return $this->errorResponse('No rrecord found', 422);
+        }
+        $experience->update([
+            'company_name' => $data->company_name,
+            'position' => $data->position,
+            'from' => $data->start_date,
+            'to' => $data->end_date,
+        ]);
+        return $this->successResponse('details updated successfully');
+    }
+    public function removeExperience($id)
+    {
+        $experience = ExpertExperience::find($id);
+        if (!$experience) {
+            return $this->errorResponse('No rrecord found', 422);
+        }
+        $experience->delete();
+        return $this->successResponse('details deleted successfully');
     }
 }
