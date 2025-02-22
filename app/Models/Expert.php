@@ -24,6 +24,7 @@ class Expert extends Model
     ];
     protected $casts = [
         'specialization' => 'array',
+        'available_days' => 'array',
     ];
     // public function supportRequests()
     // {
