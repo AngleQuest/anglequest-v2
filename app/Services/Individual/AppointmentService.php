@@ -16,6 +16,7 @@ use App\Traits\ApiResponder;
 use App\Mail\EmailInvitation;
 use App\Models\PaymentHistory;
 use App\Models\SupportRequest;
+use App\Enum\AppointmentStatus;
 use App\Mail\EmailVerification;
 use App\Services\UploadService;
 use App\Models\AppointmentGuide;
@@ -95,7 +96,7 @@ class AppointmentService
     {
         $user = Auth::user();
         $appointments = Appointment::where('user_id', $user->id)
-            ->where('status', 'pending')
+            ->where('status', AppointmentStatus::PENDING)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -103,7 +104,7 @@ class AppointmentService
     {
         $user = Auth::user();
         $appointments = Appointment::where('user_id', $user->id)
-            ->where('status', 'active')
+            ->where('status', AppointmentStatus::ACTIVE)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -113,7 +114,7 @@ class AppointmentService
 
         $user = Auth::user();
         $appointments = Appointment::where('user_id', $user->id)
-            ->where('status', 'declined')
+            ->where('status', AppointmentStatus::DECLINED)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -141,7 +142,7 @@ class AppointmentService
     {
         $user = Auth::user();
         $appointments = Appointment::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->where('status', AppointmentStatus::COMPLETED)
             ->get();
         return $this->successResponse($appointments);
     }

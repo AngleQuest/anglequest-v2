@@ -8,26 +8,30 @@ use App\Enum\UserRole;
 use App\Models\Expert;
 use App\Models\Company;
 use App\Mail\NewUserMail;
+use App\Models\Appointment;
+use Illuminate\Support\Str;
+use App\Models\IncomeWallet;
 use App\Traits\ApiResponder;
 use App\Mail\EmailInvitation;
+use App\Models\Configuration;
 use App\Models\SupportRequest;
+use App\Enum\AppointmentStatus;
 use App\Mail\EmailVerification;
-use App\Models\Appointment;
-use App\Models\AppointmentFeedback;
 use App\Models\AppointmentGuide;
+use Agence104\LiveKit\VideoGrant;
 use App\Models\IndividualProfile;
+use App\Models\TransactionWallet;
+
+use Agence104\LiveKit\AccessToken;
 use Illuminate\Support\Facades\DB;
+use App\Models\AppointmentFeedback;
+use App\Models\BusinessCardDetails;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
-use Agence104\LiveKit\VideoGrant;
-use Agence104\LiveKit\AccessToken;
-use App\Models\BusinessCardDetails;
-use Illuminate\Support\Facades\Log;
 use Agence104\LiveKit\AccessTokenOptions;
-use App\Models\Configuration;
 
 class InterviewService
 {
@@ -70,7 +74,7 @@ class InterviewService
 
         $user = Auth::user();
         $appointments = Appointment::where('expert_id', $user->id)
-            ->where('status', 'pending')
+            ->where('status', AppointmentStatus::PENDING)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -80,7 +84,7 @@ class InterviewService
 
         $user = Auth::user();
         $appointments = Appointment::where('expert_id', $user->id)
-            ->where('status', 'active')
+            ->where('status', AppointmentStatus::ACTIVE)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -90,7 +94,7 @@ class InterviewService
 
         $user = Auth::user();
         $appointments = Appointment::where('expert_id', $user->id)
-            ->where('status', 'completed')
+            ->where('status', AppointmentStatus::COMPLETED)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -100,7 +104,7 @@ class InterviewService
 
         $user = Auth::user();
         $appointments = Appointment::where('expert_id', $user->id)
-            ->where('status', 'declined')
+            ->where('status', AppointmentStatus::DECLINED)
             ->get();
         return $this->successResponse($appointments);
     }
@@ -110,20 +114,46 @@ class InterviewService
         $config = Configuration::first();
         $expert = User::find(Auth::id());
         $appointment = Appointment::where('expert_id', $expert->id)->find($id);
+
         if (!$config) {
             return $this->errorResponse("Amount not set to credit expert", 422);
         }
         if (!$appointment) {
             return $this->errorResponse("No record found appointment", 422);
         }
-
+        $user = User::find($appointment->user_id);
+        if ($appointment->status == AppointmentStatus::COMPLETED) {
+            return $this->errorResponse("Appointment already marked completed", 422);
+        }
+        DB::beginTransaction();
         $wallet = $expert->wallet;
         $wallet->master_wallet += $config->expert_fee;
         $wallet->save();
+        $transaction = TransactionWallet::create([
+            'user_id' => $expert->id,
+            'payment_id' => 'AQ_' . Str::random(10) . time(),
+            'type' => 'credit',
+            'credit' => $config->expert_fee,
+            'remark' => 'Appointment bonus from ' . $user->username,
+            'status' => 'verified'
+        ]);
+        $income = IncomeWallet::create([
+            'user_id' => $expert->id,
+            'type' => 'Interview',
+            'amount' => $config->expert_fee,
+            'remark' => 'Appointment bonus from ' . $user->username,
+        ]);
         $appointment->update([
-            'status' => 'completed'
+            'status' => AppointmentStatus::COMPLETED
         ]);
         return $this->successResponse("Appointment marked completed");
+        if ($transaction && $income) {
+            DB::commit();
+            return $this->successResponse('Payout request submitted successfully');
+        }
+
+        DB::rollBack();
+        return $this->errorResponse('Opps! Something went wrong, your request could not be processed', 422);
     }
     public function acceptAppointment($id)
     {
@@ -138,7 +168,7 @@ class InterviewService
         $this->meetingLink($appointment, $user, $expert);
 
         $appointment->update([
-            'status' => 'active'
+            'status' => AppointmentStatus::ACTIVE
         ]);
         return response()->json([
             'status' => 'success',
@@ -154,7 +184,7 @@ class InterviewService
             return $this->errorResponse("No record match", 422);
         }
         $appointment->update([
-            'status' => 'declined'
+            'status' => AppointmentStatus::DECLINED
         ]);
 
         return $this->successResponse("Request Declined successfully");
