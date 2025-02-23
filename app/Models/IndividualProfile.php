@@ -22,6 +22,8 @@ class IndividualProfile extends Model
         'yrs_of_experience',
         'about',
         'location',
+        'preferred_mode',
+        'country',
         'profile_photo',
     ];
     protected $casts = [

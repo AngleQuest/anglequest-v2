@@ -68,6 +68,8 @@ class AccountService
                 'yrs_of_experience' => $data->yrs_of_experience ?? $user->profile->yrs_of_experience,
                 'about' => $data->about ?? $user->profile->about,
                 'location' => $data->location ?? $user->profile->location,
+                'preferred_mode' => $data->preferred_mode ?? $user->profile->preferred_mode,
+                'country' => $data->country ?? $user->profile->country,
                 'profile_photo' => $data->profile_photo ? $img_url : $user->profile->profile_photo,
             ]
         );
