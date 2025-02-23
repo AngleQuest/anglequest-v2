@@ -70,6 +70,7 @@ class AccountService
                 'location' => $data->location ?? $user->profile->location,
                 'preferred_mode' => $data->preferred_mode ?? $user->profile->preferred_mode,
                 'country' => $data->country ?? $user->profile->country,
+                'salary_range' => $data->salary_range ?? $user->profile->salary_range,
                 'profile_photo' => $data->profile_photo ? $img_url : $user->profile->profile_photo,
             ]
         );

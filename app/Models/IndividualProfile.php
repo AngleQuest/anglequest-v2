@@ -23,6 +23,7 @@ class IndividualProfile extends Model
         'about',
         'location',
         'preferred_mode',
+        'salary_range',
         'country',
         'profile_photo',
     ];
