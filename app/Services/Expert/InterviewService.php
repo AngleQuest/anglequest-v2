@@ -117,7 +117,7 @@ class InterviewService
         }
 
         $expert = User::find(Auth::id());
-        $wallet = $expert->wallet->firstOcreate([
+        $wallet = $expert->wallet->firstOrCreate([
             'user_id' => $expert->id
         ]);
         $wallet->master_wallet += $config->expert_fee;
