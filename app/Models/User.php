@@ -92,4 +92,8 @@ class User extends Authenticatable
     {
         return $this->BelongsTo(Sla::class);
     }
+    public function wallet(): HasOne
+    {
+        return $this->HasOne(UserWallet::class,'user_id');
+    }
 }

@@ -117,9 +117,7 @@ class InterviewService
             return $this->errorResponse("No record found appointment", 422);
         }
 
-        $wallet = $expert->wallet->firstOrCreate([
-            'user_id' => $expert->id
-        ]);
+        $wallet = $expert->wallet;
         $wallet->master_wallet += $config->expert_fee;
         $wallet->save();
         $appointment->update([
