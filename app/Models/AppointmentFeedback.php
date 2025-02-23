@@ -10,6 +10,14 @@ class AppointmentFeedback extends Model
         'user_id',
         'expert_id',
         'appointment_id',
-        'note'
+        'note',
+        'rating',
+        'key_strengths',
+        'improvements',
+        'recommendation',
+    ];
+    protected $casts = [
+        'key_strengths' => 'array',
+        'improvements' => 'array',
     ];
 }
