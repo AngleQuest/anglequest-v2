@@ -134,7 +134,7 @@ class InterviewService
             'payment_id' => 'AQ_' . Str::random(10) . time(),
             'type' => 'credit',
             'credit' => $config->expert_fee,
-            'remark' => 'Appointment bonus from ' . $user->username,
+            'remark' => 'Appointment bonus from' . $user->username,
             'status' => 'verified'
         ]);
         $income = IncomeWallet::create([
@@ -146,10 +146,9 @@ class InterviewService
         $appointment->update([
             'status' => AppointmentStatus::COMPLETED
         ]);
-        return $this->successResponse("Appointment marked completed");
         if ($transaction && $income) {
             DB::commit();
-            return $this->successResponse('Payout request submitted successfully');
+            return $this->successResponse("Appointment marked completed");
         }
 
         DB::rollBack();
