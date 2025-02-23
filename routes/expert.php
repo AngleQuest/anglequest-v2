@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
         Route::get('/accepted', 'acceptedAppointments');
         Route::get('/completed', 'completedAppointments');
         Route::get('/declined', 'declinedAppointments');
+        Route::post('/mark-completed/{id}', 'markAppointmentCompleted');
         Route::post('/accept-request/{id}', 'acceptAppointment');
         Route::post('/decline-request/{id}', 'rejectAppointment');
         Route::post('/create-guide', 'createGuide');
