@@ -108,7 +108,8 @@ class InterviewService
     public function completeAppointment($id)
     {
         $config = Configuration::first();
-        $appointment = Appointment::find($id);
+        $expert = User::find(Auth::id());
+        $appointment = Appointment::where('expert_id', $expert->id)->find($id);
         if (!$config) {
             return $this->errorResponse("Amount not set to credit expert", 422);
         }
@@ -116,7 +117,6 @@ class InterviewService
             return $this->errorResponse("No record found appointment", 422);
         }
 
-        $expert = User::find(Auth::id());
         $wallet = $expert->wallet->firstOrCreate([
             'user_id' => $expert->id
         ]);
@@ -134,7 +134,7 @@ class InterviewService
             return $this->errorResponse("No record match", 422);
         }
 
-        $expert = Expert::where('user_id',Auth::id())->first();
+        $expert = Expert::where('user_id', Auth::id())->first();
         $user = User::where('id', $appointment->user_id)->first();
 
         $this->meetingLink($appointment, $user, $expert);
