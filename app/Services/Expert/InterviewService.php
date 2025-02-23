@@ -134,7 +134,7 @@ class InterviewService
             return $this->errorResponse("No record match", 422);
         }
 
-        $expert = User::find(Auth::id());
+        $expert = Expert::where('user_id',Auth::id());
         $user = User::where('id', $appointment->user_id)->first();
 
         $this->meetingLink($appointment, $user, $expert);
@@ -167,7 +167,7 @@ class InterviewService
         $key = "APIe6zT8wsZcTio";
         $seceret = "HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
-        $roomName = "Support_Meeting _Scheduled_with_.$expert->last_name" . "_$user->first_name" . "_" . time();
+        $roomName = "Support_Meeting _Scheduled_with_.$expert->username" . "_$user->username" . "_" . time();
         $candidateName = $user->email;
         $expertName = $expert->email;
 

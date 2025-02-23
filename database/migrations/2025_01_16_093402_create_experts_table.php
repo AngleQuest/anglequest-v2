@@ -23,8 +23,6 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->json('specialization')->nullable();
             $table->json('available_days')->nullable();
-            $table->string('available_time')->nullable();
-            $table->double('yrs_of_experience')->default(0);
             $table->text('about')->nullable();
             $table->string('location')->nullable();
             $table->string('profile_photo')->nullable();

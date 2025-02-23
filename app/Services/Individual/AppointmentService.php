@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Validation\ValidationException;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AppointmentService
@@ -36,10 +37,49 @@ class AppointmentService
 
     public function bookAppointment($data)
     {
+        $validated = $data->validate([
+            'appointment_date' => 'required|date',
+            'appointment_time' => 'required|date_format:H:i',
+        ]);
         $expert = Expert::whereJsonContains('specialization', $data->specialization)->first();
         if (!$expert) {
             return 'No expert found for your search';
         }
+
+        // Check if the selected day and time are available
+        $dayOfWeek = date('l', strtotime($validated['appointment_date'])); // Get day of the week
+        $time = $validated['appointment_time'];
+
+        if (
+            !isset($expert->available_days[$dayOfWeek]) ||
+            !in_array($time, $expert->available_days[$dayOfWeek])
+        ) {
+            throw ValidationException::withMessages([
+                'appointment' => "The expert is not available on {$dayOfWeek} at {$time}."
+            ]);
+        }
+
+        // Check if the expert is already booked at this time
+        $isBooked = Appointment::where('expert_id', $expert->id)
+            ->where('appointment_date', $validated['appointment_date'])
+            ->where('appointment_time', $validated['appointment_time'])
+            ->exists();
+
+        if ($isBooked) {
+            throw ValidationException::withMessages([
+                'appointment' => "The expert is already booked for this time slot."
+            ]);
+        }
+
+        //     Book the appointment
+        //    $appointment = Appointment::create($validated);
+
+        //     return response()->json([
+        //         'message' => 'Appointment booked successfully.',
+        //         'appointment' => $appointment
+        //     ], 201);
+
+
         if ($expert) {
             $supportRequest = Appointment::where(['expert_id' => $expert->user_id, 'status' => 'active'])->count();
             if ($supportRequest <= 2) {
@@ -59,6 +99,15 @@ class AppointmentService
             ->get();
         return $this->successResponse($appointments);
     }
+    public function acceptedAppointments()
+    {
+        $user = Auth::user();
+        $appointments = Appointment::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->get();
+        return $this->successResponse($appointments);
+    }
+    
     public function declinedAppointments()
     {
 
@@ -139,6 +188,7 @@ class AppointmentService
                 'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
                 'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
                 'appointment_date' => $data->appointment_date,
+                'appointment_time' => $data->appointment_time,
                 'expert_id' => $data->expert_id,
                 'status' => 'pending',
             ]);

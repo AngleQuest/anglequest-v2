@@ -22,6 +22,7 @@ class Appointment extends Model
         'status',
         'expert_name',
         'appointment_date',
+        'appointment_time',
         'expert_link',
         'individual_link',
 

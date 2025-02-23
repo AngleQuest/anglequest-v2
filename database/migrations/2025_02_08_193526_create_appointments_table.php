@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('expert_name')->nullable();
             $table->string('appointment_date')->nullable();
+            $table->time('appointment_time');
             $table->text('expert_link')->nullable();
             $table->text('individual_link')->nullable();
             $table->timestamps();

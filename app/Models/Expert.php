@@ -26,10 +26,6 @@ class Expert extends Model
         'specialization' => 'array',
         'available_days' => 'array',
     ];
-    // public function supportRequests()
-    // {
-    //     return $this->hasMany(SupportRequest::class);
-    // }
 
     public function user(): BelongsTo
     {

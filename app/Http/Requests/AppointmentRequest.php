@@ -23,7 +23,8 @@ class AppointmentRequest extends FormRequest
     {
         return [
             'category' => 'required',
-            'specialization' => 'required'
+            'specialization' => 'required',
+            'appointment_time' => 'required|date_format:H:i'
         ];
     }
 }
