@@ -50,6 +50,10 @@ class SpecializationCategoryService
         if (!$category) {
             return $this->errorResponse("No record found", 422);
         }
+        $specializations =  Specialization::where('specialization_category_id', $category->id)->first();
+        if ($specializations) {
+            return $this->errorResponse("Category can not be deleted because it has content", 422);
+        }
         $category->delete();
         return $this->successResponse("Details Deleted");
     }
