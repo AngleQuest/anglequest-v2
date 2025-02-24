@@ -213,8 +213,7 @@ class AppointmentService
     public function appointmentFeedback($id)
     {
         $user = Auth::user();
-        $feedback = AppointmentFeedback::where('user_id', $user->id)
-            ->find($id);
+        $feedback = AppointmentFeedback::where('user_id', $user->id)->find($id);
         if (!$feedback) {
             return $this->errorResponse("No feedback available", 422);
         }
