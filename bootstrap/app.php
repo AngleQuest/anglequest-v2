@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminPanel;
 use App\Http\Middleware\Individual;
 use App\Http\Middleware\IsVerifyEmail;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\TokenExpiration;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,15 +30,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'individual' => Individual::class,
             'expert' => Expert::class,
             'business' => Business::class,
+            'token.expiration' => TokenExpiration::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // $exceptions->renderable(function (NotFoundHttpException $e, $request) {
-        //     // Handle JSON request 404's
-        //     if ($request->json()) {
-        //         return response()->json(['message' => 'Resource not Found'], 404);
-        //     }
+        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+            // Handle JSON request 404's
+            if ($request->json()) {
+                return response()->json(['message' => 'Resource not Found'], 404);
+            }
 
-        //     throw $e;
-        // });
+            throw $e;
+        });
     })->create();

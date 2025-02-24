@@ -17,7 +17,7 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::post('/login', 'login');
     });
 
-    Route::group(['middleware' => ['auth:sanctum','super.admin']], function () {
+    Route::group(['middleware' => ['auth:sanctum','super.admin','token.expiration']], function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/dashboard', 'index');
 
