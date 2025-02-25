@@ -11,7 +11,7 @@ use App\Services\UploadService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class AccountService
 {
     use ApiResponder;
@@ -26,29 +26,28 @@ class AccountService
     public function updateProfile($data)
     {
         $user = Auth::user();
-        if ($data->profile_photo) {
-            if (File::exists(public_path($user->expert->profile_photo))) {
-                File::delete(public_path($user->expert->profile_photo));
-            }
-            $fileName = str_replace(' ', '', $user->expert->first_name) . '_' . time() . '.' . $data->profile_photo->getClientOriginalExtension();
-            $profile_photo = UploadService::upload($data->profile_photo, 'profile', $fileName);
+        if ($data->file('profile_photo')) {
+            $uploadedImage = Cloudinary::upload($data->file('profile_photo')->getRealPath(), [
+                'folder' => 'profiles'
+            ]);
+            $profile_photo = $uploadedImage->getSecurePath();
         }
 
         $expert = Expert::where('user_id', $user->id)->first();
         if (!$expert) return $this->errorResponse('No record matched', 422);
         $expert->update([
             'profile_photo' => $data->profile_photo ? $profile_photo : $expert->profile_photo,
-            'category' => $data->category ?? $user->expert->category,
-            'first_name' => $data->first_name ?? $user->expert->first_name,
-            'last_name' => $data->last_name ?? $user->expert->last_name,
-            'email' => $data->email ?? $user->expert->email,
-            'phone' => $data->phone ?? $user->expert->phone,
-            'dob' => $data->dob ?? $user->expert->dob,
-            'gender' => $data->gender ?? $user->expert->gender,
-            'specialization' => $data->specialization ?? $user->expert->specialization,
-            'available_days' => $data->available_days ?? $user->expert->available_days,
-            'about' => $data->about ?? $user->expert->about,
-            'location' => $data->location ?? $user->expert->location,
+            'category' => $data->category ?? $expert->category,
+            'first_name' => $data->first_name ?? $expert->first_name,
+            'last_name' => $data->last_name ?? $expert->last_name,
+            'email' => $data->email ?? $expert->email,
+            'phone' => $data->phone ?? $expert->phone,
+            'dob' => $data->dob ?? $expert->dob,
+            'gender' => $data->gender ?? $expert->gender,
+            'specialization' => $data->specialization ?? $expert->specialization,
+            'available_days' => $data->available_days ?? $expert->available_days,
+            'about' => $data->about ?? $expert->about,
+            'location' => $data->location ?? $expert->location,
         ]);
 
         return $this->successResponse('Details Updated');
