@@ -186,6 +186,8 @@ class AppointmentService
                 'role' => $data->role,
                 'title' => $data->title,
                 'category' => $data->category,
+                'expert_photo' => $expert_details->profile_photo,
+                'individual_photo' => $profile->profile_photo,
                 'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->username,
                 'individual_name' => $profile->first_name ? $profile->fullName() : $user->username,
                 'appointment_date' => $data->appointment_date,

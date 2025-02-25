@@ -138,6 +138,7 @@ class AccountService
         }
         return $this->successResponse($experience);
     }
+
     public function updateExperience($id, $data)
     {
         $experience = ExpertExperience::find($id);
@@ -152,6 +153,7 @@ class AccountService
         ]);
         return $this->successResponse('details updated successfully');
     }
+
     public function removeExperience($id)
     {
         $experience = ExpertExperience::find($id);
@@ -161,4 +163,5 @@ class AccountService
         $experience->delete();
         return $this->successResponse('details deleted successfully');
     }
+
 }

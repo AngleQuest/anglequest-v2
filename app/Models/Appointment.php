@@ -25,7 +25,8 @@ class Appointment extends Model
         'appointment_time',
         'expert_link',
         'individual_link',
-
+        'individual_photo',
+        'expert_photo',
     ];
     public function expert()
     {
