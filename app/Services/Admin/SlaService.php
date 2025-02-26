@@ -27,7 +27,7 @@ class SlaService
     {
         $sla = Sla::find($id);
         if (!$sla) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($sla);
     }
@@ -36,7 +36,7 @@ class SlaService
     {
         $sla = Sla::find($id);
         if (!$sla) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         $sla->update([
             'name' => $data->name,
@@ -49,7 +49,7 @@ class SlaService
     {
         $sla = Sla::find($id);
         if (!$sla) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         $sla->delete();
         return $this->successResponse("Details deleted");

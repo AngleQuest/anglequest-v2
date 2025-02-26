@@ -46,7 +46,7 @@ class PlanService
         $plans = IndividualPlan::latest('id')->get();
         return $this->successResponse($plans);
     }
-    
+
     public function getIndividualPlan($id)
     {
         $plan = IndividualPlan::find($id);
@@ -87,7 +87,7 @@ class PlanService
     {
         $plan = Plan::find($id);
         if (!$plan) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         $plan->delete();
         return $this->successResponse('Plan Deleted successfully');
