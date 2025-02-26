@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
         Route::get('/pending', 'pendingAppointments');
         Route::get('/accepted', 'acceptedAppointments');
         Route::post('/book-appointment', 'bookAppointment');
+        Route::post('/rate-appointment', 'rateAppointment');
         Route::post('/merge-appointment', 'mergeAppointment');
         Route::get('/feedback/{id}', 'feedback');
     });

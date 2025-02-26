@@ -19,6 +19,11 @@ class AppointmentController extends Controller
 
         return $this->appointmentService->bookAppointment($request);
     }
+    function rateAppointment(Request $request)
+    {
+
+        return $this->appointmentService->rateAppointment($request);
+    }
     function sendCV(AppointmentRequest $request)
     {
         return $this->appointmentService->sendCV($request);
@@ -39,7 +44,7 @@ class AppointmentController extends Controller
     {
         return $this->appointmentService->declinedAppointments();
     }
-    
+
     function acceptedAppointments()
     {
         return $this->appointmentService->acceptedAppointments();

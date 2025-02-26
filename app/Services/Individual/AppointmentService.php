@@ -137,6 +137,18 @@ class AppointmentService
         }
         return $this->successResponse('Cv uploaded');
     }
+    public function rateAppointment($data)
+    {
+        $appointment = Appointment::find($data->appointment_id);
+        if (!$appointment) {
+            return $this->errorResponse('No Appointment found with this Id', 404);
+        }
+        $appointment->update([
+            'rating' => $data->rating
+        ]);
+
+        return $this->successResponse('Appointment rated');
+    }
 
     public function completedAppointments()
     {
