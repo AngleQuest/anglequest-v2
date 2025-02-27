@@ -15,9 +15,17 @@ class DashboardController extends Controller
     public function __construct(
         private DashboardService $dashboardService
     ) {}
-    
+
     function index()
     {
         return $this->dashboardService->dashboardDetails();
+    }
+    function hiringCandidates()
+    {
+        return $this->dashboardService->hiringCandidates();
+    }
+    function candidateDetails($id)
+    {
+        return $this->dashboardService->candidateDetails($id);
     }
 }

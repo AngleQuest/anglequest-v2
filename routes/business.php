@@ -13,6 +13,10 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
     //Dashboard
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
+        Route::prefix('shortlisted-candidates')->group(function () {
+            Route::get('/', 'hiringCandidates');
+            Route::get('/single/{id}', 'candidateDetails');
+        });
     });
 
     //Employee Management
@@ -35,7 +39,7 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
 
     //Account Manager section
     Route::controller(AccountManagerController::class)->prefix('setting')->group(function () {
-       Route::get('/profile', 'profile');
+        Route::get('/profile', 'profile');
         Route::post('/update-profile', 'updateProfile');
         Route::post('/update-email', 'changeEmail');
         Route::post('/update-password', 'changePassword');

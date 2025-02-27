@@ -9,7 +9,12 @@
             </h2>
             <p>Kindly use the code below for your email verification process:</p>
             <h2 style="text-align: center">{{ $user->email_code }}</h2>
+
         </td>
     </tr>
-
+    <tr>
+        <td bgcolor="#0d468b" align="center" style="padding: 20px;color:white">
+            <a href=" https://dev.anglequest.com/verify-email" class="button">Verify Email</a>
+        </td>
+    </tr>
 @endsection

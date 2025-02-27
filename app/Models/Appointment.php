@@ -31,6 +31,10 @@ class Appointment extends Model
     ];
     public function expert()
     {
-        return $this->belongsTo(Expert::class, 'user_id');
+        return $this->belongsTo(Expert::class, 'expert_id');
+    }
+    public function individual()
+    {
+        return $this->belongsTo(IndividualProfile::class, 'user_id');
     }
 }
