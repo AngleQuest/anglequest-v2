@@ -197,6 +197,7 @@ class AppointmentService
                 'cv' => $data->cv ? $cv : null,
                 'role' => $data->role,
                 'title' => $data->title,
+                'type' => $data->type ?? null,
                 'category' => $data->category,
                 'expert_photo' => $expert_details->profile_photo,
                 'individual_photo' => $profile->profile_photo,

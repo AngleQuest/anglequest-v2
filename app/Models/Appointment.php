@@ -12,6 +12,7 @@ class Appointment extends Model
         'specialization',
         'category',
         'title',
+        'type',
         'role',
         'description',
         'job_description',
