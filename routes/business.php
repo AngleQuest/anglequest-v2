@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Business\AccountManagerController;
 use App\Http\Controllers\Business\DashboardController;
 use App\Http\Controllers\Business\EmployeeManagerController;
+use App\Http\Controllers\Business\JobPostController;
 use App\Http\Controllers\Business\SubscriptionController;
 
 Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'prefix' => 'business'], function () {
@@ -28,6 +29,19 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
         Route::post('/de-activate/{id}', 'deactivateEmployee');
         Route::post('/bulk-delete', 'deleteEmployees');
         Route::post('/upload-csv', 'uploadCSV');
+    });
+
+    //Employee Management
+    Route::controller(JobPostController::class)->prefix('job-post')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/add', 'addPost');
+        Route::get('/details/{id}', 'viewPost');
+        Route::post('/update/{id}', 'editPost');
+        Route::delete('/delete/{id}', 'deletePost');
+
+        Route::post('/add-candidate', 'addCandidate');
+        Route::post('/schedule-interview', 'deletePost');
+
     });
 
     //Subscription Section

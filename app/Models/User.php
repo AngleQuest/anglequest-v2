@@ -35,6 +35,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'status',
+        'introducer_id',
         'role'
     ];
 
@@ -47,6 +48,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'updated_at',
+        'introducer_id'
     ];
 
     /**

@@ -14,6 +14,8 @@ class Appointment extends Model
         'title',
         'type',
         'role',
+        'is_business',
+        'job_id',
         'description',
         'job_description',
         'cv',

@@ -235,7 +235,7 @@ class AppointmentService
         return $this->successResponse($feedback);
     }
 
-    private function chargeCard($data, $user)
+    public function chargeCard($data, $user)
     {
 
         $url = 'https://api.paystack.co/charge';
