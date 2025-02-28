@@ -37,13 +37,12 @@ class AccountService
             $password = Str::random(5);
             $user = User::create([
                 'email' => strtolower($data->email),
-                'username' => str_replace(' ', '', $data->username),
                 'mode' => 'open',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make($password),
                 'role' => UserRole::INDIVIDUAL
             ]);
-            $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
+            $user->token = $user->createToken($user->email . 'API Token')->plainTextToken;
             IndividualProfile::create([
                 'user_id' => $user->id
             ]);
@@ -55,7 +54,7 @@ class AccountService
                     'name' => $data->username,
                     'password' => $password,
                 ];
-                ActivityLog::createRow($user->id, $user->username, 'New Appointment booked by ' . ucfirst($user->username));
+                ActivityLog::createRow($user->email, 'New Appointment booked by ' . ucfirst($user->email));
                 Mail::to($user->email)->queue(new OpenAccountEmail($detail));
                 return $this->successResponse($user);
             }
@@ -93,7 +92,6 @@ class AccountService
                 }
                 $user = User::create([
                     'email' => strtolower($data->email),
-                    'username' => str_replace(' ', '', $data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -107,7 +105,6 @@ class AccountService
                 }
                 $user = User::create([
                     'email' => strtolower($data->email),
-                    'username' => str_replace(' ', '', $data->username),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
                 ]);
@@ -132,7 +129,6 @@ class AccountService
                 ]);
                 $user = User::create([
                     'company_id' => $company->id,
-                    'username' => str_replace(' ', '', $data->administrator_name),
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
                     'role' => $data->role
@@ -146,8 +142,8 @@ class AccountService
                     'email_code_expire_time' => Carbon::now()->addMinutes(30),
                 ]);
                 Mail::to($user->email)->queue(new EmailVerification($user));
-                $user->token = $user->createToken($user->username . 'API Token')->plainTextToken;
-                ActivityLog::createRow($user->username, ucfirst($user->username) . ' Signed up using ' . $data->role . ' Account');
+                $user->token = $user->createToken($user->email . 'API Token')->plainTextToken;
+                ActivityLog::createRow($user->email, ucfirst($user->email) . ' Signed up using ' . $data->role . ' Account');
                 return $this->successResponse($user);
             }
         }

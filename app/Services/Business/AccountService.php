@@ -76,7 +76,7 @@ class AccountService
             'city' => $data->city ?? $user->company->city,
             'state' => $data->state ?? $user->company->state,
         ]);
-        ActivityLog::createRow($user->username,ucfirst($user->username).'Updated profile '.$user->role.' Account');
+        ActivityLog::createRow($user->email,ucfirst($user->email).'Updated profile '.$user->role.' Account');
         return $this->successResponse(Auth::user()->company);
     }
 

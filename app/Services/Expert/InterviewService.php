@@ -134,14 +134,14 @@ class InterviewService
             'payment_id' => 'AQ_' . Str::random(10) . time(),
             'type' => 'credit',
             'credit' => $config->expert_fee,
-            'remark' => 'Appointment bonus from' . $user->username,
+            'remark' => 'Appointment bonus from' . $user->first_name,
             'status' => 'verified'
         ]);
         $income = IncomeWallet::create([
             'user_id' => $expert->id,
             'type' => 'Interview',
             'amount' => $config->expert_fee,
-            'remark' => 'Appointment bonus from ' . $user->username,
+            'remark' => 'Appointment bonus from ' . $user->first_name,
         ]);
         $appointment->update([
             'status' => AppointmentStatus::COMPLETED
@@ -194,7 +194,7 @@ class InterviewService
         $key = "APIe6zT8wsZcTio";
         $seceret = "HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
-        $roomName = "Support_Meeting _Scheduled_with_.$expert->first_name" . "_$user->username" . "_" . time();
+        $roomName = "Support_Meeting _Scheduled_with_.$expert->first_name" . "_$user->first_name" . "_" . time();
         $candidateName = $user->email;
         $expertName = $expert->email;
 
