@@ -18,6 +18,7 @@ use App\Models\ActivityLog;
 use App\Models\Appointment;
 use App\Traits\ApiResponder;
 use App\Models\Configuration;
+use App\Enum\AppointmentStatus;
 use App\Models\IndividualProfile;
 use App\Http\Middleware\Individual;
 use App\Http\Resources\UserResource;
@@ -191,8 +192,6 @@ class AdminService
         return $this->successResponse($data);
     }
 
-
-
     public function getSingleIndividual($id)
     {
         $individual =  IndividualProfile::with('user')->find($id);
@@ -289,5 +288,51 @@ class AdminService
             'password' => Hash::make($data->password),
         ]);
         return $this->successResponse('Password Successfully Updated');
+    }
+
+    //appointment
+
+    public function pendingAppointments()
+    {
+        $appointments = Appointment::where('status', AppointmentStatus::PENDING)
+            ->latest('id')->get();
+        return $this->successResponse($appointments);
+    }
+
+    public function acceptedAppointments()
+    {
+        $appointments = Appointment::where('status', AppointmentStatus::ACTIVE)
+            ->latest('id')->get();
+        return $this->successResponse($appointments);
+    }
+
+    public function completedAppointments()
+    {
+        $appointments = Appointment::where('status', AppointmentStatus::COMPLETED)
+            ->latest('id')->get();
+        return $this->successResponse($appointments);
+    }
+
+    public function declinedAppointments()
+    {
+        $appointments = Appointment::where('status', AppointmentStatus::DECLINED)
+            ->latest('id')->get();
+        return $this->successResponse($appointments);
+    }
+
+
+
+
+    public function rejectAppointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return $this->errorResponse("No record match", 422);
+        }
+        $appointment->update([
+            'status' => AppointmentStatus::DECLINED
+        ]);
+
+        return $this->successResponse("Request Declined successfully");
     }
 }

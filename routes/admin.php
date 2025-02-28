@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GeneralSettingController;
+use App\Http\Controllers\Admin\InterviewManagerController;
 use App\Http\Controllers\Admin\PlanManagerController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\SlaManagerController;
@@ -17,7 +18,7 @@ Route::group(['prefix' => 'administrator'], function () {
         Route::post('/login', 'login');
     });
 
-    Route::group(['middleware' => ['auth:sanctum','super.admin','token.expiration']], function () {
+    Route::group(['middleware' => ['auth:sanctum', 'super.admin', 'token.expiration']], function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/dashboard', 'index');
 
@@ -84,6 +85,13 @@ Route::group(['prefix' => 'administrator'], function () {
                 Route::post('/add', 'storeIndividualPlan');
                 Route::get('/details/{id}', 'getIndividualPlan');
             });
+        });
+        
+        Route::controller(InterviewManagerController::class)->prefix('interviews')->group(function () {
+            Route::get('/pending', 'pending');
+            Route::get('/active', 'active');
+            Route::get('/completed', 'completed');
+            Route::get('/declined', 'declined');
         });
 
         Route::controller(SpecializationCategoryManagerController::class)->prefix('specialization')->group(function () {

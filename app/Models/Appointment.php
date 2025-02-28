@@ -31,6 +31,11 @@ class Appointment extends Model
         'individual_photo',
         'expert_photo',
     ];
+
+    protected $hidden = [
+        'job_id',
+        'is_business',
+    ];
     public function expert()
     {
         return $this->belongsTo(Expert::class, 'expert_id');
