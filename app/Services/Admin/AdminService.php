@@ -153,7 +153,7 @@ class AdminService
         IndividualProfile::where('user_id', $user->id)->delete();
         Expert::where('user_id', $user->id)->delete();
         $user->delete();
-        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Deleted '.$user->username.' Account');
+        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' Deleted ' . $user->username . ' Account');
         return $this->successResponse('Account deleted');
     }
     public function deActivateUser($id)
@@ -165,7 +165,7 @@ class AdminService
         $user->update([
             'status' => UserStatus::BLOCKED
         ]);
-        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' De-activated '.$user->username.' Account');
+        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' De-activated ' . $user->username . ' Account');
         return $this->successResponse('Account de-activated');
     }
     public function activateUser($id)
@@ -177,7 +177,7 @@ class AdminService
         $user->update([
             'status' => UserStatus::ACTIVE
         ]);
-        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Activated '.$user->username.' Account');
+        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' Activated ' . $user->username . ' Account');
         return $this->successResponse('Account activated');
     }
 
@@ -215,7 +215,7 @@ class AdminService
     {
         $expert =  Expert::with('user')->find($id);
         if (!$expert) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($expert);
     }
@@ -227,18 +227,24 @@ class AdminService
     public function approveRequest($id)
     {
         $payout = Payout::findOrFail($id);
+        if ($payout->status == PaymentStatus::PAID) {
+            return $this->errorResponse('Request already approved', 422);
+        }
         $payout->update([
             'status' => PaymentStatus::PAID,
             'date_paid' => Carbon::now()->toDateString()
 
         ]);
-        ActivityLog::createRow(Auth::user()->username,ucfirst(Auth::user()->username).' Approved an Withdrawal Request');
+        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' Approved an Withdrawal Request');
 
         return $this->successResponse('Request Approved');
     }
     public function declineRequest($id)
     {
         $payout = Payout::findOrFail($id);
+        if ($payout->status == PaymentStatus::PAID) {
+            return $this->errorResponse('Request already approved', 422);
+        }
         $user = User::findOrFail($payout->user_id);
         // $wallet = UserWallet::where('user_id',$payout->user_id)->first();
         // if ($wallet) {
@@ -251,7 +257,7 @@ class AdminService
 
         $wallet->increment('master_wallet', $payout->amount);
         $payout->update([
-            'status' => PaymentStatus::UNPAID,
+            'status' => PaymentStatus::DECLINED,
         ]);
         return $this->successResponse('Request Declined');
     }
@@ -284,5 +290,4 @@ class AdminService
         ]);
         return $this->successResponse('Password Successfully Updated');
     }
-
 }
