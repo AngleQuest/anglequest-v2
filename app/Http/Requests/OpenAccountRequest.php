@@ -23,7 +23,6 @@ class OpenAccountRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:users,email',
-            'username' => 'required|unique:users,username|min:6',
             'agreement' => 'required',
         ];
     }
