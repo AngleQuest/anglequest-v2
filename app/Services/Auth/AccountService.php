@@ -87,9 +87,6 @@ class AccountService
         if ($data) {
             $code = mt_rand(100000, 999999);
             if ($data->role == UserRole::INDIVIDUAL) {
-                if (!$data->username) {
-                    return $this->errorResponse('Please enter your Username.', 422);
-                }
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
