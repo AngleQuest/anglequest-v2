@@ -39,6 +39,10 @@ class AppointmentController extends Controller
     {
         return $this->appointmentService->pendingAppointments();
     }
+    function allAppointments()
+    {
+        return $this->appointmentService->allAppointments();
+    }
 
     function declinedAppointments()
     {

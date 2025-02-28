@@ -48,7 +48,9 @@ class AccountService
             'about' => $data->about ?? $expert->about,
             'location' => $data->location ?? $expert->location,
         ]);
-
+        $user->update([
+            'email' => $data->email
+        ]);
         return $this->successResponse('Details Updated');
     }
     public function createPaymentInfo($data)

@@ -100,6 +100,14 @@ class AppointmentService
             ->get();
         return $this->successResponse($appointments);
     }
+    public function allAppointments()
+    {
+        $user = Auth::user();
+        $appointments = Appointment::where('user_id', $user->id)
+            ->latest('id')
+            ->get();
+        return $this->successResponse($appointments);
+    }
     public function acceptedAppointments()
     {
         $user = Auth::user();
@@ -201,8 +209,8 @@ class AppointmentService
                 'category' => $data->category,
                 'expert_photo' => $expert_details->profile_photo,
                 'individual_photo' => $profile->profile_photo,
-                'expert_name' => $expert_details->name ? $expert_details->fullName() : $expert->name,
-                'individual_name' => $profile->name ? $profile->fullName() : $data->name,
+                'expert_name' => $expert_details->name,
+                'individual_name' => $profile->name,
                 'appointment_date' => $data->appointment_date,
                 'appointment_time' => $data->appointment_time,
                 'expert_id' => $data->expert_id,

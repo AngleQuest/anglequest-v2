@@ -74,6 +74,9 @@ class AccountService
                 'profile_photo' => $data->profile_photo ? $img_url : $user->profile->profile_photo,
             ]
         );
+        $user->update([
+            'email' => $data->email
+        ]);
         return $this->successResponse('Profile Updated successfully');
     }
     public function updateMode()
