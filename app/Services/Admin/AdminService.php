@@ -138,7 +138,7 @@ class AdminService
     }
     public function getUsers()
     {
-        $users =  User::where('role', '!=', UserRole::BUSINESS)->latest('id')->get();
+        $users =  User::latest('id')->get();
         if (!$users) {
             return $this->errorResponse('No record found', 404);
         }

@@ -18,11 +18,9 @@ class UserResource extends JsonResource
     {
         return [
             'id' => (string)$this->id,
-            'plan' => (string)$this->plan?->title,
             'email' => (string)$this->email,
-            'username' => (string)$this->username,
-            'status' => (string)$this->status,
-            'role' => (string)$this->role,
+            'status' => (string)ucfirst($this->status),
+            'role' => (string)ucfirst($this->role),
             'created_at' => $this->created_at->toDateString(),
         ];
     }
