@@ -108,6 +108,15 @@ class InterviewService
             ->get();
         return $this->successResponse($appointments);
     }
+    public function allAppointments()
+    {
+
+        $user = Auth::user();
+        $appointments = Appointment::where('expert_id', $user->id)
+            ->latest('id')
+            ->get();
+        return $this->successResponse($appointments);
+    }
 
     public function completeAppointment($id)
     {
@@ -134,14 +143,14 @@ class InterviewService
             'payment_id' => 'AQ_' . Str::random(10) . time(),
             'type' => 'credit',
             'credit' => $config->expert_fee,
-            'remark' => 'Appointment bonus from' . $user->name,
+            'remark' => 'Appointment bonus from' . $user->profile->name,
             'status' => 'verified'
         ]);
         $income = IncomeWallet::create([
             'user_id' => $expert->id,
             'type' => 'Interview',
             'amount' => $config->expert_fee,
-            'remark' => 'Appointment bonus from ' . $user->name,
+            'remark' => 'Appointment bonus from ' . $user->profile->name,
         ]);
         $appointment->update([
             'status' => AppointmentStatus::COMPLETED
@@ -162,7 +171,7 @@ class InterviewService
         }
 
         $expert = Expert::where('user_id', Auth::id())->first();
-        $user = User::where('id', $appointment->user_id)->first();
+        $user = IndividualProfile::where('user_id', $appointment->user_id)->first();
 
         $this->meetingLink($appointment, $user, $expert);
 
@@ -195,8 +204,8 @@ class InterviewService
         $seceret = "HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
         $roomName = "Support_Meeting _Scheduled_with_.$expert->name" . "_$user->name" . "_" . time();
-        $candidateName = $user->email;
-        $expertName = $expert->email;
+        $candidateName = $user->name;
+        $expertName = $expert->name;
 
         $candidateTokenOptions = (new AccessTokenOptions())->setIdentity($candidateName)->setTTL(86400);
         $expertTokenOptions = (new AccessTokenOptions())->setIdentity($expertName)->setTTL(86400);

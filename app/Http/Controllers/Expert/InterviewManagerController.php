@@ -48,6 +48,10 @@ class InterviewManagerController extends Controller
     {
         return $this->interviewService->pendingAppointments();
     }
+    function allAppointments()
+    {
+        return $this->interviewService->allAppointments();
+    }
     function acceptedAppointments()
     {
         return $this->interviewService->acceptedAppointments();

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum', 'expert', 'email.verified'], 'pre
 
     //Appointment/Interview Section
     Route::controller(InterviewManagerController::class)->prefix('interview')->group(function () {
+        Route::get('/', 'allAppointments');
         Route::get('/pending', 'pendingAppointments');
         Route::get('/accepted', 'acceptedAppointments');
         Route::get('/completed', 'completedAppointments');

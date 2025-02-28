@@ -53,6 +53,7 @@ class AccountService
         ]);
         return $this->successResponse('Details Updated');
     }
+
     public function createPaymentInfo($data)
     {
         $user = Auth::user();
@@ -95,7 +96,6 @@ class AccountService
         $user->delete();
         return $this->successResponse('Account Deleted');
     }
-
 
     public function updatePassword($data)
     {
