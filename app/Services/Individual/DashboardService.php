@@ -23,6 +23,13 @@ class DashboardService
     public function dashboardDetails()
     {
         $user = Auth::user();
-        return $this->successResponse($user);
+        $appointments = Appointment::where('user_id', $user->id)
+            ->where('status', AppointmentStatus::PENDING)
+            ->count();
+        $data = [
+            'user' => $user,
+            'appointments' => $appointments
+        ];
+        return $this->successResponse($data);
     }
 }

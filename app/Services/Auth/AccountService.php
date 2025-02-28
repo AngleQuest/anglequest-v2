@@ -100,9 +100,6 @@ class AccountService
                 ]);
             }
             if ($data->role == UserRole::EXPERT) {
-                if (!$data->username) {
-                    return $this->errorResponse('Please enter your Username.', 422);
-                }
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
