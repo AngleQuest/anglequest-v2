@@ -134,14 +134,14 @@ class InterviewService
             'payment_id' => 'AQ_' . Str::random(10) . time(),
             'type' => 'credit',
             'credit' => $config->expert_fee,
-            'remark' => 'Appointment bonus from' . $user->first_name,
+            'remark' => 'Appointment bonus from' . $user->name,
             'status' => 'verified'
         ]);
         $income = IncomeWallet::create([
             'user_id' => $expert->id,
             'type' => 'Interview',
             'amount' => $config->expert_fee,
-            'remark' => 'Appointment bonus from ' . $user->first_name,
+            'remark' => 'Appointment bonus from ' . $user->name,
         ]);
         $appointment->update([
             'status' => AppointmentStatus::COMPLETED
@@ -194,7 +194,7 @@ class InterviewService
         $key = "APIe6zT8wsZcTio";
         $seceret = "HBHaFZ9COxlv53bSGOFd8hpJGuvOK1b6DSRAOyVlZoA";
         // Logic to schedule a meeting with an expert and return the meeting details
-        $roomName = "Support_Meeting _Scheduled_with_.$expert->first_name" . "_$user->first_name" . "_" . time();
+        $roomName = "Support_Meeting _Scheduled_with_.$expert->name" . "_$user->name" . "_" . time();
         $candidateName = $user->email;
         $expertName = $expert->email;
 
@@ -216,8 +216,8 @@ class InterviewService
         ]);
 
         $detail = [
-            'subject' => "Support Meeting Scheduled with $expert->last_name $expert->first_name",
-            'name' => $user->first_name,
+            'subject' => "Support Meeting Scheduled with $expert->name $expert->name",
+            'name' => $user->name,
             'schedule' => Carbon::now()->toDateString(),
             'link' => $request_details->meeting_link,
         ];

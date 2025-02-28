@@ -18,8 +18,7 @@ class UserHubResource extends JsonResource
     {
         return [
             'id' => (string)$this->id,
-            'first_name' => (string)$this->user->profile?->first_name,
-            'last_name' => (string)$this->user->profile?->last_name,
+            'name' => (string)$this->user->profile?->name,
             'current_role' => (string)$this->user->profile?->current_role,
             'target_role' => (string)$this->user->profile?->target_role,
             'phone' => (string)$this->user->profile?->phone,

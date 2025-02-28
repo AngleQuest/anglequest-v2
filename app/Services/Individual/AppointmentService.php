@@ -201,8 +201,8 @@ class AppointmentService
                 'category' => $data->category,
                 'expert_photo' => $expert_details->profile_photo,
                 'individual_photo' => $profile->profile_photo,
-                'expert_name' => $expert_details->first_name ? $expert_details->fullName() : $expert->first_name,
-                'individual_name' => $profile->first_name ? $profile->fullName() : $data->name,
+                'expert_name' => $expert_details->name ? $expert_details->fullName() : $expert->name,
+                'individual_name' => $profile->name ? $profile->fullName() : $data->name,
                 'appointment_date' => $data->appointment_date,
                 'appointment_time' => $data->appointment_time,
                 'expert_id' => $data->expert_id,
@@ -210,9 +210,9 @@ class AppointmentService
             ]);
             DB::commit();
             $detail = [
-                'name' => $profile->first_name ? $profile->fullName() : $data->name,
+                'name' => $profile->name ? $profile->fullName() : $data->name,
                 'amount' => $data->amount,
-                'expert' => $expert_details->first_name ? $expert_details->fullName() : $expert->first_name,
+                'expert' => $expert_details->name ? $expert_details->fullName() : $expert->name,
             ];
             Mail::to($user->email)->queue(new InterviewPaymentMail($detail));
             return response()->json([

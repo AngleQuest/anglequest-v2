@@ -10,8 +10,7 @@ class IndividualProfile extends Model
     protected $fillable = [
         'user_id',
         'category',
-        'first_name',
-        'last_name',
+        'name',
         'email',
         'phone',
         'dob',

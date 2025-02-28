@@ -38,8 +38,7 @@ class AccountService
         $expert->update([
             'profile_photo' => $data->profile_photo ? $profile_photo : $expert->profile_photo,
             'category' => $data->category ?? $expert->category,
-            'first_name' => $data->first_name ?? $expert->first_name,
-            'last_name' => $data->last_name ?? $expert->last_name,
+            'name' => $data->name ?? $expert->name,
             'email' => $data->email ?? $expert->email,
             'phone' => $data->phone ?? $expert->phone,
             'dob' => $data->dob ?? $expert->dob,
