@@ -55,8 +55,7 @@ class AccountService
                 'user_id' => $user->id,
             ],
             [
-                'first_name' => $data->first_name ?? $user->profile->first_name,
-                'last_name' => $data->last_name ?? $user->profile->last_name,
+                'name' => $data->name ?? $user->profile->name,
                 'email' => $data->email ?? $user->profile->email,
                 'phone' => $data->phone ?? $user->profile->phone,
                 'dob' => $data->dob ?? $user->profile->dob,
