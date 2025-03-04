@@ -22,7 +22,7 @@ class CompanyService
     {
         $companies =  Company::latest('id')->get();
         if ($companies->isEmpty()) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($companies);
     }
@@ -57,7 +57,7 @@ class CompanyService
     {
         $company = Company::find($id);
         if (!$company) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($company);
     }
@@ -66,7 +66,7 @@ class CompanyService
     {
         $company = Company::find($id);
         if (!$company) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
 
         if (!empty($data->email) && Company::where('email', $data->email)->where('id', '!=', $id)->exists()) {
@@ -86,7 +86,7 @@ class CompanyService
     {
         $company = Company::find($id);
         if (!$company) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
 
         $employees = User::where('company_id', $company->id)->get();
