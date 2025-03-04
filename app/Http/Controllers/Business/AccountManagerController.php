@@ -10,6 +10,7 @@ use App\Http\Requests\PasswordRequest;
 use App\Http\Requests\EmailUpdateRequest;
 use App\Services\Business\AccountService;
 use App\Services\Business\EmployeeService;
+use App\Http\Requests\CompanyProfileUpdateRequest;
 
 class AccountManagerController extends Controller
 {
@@ -21,7 +22,7 @@ class AccountManagerController extends Controller
     {
         return $this->accountService->getProfile();
     }
-    public function updateProfile(Request $request)
+    public function updateProfile(CompanyProfileUpdateRequest $request)
     {
         return $this->accountService->updateProfile($request);
     }

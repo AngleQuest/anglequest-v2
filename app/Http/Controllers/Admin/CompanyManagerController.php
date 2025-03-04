@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyRequest;
 use App\Services\Admin\CompanyService;
-use Illuminate\Http\Request;
+use App\Http\Requests\CompanyProfileUpdateRequest;
 
 class CompanyManagerController extends Controller
 {
@@ -25,7 +26,7 @@ class CompanyManagerController extends Controller
     {
         return $this->companyService->edit($id);
     }
-    function updateCompany($id, CompanyRequest $request)
+    function updateCompany($id, CompanyProfileUpdateRequest $request)
     {
         return $this->companyService->update($id, $request);
     }
