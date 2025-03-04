@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
 class AccountService
 {
     use ApiResponder;
@@ -26,6 +27,9 @@ class AccountService
     public function updateProfile($data)
     {
         $user = Auth::user();
+        if (!empty($data->email) && User::where('email', $data->email)->where('id', '!=', $user->id)->exists()) {
+            return $this->errorResponse("Email already exists.", 422);
+        }
         if ($data->file('profile_photo')) {
             $uploadedImage = Cloudinary::upload($data->file('profile_photo')->getRealPath(), [
                 'folder' => 'profiles'
@@ -164,5 +168,4 @@ class AccountService
         $experience->delete();
         return $this->successResponse('details deleted successfully');
     }
-
 }

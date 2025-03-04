@@ -68,6 +68,11 @@ class CompanyService
         if (!$company) {
             return $this->errorResponse('No record found', 404);
         }
+
+        if (!empty($data->email) && Company::where('email', $data->email)->where('id', '!=', $id)->exists()) {
+            return $this->errorResponse("Email already exists.",422);
+        }
+
         $company->update([
             'name' => $data->name,
             'email' => $data->email,
@@ -93,6 +98,6 @@ class CompanyService
         }
 
         $company->delete();
-        return $this->successResponse('Company Deleted successfully');
+        return $this->successResponse('Company Deleted with all assigned employees successfully');
     }
 }

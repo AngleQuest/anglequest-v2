@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AccountService
 {
@@ -43,26 +44,30 @@ class AccountService
     public function updateProfile($data)
     {
         $user = Auth::user();
-        if ($data->company_logo) {
-            if (File::exists(public_path($user->company->company_logo))) {
-                File::delete(public_path($user->company->company_logo));
-            }
-            $fileName = str_replace(' ', '', $user->company->name) . '_' . time() . '.' . $data->company_logo->getClientOriginalExtension();
-            $logo_url = UploadService::upload($data->company_logo, 'company', $fileName);
+        if (!empty($data->email) && User::where('email', $data->email)->where('id', '!=', $user->id)->exists()) {
+            return $this->errorResponse("Email already exists.", 422);
         }
 
-        if ($data->nda_file) {
-            if (File::exists(public_path($user->company->nda_file))) {
-                File::delete(public_path($user->company->nda_file));
-            }
-            $fileName = str_replace(' ', '', $user->company->name) . '_' . time() . '.' . $data->nda_file->getClientOriginalExtension();
-            $nda_url = UploadService::upload($data->nda_file, 'company/NDA', $fileName);
+        if ($data->file('company_logo')) {
+            $uploadedImage = Cloudinary::upload($data->file('company_logo')->getRealPath(), [
+                'folder' => 'company'
+            ]);
+            $logo_url = $uploadedImage->getSecurePath();
         }
+        if ($data->file('nda_file')) {
+            $uploadedImage = Cloudinary::upload($data->file('nda_file')->getRealPath(), [
+                'folder' => 'companyNDA',
+                'resource_type' => 'raw',
+                'format' => 'pdf'
+            ]);
+            $nda_url = $uploadedImage->getSecurePath();
+        }
+
 
         $user->company->update([
             'name' => $data->name ?? $user->company->name,
             'administrator_name' => $data->administrator_name ?? $user->company->administrator_name,
-            'business_email' => $data->business_email ?? $user->company->business_email,
+            'email' => $data->email ?? $user->company->email,
             'address' => $data->address ?? $user->company->address,
             'nda_file' => $data->nda_file ? $nda_url : $user->company->nda_file,
             'company_logo' => $data->company_logo ? $logo_url : $user->company->company_logo,
@@ -76,7 +81,12 @@ class AccountService
             'city' => $data->city ?? $user->company->city,
             'state' => $data->state ?? $user->company->state,
         ]);
-        ActivityLog::createRow($user->email,ucfirst($user->email).'Updated profile '.$user->role.' Account');
+
+        $user->update([
+            'email' => $data->email,
+        ]);
+
+        ActivityLog::createRow($user->email, ucfirst($user->email) . 'Updated profile ' . $user->role . ' Account');
         return $this->successResponse(Auth::user()->company);
     }
 
