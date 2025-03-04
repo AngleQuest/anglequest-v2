@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\CompanyManagerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GeneralSettingController;
 use App\Http\Controllers\Admin\InterviewManagerController;
@@ -86,7 +87,14 @@ Route::group(['prefix' => 'administrator'], function () {
                 Route::get('/details/{id}', 'getIndividualPlan');
             });
         });
-        
+        Route::controller(CompanyManagerController::class)->prefix('company')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/add', 'create');
+            Route::get('/details/{id}', 'edit');
+            Route::post('/update/{id}', 'updateCompany');
+            Route::delete('/delete/{id}', 'deleteCompany');
+        });
+
         Route::controller(InterviewManagerController::class)->prefix('interviews')->group(function () {
             Route::get('/pending', 'pending');
             Route::get('/active', 'active');

@@ -48,90 +48,108 @@ class ContentService
     {
 
         try {
-          //  $fileName = str_replace(' ', '', $data->file('cv')).'.'.$data->file('cv')->getClientOriginalExtension();
-           // $cv_path = UploadService::upload($data->file('cv'), 'cvs', $fileName);
-            $cv_path = $data->file('cv')->store('cvs', 'public');
+            if ($data->file('cv')) {
+                $file = $data->file('cv');
 
-            if($cv_path){
-            //  $response = Http::post('https://ai.anglequest.work/api/v1/vector/upsert/0ca3249e-6746-4b8c-a90b-6dc3952ef064');
-            $response = Http::post('https://ai.anglequest.work/api/v1/vector/upsert/2874fb18-9ef7-4463-8b7f-5da89b55e94e');
+                $bearer = 'Bearer MzWdRhAH26kmiA1oLGnRnOzND1i7teuBYGOAxTVNYkY';
+                $sendCv = Http::withHeaders([
+                    'Authorization' => $bearer
+                ])->attach(
+                    'files', //File to be uploaded
+                    file_get_contents($file->getRealPath()),
+                    $file->getClientOriginalName()
+                )->post('https://ai.anglequest.work/api/v1/attachments/1d942442-715b-42f2-9cd3-edf217125638/anglequestcv', []);
+               // return json_decode($sendCv);
+                if ($sendCv->successful()) {
+                    $result = json_decode($sendCv);
 
 
-            if ($response->successful()) {
-                $responseData = $response->json();
-                if ($responseData['numAdded'] > 0) {
-                    $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
-                        ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
-                            'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
+                    $predictionResponse = Http::timeout(60)
+                        ->post('https://ai.anglequest.work/api/v1/prediction/1d942442-715b-42f2-9cd3-edf217125638', [
+                            'question' => 'give me the analysis of the CV below, the person wants to become a ' . $data->job_title . ' : ' . $result[0]->content
                         ]);
-                    $maxRetries = 5;
-                    $retryDelay = 1000; // Initial delay in milliseconds
-                    $success = false;
-                    $predictionResponse = null;
 
-                    for ($i = 0; $i < $maxRetries; $i++) {
-                        try {
-                            $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
-                                ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
-                                    'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
-                                ]);
-
-                            $success = true;
-                            break; // Exit the loop if the request is successful
-                        } catch (RequestException $e) {
-                            if ($i === $maxRetries - 1) {
-                                // Log the error or handle the final failure
-                                Log::error('Error getting questionnaire data: ' . $e->getMessage());
-                            } else {
-                                // Wait before retrying (exponential backoff)
-                                usleep($retryDelay * 1000); // Convert milliseconds to microseconds
-                                $retryDelay *= 2; // Exponential backoff
-                            }
-                        }
-                    }
-
-                    if ($predictionResponse->successful()) {
-                        $analysisData = $predictionResponse->json();
-
-                        $cleanedJson = preg_replace('/json\n|\n/', '', $analysisData['text']);
-
-                        $data = json_decode($cleanedJson);
-
-                        Storage::delete('storage/' . $cv_path);
-
-                        // $analysis = CVAnalysis::where('user_id', $user->id)->first();
-
-                        // if($analysis) {
-                        //     $analysis->analysis = json_encode($data);
-                        //     $analysis->save();
-                        // } else {
-                        //     CVAnalysis::create([
-                        //         'user_id' => $user->id,
-                        //         'analysis' => json_encode($data)
-                        //     ]);
-                        // }
-
-                        return $data;
-                    } else {
-
-                        return  'Failed to generate prediction';
-                    }
-                } else {
-                    Storage::delete('public/' . $cv_path);
-
-                    // Handle case where numAdded <= 0
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'No data added'
-                    ], 400);
+                    $cv_result = json_decode($predictionResponse);
+                    return $cv_result;
                 }
-            } else {
-                Storage::delete('storage/' . $cv_path);
 
-                return 'Failed to analyze your cv';
+
+
+                // if ($response->successful()) {
+                //     $responseData = $response->json();
+                //     if ($responseData['numAdded'] > 0) {
+                //         $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
+                //             ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
+                //                 'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
+                //             ]);
+                //         $maxRetries = 5;
+                //         $retryDelay = 1000; // Initial delay in milliseconds
+                //         $success = false;
+                //         $predictionResponse = null;
+
+                //         for ($i = 0; $i < $maxRetries; $i++) {
+                //             try {
+                //                 $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
+                //                     ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
+                //                         'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
+                //                     ]);
+
+                //                 $success = true;
+                //                 break; // Exit the loop if the request is successful
+                //             } catch (RequestException $e) {
+                //                 if ($i === $maxRetries - 1) {
+                //                     // Log the error or handle the final failure
+                //                     Log::error('Error getting questionnaire data: ' . $e->getMessage());
+                //                 } else {
+                //                     // Wait before retrying (exponential backoff)
+                //                     usleep($retryDelay * 1000); // Convert milliseconds to microseconds
+                //                     $retryDelay *= 2; // Exponential backoff
+                //                 }
+                //             }
+                //         }
+
+                //         if ($predictionResponse->successful()) {
+                //             $analysisData = $predictionResponse->json();
+
+                //             $cleanedJson = preg_replace('/json\n|\n/', '', $analysisData['text']);
+
+                //             $data = json_decode($cleanedJson);
+
+                //             Storage::delete('storage/' . $cv_path);
+
+                //             // $analysis = CVAnalysis::where('user_id', $user->id)->first();
+
+                //             // if($analysis) {
+                //             //     $analysis->analysis = json_encode($data);
+                //             //     $analysis->save();
+                //             // } else {
+                //             //     CVAnalysis::create([
+                //             //         'user_id' => $user->id,
+                //             //         'analysis' => json_encode($data)
+                //             //     ]);
+                //             // }
+
+                //             return $data;
+                //         } else {
+
+                //             return  'Failed to generate prediction';
+                //         }
+                //     } else {
+                //         Storage::delete('public/' . $cv_path);
+
+                //         // Handle case where numAdded <= 0
+                //         return response()->json([
+                //             'status' => 'error',
+                //             'message' => 'No data added'
+                //         ], 400);
+                //     }
+                // } else {
+                //     Storage::delete('storage/' . $cv_path);
+
+                //     return 'Failed to analyze your cv';
+                // }
+
             }
-             }
-
         } catch (\Throwable $th) {
 
             return $th;

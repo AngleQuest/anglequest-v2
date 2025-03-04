@@ -14,8 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         Configuration::create([
             'usd_rate' => 750,
             'email_verify' => 'enabled',

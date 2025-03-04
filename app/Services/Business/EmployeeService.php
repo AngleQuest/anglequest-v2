@@ -219,6 +219,7 @@ class EmployeeService
         $employee->delete();
         return $this->successResponse('Employee deleted', 200);
     }
+    
     public function deactivateEmployeeAccount($id)
     {
         $user = Auth::user();

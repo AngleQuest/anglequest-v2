@@ -8,7 +8,7 @@
                 Welcome to AngleQuest👋 {{ $detail['name'] }}
             </h2>
             <p style="margin: 10px 0;">
-                Thank you for joining our platform! Please Sign in to complete your profile.
+                Thank you for joining our platform! Please Sign in to complete your appointment booking process.
                 <br>
                 Below are your login details to access our portal
             </p>
