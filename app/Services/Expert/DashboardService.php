@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Individual;
+namespace App\Services\Expert;
 
 use Carbon\Carbon;
 use App\Models\User;
