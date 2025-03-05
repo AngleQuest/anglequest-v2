@@ -15,19 +15,17 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('individual user id');
             $table->string('category')->nullable();
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->string('dob')->nullable();
             $table->string('current_role')->nullable();
             $table->string('target_role')->nullable();
             $table->string('gender')->nullable();
             $table->json('specialization')->nullable();
             $table->double('yrs_of_experience')->default(0);
-            $table->text('about')->nullable();
-            $table->string('location')->nullable();
-            $table->string('profile_photo')->nullable();
+            $table->text('preferred_mode')->nullable();
+            $table->string('salary_range')->nullable();
+            $table->string('country')->nullable();
             $table->timestamps();
         });
     }

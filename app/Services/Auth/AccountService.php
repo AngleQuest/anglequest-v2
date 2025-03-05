@@ -34,7 +34,7 @@ class AccountService
     {
         DB::beginTransaction();
         if ($data) {
-            $password = Str::random(5);
+            $password = Str::random(6);
             $user = User::create([
                 'email' => strtolower($data->email),
                 'mode' => 'open',
@@ -44,14 +44,14 @@ class AccountService
             ]);
             $user->token = $user->createToken($user->email . 'API Token')->plainTextToken;
             IndividualProfile::create([
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'email' => $user->email
             ]);
 
             if ($user) {
                 DB::commit();
                 $detail = [
                     'email' => $data->email,
-                    'name' => $data->username,
                     'password' => $password,
                 ];
                 ActivityLog::createRow($user->email, 'New Appointment booked by ' . ucfirst($user->email));
@@ -90,23 +90,25 @@ class AccountService
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
-                    'role' => $data->role
+                    'role' => UserRole::INDIVIDUAL
                 ]);
                 IndividualProfile::create([
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'email' => $user->email
                 ]);
             }
             if ($data->role == UserRole::EXPERT) {
                 $user = User::create([
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
-                    'role' => $data->role
+                    'role' => UserRole::EXPERT
                 ]);
                 UserWallet::create([
                     'user_id' => $user->id
                 ]);
                 Expert::create([
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'email' => $user->email
                 ]);
             }
             if ($data->role == UserRole::BUSINESS) {
@@ -125,7 +127,7 @@ class AccountService
                     'company_id' => $company->id,
                     'email' => strtolower($data->email),
                     'password' => Hash::make($data->password),
-                    'role' => $data->role
+                    'role' => UserRole::BUSINESS
                 ]);
             }
 

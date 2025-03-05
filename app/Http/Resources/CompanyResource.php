@@ -19,8 +19,8 @@ class CompanyResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'name' => (string)$this->name,
-            'administrator_name' => (string)$this->administrator_name,
-            'business_email' => (string)$this->business_email,
+            'administrator_name' => (string)ucfirst($this->administrator_name),
+            'email' => (string)$this->email,
             'address' => (string)$this->address,
             'nda_file' => (string)$this->nda_file,
             'company_logo' => (string)$this->company_logo,

@@ -35,7 +35,7 @@ class CompanyService
             'administrator_name' => $data->administrator_name,
             'website' => $data->website ?? null,
         ]);
-        $password = Str::random(5);
+        $password = Str::random(6);
         $user = User::create([
             'company_id' => $company->id,
             'email' => strtolower($data->email),
@@ -44,10 +44,9 @@ class CompanyService
         ]);
         $detail = [
             'email' => $data->email,
-            'name' => $data->username,
             'password' => $password,
         ];
-        ActivityLog::createRow($user->email, 'New Appointment booked by ' . ucfirst($user->email));
+        ActivityLog::createRow($user->email, 'New Account created by Admin');
         Mail::to($user->email)->queue(new OpenAccountEmail($detail));
         return $this->successResponse($company);
     }
@@ -69,7 +68,7 @@ class CompanyService
             return $this->errorResponse('No record found', 422);
         }
 
-        if (!empty($data->email) && Company::where('email', $data->email)->where('id', '!=', $id)->exists()) {
+        if (!empty($data->email) && User::where('email', $data->email)->where('id', '!=', $id)->exists()) {
             return $this->errorResponse("Email already exists.",422);
         }
 

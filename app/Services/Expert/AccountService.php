@@ -45,8 +45,6 @@ class AccountService
             'name' => $data->name ?? $expert->name,
             'email' => $data->email ?? $expert->email,
             'phone' => $data->phone ?? $expert->phone,
-            'dob' => $data->dob ?? $expert->dob,
-            'gender' => $data->gender ?? $expert->gender,
             'specialization' => $data->specialization ?? $expert->specialization,
             'available_days' => $data->available_days ?? $expert->available_days,
             'about' => $data->about ?? $expert->about,

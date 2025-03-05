@@ -5,7 +5,7 @@
         <td bgcolor="#ffffff" align="left"
             style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif;">
             <h2 style="margin: 0;">
-                Welcome to AngleQuest👋 {{ $detail['name'] }}
+                Welcome to AngleQuest👋 
             </h2>
             <p style="margin: 10px 0;">
                 Thank you for joining our platform! Please Sign in to complete your profile.

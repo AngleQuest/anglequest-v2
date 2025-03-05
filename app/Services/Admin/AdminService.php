@@ -119,68 +119,6 @@ class AdminService
         return $this->successResponse($admin_bank, 200);
     }
 
-    public function getCompanies()
-    {
-        $companies =  Company::latest('id')->get();
-        if (!$companies) {
-            return $this->errorResponse('No record found', 404);
-        }
-        $data = CompanyResource::collection($companies);
-        return $this->successResponse($data);
-    }
-    public function getSingleCompany($id)
-    {
-        $company =  Company::find($id);
-        if (!$company) {
-            return $this->errorResponse('No record found', 404);
-        }
-        return $this->successResponse($company);
-    }
-    public function getUsers()
-    {
-        $users =  User::latest('id')->get();
-        if (!$users) {
-            return $this->errorResponse('No record found', 404);
-        }
-        $data = UserResource::collection($users);
-        return $this->successResponse($data);
-    }
-    public function deleteUser($id)
-    {
-        $user =  User::find($id);
-        if (!$user) {
-            return $this->errorResponse('User not found', 422);
-        }
-        IndividualProfile::where('user_id', $user->id)->delete();
-        Expert::where('user_id', $user->id)->delete();
-        $user->delete();
-        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' Deleted ' . $user->username . ' Account');
-        return $this->successResponse('Account deleted');
-    }
-    public function deActivateUser($id)
-    {
-        $user =  User::find($id);
-        if (!$user) {
-            return $this->errorResponse('User not found', 422);
-        }
-        $user->update([
-            'status' => UserStatus::BLOCKED
-        ]);
-        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' De-activated ' . $user->username . ' Account');
-        return $this->successResponse('Account de-activated');
-    }
-    public function activateUser($id)
-    {
-        $user =  User::find($id);
-        if (!$user) {
-            return $this->errorResponse('User not found', 422);
-        }
-        $user->update([
-            'status' => UserStatus::ACTIVE
-        ]);
-        ActivityLog::createRow(Auth::user()->username, ucfirst(Auth::user()->username) . ' Activated ' . $user->username . ' Account');
-        return $this->successResponse('Account activated');
-    }
 
     public function getIndividuals()
     {
@@ -202,22 +140,7 @@ class AdminService
         return $this->successResponse($data);
     }
 
-    public function getExperts()
-    {
-        $experts =  Expert::latest('id')->get();
-        if (!$experts) {
-            return $this->errorResponse('No record found', 404);
-        }
-        return $this->successResponse($experts);
-    }
-    public function getSingleExpert($id)
-    {
-        $expert =  Expert::with('user')->find($id);
-        if (!$expert) {
-            return $this->errorResponse('No record found', 422);
-        }
-        return $this->successResponse($expert);
-    }
+
     public function withdrawalRequests()
     {
         $payouts =  Payout::with('user')->latest('id')->get();
