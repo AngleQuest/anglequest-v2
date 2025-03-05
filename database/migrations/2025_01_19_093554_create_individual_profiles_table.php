@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('current_role')->nullable();
             $table->string('target_role')->nullable();
-            $table->string('gender')->nullable();
             $table->json('specialization')->nullable();
             $table->double('yrs_of_experience')->default(0);
             $table->text('preferred_mode')->nullable();
