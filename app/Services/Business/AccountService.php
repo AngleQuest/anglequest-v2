@@ -40,7 +40,7 @@ class AccountService
     {
         return $this->successResponse(Auth::user()->company);
     }
-
+//just comment
     public function updateProfile($data)
     {
         $user = Auth::user();
