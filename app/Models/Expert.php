@@ -13,8 +13,6 @@ class Expert extends Model
         'name',
         'email',
         'phone',
-        'dob',
-        'gender',
         'specialization',
         'available_days',
         'about',

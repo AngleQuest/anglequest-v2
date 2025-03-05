@@ -76,7 +76,11 @@ class ExpertManagerService
             Expert::create([
                 'user_id' => $user->id,
                 'name' => $data->name,
-                'email' => $data->email
+                'email' => $data->email,
+                'phone' => $data->phone,
+                'category' => $data->category,
+                'specialization'=> $data->specialization,
+                'available_days'=> $data->available_days,
             ]);
 
             if ($user) {
