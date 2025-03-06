@@ -10,4 +10,8 @@ class ShortlistStep extends Model
         'user_id',
         'last_step',
     ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }
