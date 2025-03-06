@@ -12,6 +12,5 @@ Route::group(['prefix' => 'content'], function () {
         Route::get('/category-specializations/{id}', 'categorySpecializations');
         Route::get('/specializations', 'allSpecializations');
         Route::get('/config', 'configDetails');
-        Route::post('/cvAnalysis', 'cvAnalysis');
     });
 });

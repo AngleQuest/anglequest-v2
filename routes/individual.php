@@ -13,6 +13,7 @@ use App\Http\Controllers\Individual\SupportRequestController;
 Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 'prefix' => 'individual'], function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
+        Route::post('/cvAnalysis', 'cvAnalysis');
     });
     //Account and subscription section
     Route::controller(AccountUpdateController::class)->group(function () {

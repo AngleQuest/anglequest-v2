@@ -8,12 +8,14 @@ use App\Traits\ApiResponder;
 use App\Models\Configuration;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Models\SpecializationCategory;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Client\RequestException;
 use App\Http\Resources\SpecializationResource;
+use App\Models\CvAnalysis;
 use NunoMaduro\Collision\Adapters\Phpunit\ConfigureIO;
 
 class ContentService
@@ -59,7 +61,7 @@ class ContentService
                     file_get_contents($file->getRealPath()),
                     $file->getClientOriginalName()
                 )->post('https://ai.anglequest.work/api/v1/attachments/1d942442-715b-42f2-9cd3-edf217125638/anglequestcv', []);
-               // return json_decode($sendCv);
+                // return json_decode($sendCv);
                 if ($sendCv->successful()) {
                     $result = json_decode($sendCv);
 
@@ -67,10 +69,14 @@ class ContentService
                     $predictionResponse = Http::timeout(60)
                         ->post('https://ai.anglequest.work/api/v1/prediction/1d942442-715b-42f2-9cd3-edf217125638', [
                             'question' => 'give me the analysis of the CV below, the person wants to become a ' . $data->job_title . ' : ' . $result[0]->content,
-                            "chatId" => "anglequestcv".time(),
+                            "chatId" => "anglequestcv" . Auth::id() . '.' . time(),
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
+                    CvAnalysis::create([
+                        'user_id' => Auth::id(),
+                        'result' => $result
+                    ]);
                     return $cv_result;
                 }
 

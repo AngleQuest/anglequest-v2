@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CvAnalysis extends Model
 {
-    //
+    protected $fillable = [
+        'user_id',
+        'result',
+    ];
 }
