@@ -66,7 +66,8 @@ class ContentService
 
                     $predictionResponse = Http::timeout(60)
                         ->post('https://ai.anglequest.work/api/v1/prediction/1d942442-715b-42f2-9cd3-edf217125638', [
-                            'question' => 'give me the analysis of the CV below, the person wants to become a ' . $data->job_title . ' : ' . $result[0]->content
+                            'question' => 'give me the analysis of the CV below, the person wants to become a ' . $data->job_title . ' : ' . $result[0]->content,
+                            "chatId" => "anglequestcv".time(),
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
