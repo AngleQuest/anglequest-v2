@@ -91,9 +91,11 @@ class ContentService
 
         try {
             if ($data) {
-
                 $step = ShortlistStep::updateOrCreate([
-                    'user_id' => Auth::id(),
+                    'user_id' => Auth::id()
+                ],
+                 [
+
                     'last_step' => $data->last_step
                 ]);
                 if ($step) {
@@ -111,7 +113,7 @@ class ContentService
     {
         $step = ShortlistStep::where('user_id', Auth::id())->first();
         if (!$step) {
-            return $this->successResponse('No record found',422);
+            return $this->successResponse('No record found', 422);
         }
         return $this->successResponse($step);
     }
