@@ -110,6 +110,9 @@ class ContentService
     public function getShortListStep()
     {
         $step = ShortlistStep::where('user_id', Auth::id())->first();
+        if (!$step) {
+            return $this->successResponse('No record found',422);
+        }
         return $this->successResponse($step);
     }
 }
