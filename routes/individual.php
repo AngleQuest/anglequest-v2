@@ -14,6 +14,8 @@ Route::group(['middleware' => ['auth:sanctum', 'email.verified', 'individual'], 
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index');
         Route::post('/cvAnalysis', 'cvAnalysis');
+        Route::post('/shortlist-step', 'shortListStep');
+        Route::get('/get-step', 'getShortListStep');
     });
     //Account and subscription section
     Route::controller(AccountUpdateController::class)->group(function () {

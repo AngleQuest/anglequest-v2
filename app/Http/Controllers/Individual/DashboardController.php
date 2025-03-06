@@ -24,4 +24,12 @@ class DashboardController extends Controller
     {
         return $this->contentService->cvAnalysis($request);
     }
+    public function shortListStep(Request $request)
+    {
+        return $this->contentService->shortListStep($request);
+    }
+    public function getShortListStep()
+    {
+        return $this->contentService->getShortListStep();
+    }
 }

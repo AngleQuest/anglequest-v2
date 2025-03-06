@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Sla;
 use App\Models\Category;
+use App\Models\CvAnalysis;
 use App\Traits\ApiResponder;
 use App\Models\Configuration;
+use App\Models\ShortlistStep;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Client\RequestException;
 use App\Http\Resources\SpecializationResource;
-use App\Models\CvAnalysis;
 use NunoMaduro\Collision\Adapters\Phpunit\ConfigureIO;
 
 class ContentService
@@ -73,93 +74,42 @@ class ContentService
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
-                    CvAnalysis::create([
+                    CvAnalysis::updateOrCreate([
                         'user_id' => Auth::id(),
                         'result' => $result
                     ]);
                     return $cv_result;
                 }
-
-
-
-                // if ($response->successful()) {
-                //     $responseData = $response->json();
-                //     if ($responseData['numAdded'] > 0) {
-                //         $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
-                //             ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
-                //                 'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
-                //             ]);
-                //         $maxRetries = 5;
-                //         $retryDelay = 1000; // Initial delay in milliseconds
-                //         $success = false;
-                //         $predictionResponse = null;
-
-                //         for ($i = 0; $i < $maxRetries; $i++) {
-                //             try {
-                //                 $predictionResponse = Http::timeout(60) // Set the timeout to 60 seconds
-                //                     ->post('https://ai.anglequest.work/api/v1/prediction/2874fb18-9ef7-4463-8b7f-5da89b55e94e', [
-                //                         'question' => 'give me the analysis of the CV, the person wants to become a ' . $data->job_title
-                //                     ]);
-
-                //                 $success = true;
-                //                 break; // Exit the loop if the request is successful
-                //             } catch (RequestException $e) {
-                //                 if ($i === $maxRetries - 1) {
-                //                     // Log the error or handle the final failure
-                //                     Log::error('Error getting questionnaire data: ' . $e->getMessage());
-                //                 } else {
-                //                     // Wait before retrying (exponential backoff)
-                //                     usleep($retryDelay * 1000); // Convert milliseconds to microseconds
-                //                     $retryDelay *= 2; // Exponential backoff
-                //                 }
-                //             }
-                //         }
-
-                //         if ($predictionResponse->successful()) {
-                //             $analysisData = $predictionResponse->json();
-
-                //             $cleanedJson = preg_replace('/json\n|\n/', '', $analysisData['text']);
-
-                //             $data = json_decode($cleanedJson);
-
-                //             Storage::delete('storage/' . $cv_path);
-
-                //             // $analysis = CVAnalysis::where('user_id', $user->id)->first();
-
-                //             // if($analysis) {
-                //             //     $analysis->analysis = json_encode($data);
-                //             //     $analysis->save();
-                //             // } else {
-                //             //     CVAnalysis::create([
-                //             //         'user_id' => $user->id,
-                //             //         'analysis' => json_encode($data)
-                //             //     ]);
-                //             // }
-
-                //             return $data;
-                //         } else {
-
-                //             return  'Failed to generate prediction';
-                //         }
-                //     } else {
-                //         Storage::delete('public/' . $cv_path);
-
-                //         // Handle case where numAdded <= 0
-                //         return response()->json([
-                //             'status' => 'error',
-                //             'message' => 'No data added'
-                //         ], 400);
-                //     }
-                // } else {
-                //     Storage::delete('storage/' . $cv_path);
-
-                //     return 'Failed to analyze your cv';
-                // }
-
             }
         } catch (\Throwable $th) {
 
             return $th;
         }
+    }
+    public function shortListStep($data)
+    {
+
+        try {
+            if ($data) {
+
+                $step = ShortlistStep::updateOrCreate([
+                    'user_id' => Auth::id(),
+                    'last_step' => $data->last_step
+                ]);
+                if ($step) {
+                    return $this->successResponse('Details captured');
+                } else {
+                    return $this->errorResponse('Details failed to be captured', 422);
+                }
+            }
+        } catch (\Throwable $th) {
+
+            return $th;
+        }
+    }
+    public function getShortListStep()
+    {
+        $step = ShortlistStep::where('user_id', Auth::id())->first();
+        return $this->successResponse($step);
     }
 }
