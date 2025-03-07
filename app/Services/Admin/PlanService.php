@@ -56,11 +56,34 @@ class PlanService
         return $this->successResponse($plan);
     }
 
+    public function updateIndividualPlan($id, $data)
+    {
+        $plan = IndividualPlan::find($id);
+        if (!$plan) {
+            return $this->errorResponse('No record found', 422);
+        }
+        $plan->update([
+            'name' => $data->name,
+            'price' => $data->price,
+            'note' => $data->note,
+        ]);
+        return $this->successResponse($plan);
+    }
+    public function deleteIndividualPlan($id)
+    {
+        $plan = IndividualPlan::find($id);
+        if (!$plan) {
+            return $this->errorResponse('No record found', 422);
+        }
+        $plan->delete();
+        return $this->successResponse('Plan deleted');
+    }
+
     public function edit($id)
     {
         $plan = Plan::find($id);
         if (!$plan) {
-            return $this->errorResponse('No record found', 404);
+            return $this->errorResponse('No record found', 422);
         }
         return $this->successResponse($plan);
     }

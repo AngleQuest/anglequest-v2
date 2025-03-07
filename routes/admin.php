@@ -94,6 +94,8 @@ Route::group(['prefix' => 'administrator'], function () {
                 Route::get('/', 'allIndividualPlans');
                 Route::post('/add', 'storeIndividualPlan');
                 Route::get('/details/{id}', 'getIndividualPlan');
+                Route::post('/update/{id}', 'updateIndividualPlan');
+                Route::delete('/delete/{id}', 'deleteIndividualPlan');
             });
         });
         //Company Mangager
