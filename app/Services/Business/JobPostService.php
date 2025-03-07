@@ -62,7 +62,7 @@ class JobPostService
             'description' => $data->description,
             'job_title' => $data->job_title,
             'candidates' => $data->candidates,
-            'link' => 'https://'.str_replace(' ','',strtolower($user->company->name)).'.'.'dev.anglequest.com/'.str_replace(' ','-',strtolower($data->job_title)),
+            'link' => 'https://dev.anglequest.com/'.str_replace(' ','',strtolower($user->company->name)).'.'.str_replace(' ','-',strtolower($data->job_title)),
         ]);
         return $this->successResponse($post);
     }
