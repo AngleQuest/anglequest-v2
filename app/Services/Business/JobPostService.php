@@ -53,22 +53,16 @@ class JobPostService
 
     public function addPost($data)
     {
-        if ($data->file('job_description')) {
-            $uploadedImage = Cloudinary::upload($data->file('job_description')->getRealPath(), [
-                'folder' => 'jobdescriptions',
-                'resource_type' => 'raw',
-                'format' => 'pdf'
-            ]);
-            $job_description = $uploadedImage->getSecurePath();
-        }
-        $post = JobPost::create([
+        $user = User::find(Auth::id());
+       $post = JobPost::create([
             'user_id' =>  Auth::user()->id,
             'category' => $data->category,
             'speacialization' => $data->speacialization,
             'role_level' => $data->role_level,
-            'job_description' => $data->job_description ? $job_description : null,
             'description' => $data->description,
             'job_title' => $data->job_title,
+            'candidates' => $data->candidates,
+            'link' => 'https://'.str_replace(' ','',strtolower($user->company->name)).'.'.'dev.anglequest.com/'.str_replace(' ','-',strtolower($data->job_title)),
         ]);
         return $this->successResponse($post);
     }

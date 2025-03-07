@@ -13,7 +13,8 @@ class JobPost extends Model
         'category',
         'speacialization',
         'role_level',
-        'job_description',
+        'candidates',
+        'link',
         'description',
         'job_title',
         'status'

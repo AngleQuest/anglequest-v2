@@ -171,7 +171,7 @@ class AccountService
 
         //event(new Login($user));
         $user->token = $user->createToken($user->email . ' Login Token')->plainTextToken;
-        ActivityLog::createRow($user->username, ucfirst($user->username) . ' Logged in using ' . $data->role . ' Account');
+        ActivityLog::createRow($user->email, ucfirst($user->email) . ' Logged in using ' . $data->role . ' Account');
         return $this->successResponse($user);
     }
 

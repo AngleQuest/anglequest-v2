@@ -37,38 +37,6 @@ class InterviewService
 {
     use ApiResponder;
 
-    public function createGuide($data)
-    {
-
-        $user = Auth::user();
-        $guide = AppointmentGuide::updateOrCreate(
-            [
-                'user_id' => $user->id,
-            ],
-            [
-                'specialization' => $data->specialization,
-                'topic' => $data->topic,
-                'available_days' => $data->available_days,
-                'description' => $data->description,
-                'guides' => $data->guides,
-                'location' => $data->location,
-                'time_zone' => $data->time_zone,
-                'expert_name' => $user->profile ? $user->profile->fullName() :  $user->username,
-            ]
-        );
-
-        return $this->successResponse($guide);
-    }
-    public function viewGuide()
-    {
-        $user = Auth::user();
-        $guide = AppointmentGuide::where('user_id', $user->id)->first();
-        if (!$guide) {
-            return $this->errorResponse("No Guide has been created", 422);
-        }
-        return $this->successResponse($guide);
-    }
-
     public function pendingAppointments()
     {
 

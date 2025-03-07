@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('speacialization')->nullable();
             $table->string('role_level')->nullable();
-            $table->string('job_description')->nullable();
             $table->string('description')->nullable();
             $table->string('job_title')->nullable();
             $table->string('status')->nullable();
