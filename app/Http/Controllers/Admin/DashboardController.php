@@ -17,33 +17,6 @@ class DashboardController extends Controller
         return $this->adminService->getDashboardData();
     }
 
-    function users()
-    {
-        return $this->adminService->getUsers();
-    }
-
-    function deActivateUser($id)
-    {
-        return $this->adminService->deActivateUser($id);
-    }
-    function activateUser($id)
-    {
-        return $this->adminService->activateUser($id);
-    }
-
-    function deleteUser($id)
-    {
-        return $this->adminService->deleteUser($id);
-    }
-
-    function experts()
-    {
-        return $this->adminService->getExperts();
-    }
-    function getSingleExpert($id)
-    {
-        return $this->adminService->getSingleExpert($id);
-    }
     function individuals()
     {
         return $this->adminService->getIndividuals();
@@ -52,14 +25,7 @@ class DashboardController extends Controller
     {
         return $this->adminService->getSingleIndividual($id);
     }
-    function companies()
-    {
-        return $this->adminService->getCompanies();
-    }
-    function getSingleCompany($id)
-    {
-        return $this->adminService->getSingleCompany($id);
-    }
+
     function withdrawalRequests()
     {
         return $this->adminService->withdrawalRequests();

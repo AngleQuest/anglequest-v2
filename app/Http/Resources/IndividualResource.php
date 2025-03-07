@@ -19,18 +19,12 @@ class IndividualResource extends JsonResource
         return [
             'id' => (string)$this->id,
             'category' => (string)$this->category,
-            'first_name' => (string)$this->first_name,
-            'last_name' => (string)$this->last_name,
+            'name' => (string)$this->name,
             'email' => (string)$this->email,
             'phone' => (string)$this->phone,
-            'date_of_birth' => (string)$this->dob,
             'current_role' => (string)$this->current_role,
             'target_role' => (string)$this->target_role,
-            'gender' => (string)$this->gender,
             'specialization' => (string)$this->specialization,
-            'yrs_of_experience' => (string)$this->yrs_of_experience,
-            'about' => (string)$this->about,
-            'location' => (string)$this->location,
             'profile_photo' => (string)$this->profile_photo,
             'created_at' => $this->created_at->toDateString()
         ];
