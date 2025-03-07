@@ -54,7 +54,7 @@ class JobPostService
     public function addPost($data)
     {
         $user = User::find(Auth::id());
-       $post = JobPost::create([
+        $post = JobPost::create([
             'user_id' =>  Auth::user()->id,
             'category' => $data->category,
             'speacialization' => $data->speacialization,
@@ -62,7 +62,7 @@ class JobPostService
             'description' => $data->description,
             'job_title' => $data->job_title,
             'candidates' => $data->candidates,
-            'link' => 'https://dev.anglequest.com/'.str_replace(' ','',strtolower($user->company->name)).'.'.str_replace(' ','-',strtolower($data->job_title)),
+            'link' => 'https://dev.anglequest.com/' . 'job-post/' . str_replace(' ', '', strtolower($user->company->name)) . '.' . str_replace(' ', '-', strtolower($data->job_title)),
         ]);
         return $this->successResponse($post);
     }
