@@ -74,14 +74,14 @@ class ContentService
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
-                    CvAnalysis::updateOrCreate(
-                        [
-                            'user_id' => Auth::id(),
-                        ],
-                        [
-                            'result' => $result
-                        ]
-                    );
+                    // CvAnalysis::updateOrCreate(
+                    //     [
+                    //         'user_id' => Auth::id(),
+                    //     ],
+                    //     [
+                    //         'result' => $result
+                    //     ]
+                    // );
                     return $cv_result;
                 }
             }
