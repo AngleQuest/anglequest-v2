@@ -24,7 +24,8 @@ class QuestionaireRequest extends FormRequest
         return [
             'category' => 'required|exists:specialization_categories,name',
             'title' => 'required',
-            'question_answer' => 'required|array',
+            'question' => 'required|array',
+            'answer' => 'required|array',
         ];
     }
 }

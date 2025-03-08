@@ -58,17 +58,12 @@ class QuestionaireService
             'user_id' =>  Auth::user()->id,
             'category' => $data->category,
             'title' => $data->title,
-            'question_answer' => $data->question_answer,
+            'question' => $data->question,
             'answer' => $data->answer,
         ]);
         return $this->successResponse($questionaire);
     }
-    // "category:SAP
-    // "specialization:SAP Fi
-    // "role_level:Junior
-    // "description:SAP Specialist
-    // "job_title:SAP Specialist
-    // "candidates:10
+
 
     public function editQuestionaire($id, $data)
     {

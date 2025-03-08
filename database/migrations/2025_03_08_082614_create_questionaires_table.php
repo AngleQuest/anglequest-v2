@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('category');
             $table->string('title');
-            $table->json('question_answer');
+            $table->json('question');
             $table->json('answer');
             $table->timestamps();
         });

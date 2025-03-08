@@ -10,13 +10,14 @@ class Questionaire extends Model
         'user_id',
         'category',
         'title',
-        'question_answer',
+        'question',
         'answer',
     ];
     protected function casts(): array
     {
         return [
-            'question_answer' => 'array'
+            'question' => 'array',
+            'answer' => 'array'
         ];
     }
 }

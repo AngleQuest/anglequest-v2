@@ -74,20 +74,21 @@ class ContentService
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
-                    // CvAnalysis::updateOrCreate(
-                    //     [
-                    //         'user_id' => Auth::id(),
-                    //     ],
-                    //     [
-                    //         'result' => $result
-                    //     ]
-                    // );
-                    return $cv_result;
+                    CvAnalysis::updateOrCreate(
+                        [
+                            'user_id' => Auth::id(),
+                        ],
+                        [
+                            'result' => json_decode($cv_result)
+                        ]
+                    );
+                    return json_decode($cv_result);
                 }
             }
+            return 'no valid data supplied';
         } catch (\Throwable $th) {
-
-            return $th;
+           // return $th;
+            return 'Request failed try again';
         }
     }
     public function shortListStep($data)

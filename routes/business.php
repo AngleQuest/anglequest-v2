@@ -32,16 +32,17 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
     });
 
     //Employee Management
-    Route::controller(JobPostController::class)->prefix('job-post')->group(function () {
-        Route::get('/', 'index');
-        Route::post('/add', 'addPost');
-        Route::get('/details/{id}', 'viewPost');
-        Route::post('/update/{id}', 'editPost');
-        Route::delete('/delete/{id}', 'deletePost');
+    Route::controller(JobPostController::class)->group(function () {
+        Route::prefix('job-post')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/add', 'addPost');
+            Route::get('/details/{id}', 'viewPost');
+            Route::post('/update/{id}', 'editPost');
+            Route::delete('/delete/{id}', 'deletePost');
 
-        Route::post('/add-candidate', 'addCandidate');
-        Route::post('/schedule-interview', 'deletePost');
-
+            Route::post('/add-candidate', 'addCandidate');
+            Route::post('/schedule-interview', 'deletePost');
+        });
         //questionaire Management
         Route::prefix('questionaire')->group(function () {
             Route::get('/', 'allQuestionaires');
