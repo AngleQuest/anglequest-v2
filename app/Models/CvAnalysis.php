@@ -10,4 +10,7 @@ class CvAnalysis extends Model
         'user_id',
         'result',
     ];
+    protected $casts = [
+        'result' => 'array',
+    ];
 }
