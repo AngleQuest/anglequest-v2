@@ -42,7 +42,16 @@ Route::group(['middleware' => ['auth:sanctum', 'business', 'email.verified'], 'p
         Route::post('/add-candidate', 'addCandidate');
         Route::post('/schedule-interview', 'deletePost');
 
+        //questionaire Management
+        Route::prefix('questionaire')->group(function () {
+            Route::get('/', 'allQuestionaires');
+            Route::post('/add', 'addQuestionaire');
+            Route::get('/details/{id}', 'viewQuestionaire');
+            Route::post('/update/{id}', 'editQuestionaire');
+            Route::delete('/delete/{id}', 'deleteQuestionaire');
+        });
     });
+
 
     //Subscription Section
     Route::controller(SubscriptionController::class)->prefix('subscription')->group(function () {

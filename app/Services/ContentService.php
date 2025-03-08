@@ -74,10 +74,14 @@ class ContentService
                         ]);
 
                     $cv_result = json_decode($predictionResponse);
-                    CvAnalysis::updateOrCreate([
-                        'user_id' => Auth::id(),
-                        'result' => $result
-                    ]);
+                    CvAnalysis::updateOrCreate(
+                        [
+                            'user_id' => Auth::id(),
+                        ],
+                        [
+                            'result' => $result
+                        ]
+                    );
                     return $cv_result;
                 }
             }
@@ -91,13 +95,15 @@ class ContentService
 
         try {
             if ($data) {
-                $step = ShortlistStep::updateOrCreate([
-                    'user_id' => Auth::id()
-                ],
-                 [
+                $step = ShortlistStep::updateOrCreate(
+                    [
+                        'user_id' => Auth::id()
+                    ],
+                    [
 
-                    'last_step' => $data->last_step
-                ]);
+                        'last_step' => $data->last_step
+                    ]
+                );
                 if ($step) {
                     return $this->successResponse('Details captured');
                 } else {

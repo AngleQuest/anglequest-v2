@@ -73,19 +73,10 @@ class JobPostService
         if (!$post) {
             return $this->errorResponse('Job not found', 422);
         }
-        if ($data->file('job_description')) {
-            $uploadedImage = Cloudinary::upload($data->file('job_description')->getRealPath(), [
-                'folder' => 'jobdescriptions',
-                'resource_type' => 'raw',
-                'format' => 'pdf'
-            ]);
-            $job_description = $uploadedImage->getSecurePath();
-        }
         $post->update([
             'category' => $data->category,
             'speacialization' => $data->speacialization,
             'role_level' => $data->role_level,
-            'job_description' => $data->job_description ? $job_description : $post->job_description,
             'description' => $data->description,
             'job_title' => $data->job_title,
         ]);
