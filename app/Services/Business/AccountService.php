@@ -68,7 +68,6 @@ class AccountService
             'name' => $data->name ?? $user->company->name,
             'administrator_name' => $data->administrator_name ?? $user->company->administrator_name,
             'email' => $data->email ?? $user->company->email,
-            'address' => $data->address ?? $user->company->address,
             'nda_file' => $data->nda_file ? $nda_url : $user->company->nda_file,
             'company_logo' => $data->company_logo ? $logo_url : $user->company->company_logo,
             'business_reg_number' => $data->business_reg_number ?? $user->company->business_reg_number,
