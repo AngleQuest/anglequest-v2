@@ -22,7 +22,7 @@ class EmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users,email',
+            'email' => ['required', 'email','email:rfc,dns', 'unique:users,email'],
             'current_role' => 'required',
             'target_role' => 'required',
             'gender' => 'required|in:Male,Female',

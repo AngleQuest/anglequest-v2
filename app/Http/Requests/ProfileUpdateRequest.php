@@ -24,7 +24,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => 'required',
             'gender' => 'required|in:Male,Female',
-            'email' => 'required|email',
+            'email' => ['required', 'email','email:rfc,dns'],
             'phone' => 'required',
             'current_role' => 'required',
             'target_role' => 'required',
