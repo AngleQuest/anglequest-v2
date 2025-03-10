@@ -13,8 +13,10 @@
         </td>
     </tr>
     <tr>
-        <td bgcolor="#0d468b" align="center" style="padding: 20px;color:white">
-            <a href=" https://dev.anglequest.com/verify-email" class="button">Verify Email</a>
-        </td>
+        <a href="https://dev.anglequest.com/verify-email" class="button">
+            <td bgcolor="#0d468b" align="center" style="padding: 20px;color:white">
+                Verify Email
+            </td>
+        </a>
     </tr>
 @endsection

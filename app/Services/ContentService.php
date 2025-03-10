@@ -75,15 +75,20 @@ class ContentService
                             ]);
 
                         $cv_result = json_decode($predictionResponse);
+
                         CvAnalysis::updateOrCreate(
                             [
                                 'user_id' => Auth::id(),
                             ],
                             [
-                                'result' => $cv_result
+                                'result' => $cv_result->json->analysis
                             ]
                         );
-                        return $cv_result;
+                        if ($cv_result->json->analysis) {
+
+                            return json_decode($cv_result->json->analysis);
+                        }
+
                     }
                 } else {
                     return $this->errorResponse('No Cv uploaded, please upload one', 422);
